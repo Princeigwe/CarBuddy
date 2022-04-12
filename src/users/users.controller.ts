@@ -1,18 +1,32 @@
-import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import {UpdateUserDto} from './dtos/update-user.dto'
 import {UsersService } from './users.service'
+import {AuthService} from './auth.service' // import AuthService to be used
+
 
 @Controller('auth')
 export class UsersController {
-    constructor(private usersService: UsersService){}
+    constructor(
+        private usersService: UsersService,
+        private authService: AuthService
+        ){}
     
     @Post('/signUp')
     // extract the body of POST request and verify it's of CreateUserDto
     createUser(@Body() body:CreateUserDto) {
-        return this.usersService.create(body.email, body.password) // calling the createUser from UsersService
+        // return this.usersService.create(body.email, body.password) // calling the createUser from UsersService
+        return this.authService.signUp(body.email, body.password) // calling the AuthService to create a user 
     }
 
+    @Post('/signin')
+    // calling the authService to sign in user
+    loginUser(@Body() body:CreateUserDto){
+        return this.authService.signIn(body.email, body.password)
+    }
+
+    // intercept the incoming request and make changes to it
+    @UseInterceptors(ClassSerializerInterceptor)
     @Get('/:id') // Get request with Parameter
     async findUser(@Param('id') id: string) {
         // change the ID parameter to number, and call the service on it 
