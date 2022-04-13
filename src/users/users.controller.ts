@@ -19,6 +19,12 @@ export class UsersController {
         return this.authService.signUp(body.email, body.password) // calling the AuthService to create a user 
     }
 
+    @UseInterceptors(ClassSerializerInterceptor)
+    @Get() // get users without query
+    retrieveAllUsers(){
+        return this.usersService.findAll()
+    }
+
     @Post('/signin')
     // calling the authService to sign in user
     loginUser(@Body() body:CreateUserDto){
@@ -38,8 +44,9 @@ export class UsersController {
     }
 
     @Get() // get request to retrieve users with the query string "email" provided
-    findAllUsers(@Query('email') email: string) {
-        return this.usersService.find(email)
+    async findAllUsers(@Query('email') email: string) {
+        const users = await this.usersService.find(email)
+        return users
     }
 
     @Delete('/:id') // delete request on a user

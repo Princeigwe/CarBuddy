@@ -21,7 +21,12 @@ export class UsersService {
 
     // get all user instances by email that was given
     find(email: string) {
-      return this.repo.find({ email})
+      return this.repo.find({email})
+    }
+
+    // get all User instances
+    async findAll() {
+      return await this.repo.find()
     }
 
     //update one or more attributes of the user instance, with the ID provided
