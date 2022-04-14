@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException, UseInterceptors, ClassSerializerInterceptor, Session } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import {UpdateUserDto} from './dtos/update-user.dto'
 import {UsersService } from './users.service'
@@ -11,6 +11,8 @@ export class UsersController {
         private usersService: UsersService,
         private authService: AuthService
         ){}
+
+    
     
     @Post('/signUp')
     // extract the body of POST request and verify it's of CreateUserDto
