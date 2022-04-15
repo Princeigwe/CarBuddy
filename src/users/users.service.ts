@@ -15,9 +15,14 @@ export class UsersService {
     }
 
     // get user instance with an ID
-    findOne( id: number ) {      
+    findOne( id: number) {      
       return this.repo.findOne(id)
     }
+
+    findEmail(email: string) {
+      return this.repo.findOne(email)
+    }
+
 
     // get all user instances by email that was given
     find(email: string) {
@@ -49,5 +54,11 @@ export class UsersService {
         throw new NotFoundException(`User ${id} does not exist`)
       }
       return this.repo.remove(user) // remove the user entity
+    }
+
+    async removeAll() {
+      const users = await this.repo.find()
+      this.repo.remove(users)
+      throw new NotFoundException(`Users not found`)
     }
 }

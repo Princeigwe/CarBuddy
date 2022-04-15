@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import {User} from './users/user.entity'
 import {Report} from 'src/reports/report.entity'
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [ TypeOrmModule.forRoot({
@@ -15,7 +16,8 @@ import {Report} from 'src/reports/report.entity'
     synchronize: true // automatically change structure of data entities when changes apply. Should be used only for development environment
   }),
   UsersModule,
-  ReportsModule],
+  ReportsModule,
+  AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

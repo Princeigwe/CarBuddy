@@ -10,6 +10,9 @@ export class User {
     @Column() // marking email column
     email: string;
 
+    @Column() // marking username column
+    username: string;
+
     @Column() // marking password column
     @Exclude() // exclude the password when printing the API response
     password: string;

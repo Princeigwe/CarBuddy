@@ -17,8 +17,8 @@ export class UsersController {
     @Post('/signUp')
     // extract the body of POST request and verify it's of CreateUserDto
     createUser(@Body() body:CreateUserDto) {
-        // return this.usersService.create(body.email, body.password) // calling the createUser from UsersService
-        return this.authService.signUp(body.email, body.password) // calling the AuthService to create a user 
+        return this.usersService.create(body.email, body.password) // calling the createUser from UsersService
+        // return this.authService.signUp(body.email, body.password) // calling the AuthService to create a user 
     }
 
     @UseInterceptors(ClassSerializerInterceptor)
@@ -54,6 +54,11 @@ export class UsersController {
     @Delete('/:id') // delete request on a user
     removeUser(@Param('id') id: string) {
         return this.usersService.remove(parseInt(id))
+    }
+
+    @Delete()
+    removeUsers() {
+        return this.usersService.removeAll()
     }
 
     @Patch('/:id') // patch request to update a user
