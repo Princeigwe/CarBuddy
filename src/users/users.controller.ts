@@ -17,7 +17,7 @@ export class UsersController {
     @Post('/signUp')
     // extract the body of POST request and verify it's of CreateUserDto
     createUser(@Body() body:CreateUserDto) {
-        return this.usersService.create(body.email, body.password) // calling the createUser from UsersService
+        return this.usersService.create(body.username, body.email, body.password) // calling the createUser from UsersService
         // return this.authService.signUp(body.email, body.password) // calling the AuthService to create a user 
     }
 

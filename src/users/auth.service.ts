@@ -9,7 +9,7 @@ const scrypt =promisify(_scrypt)
 export class AuthService {
     constructor(private usersService: UsersService){}
 
-    async signUp(email:string, password:string){
+    async signUp( username:string, email:string, password:string){
         // see if email is in use
         const users = await this.usersService.find(email)
         if (users.length){ // if there is an array of users with this email,throw an exception 
@@ -27,7 +27,7 @@ export class AuthService {
         const result = salt + "." + hash.toString("hex");
         
         // Create a new user and save it
-        const user = await this.usersService.create(email, result); // creating user with email, and result as password
+        const user = await this.usersService.create( username, email, result); // creating user with email, and result as password
 
         // Return the new user
         return user
