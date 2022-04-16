@@ -2,12 +2,15 @@ import {Injectable, BadRequestException, NotFoundException} from '@nestjs/common
 import { UsersService } from './users.service' // import UsersService to be used
 import {randomBytes, scrypt as _scrypt} from 'crypto' // for password hashing and salting
 import { promisify } from 'util' // convers a function to a Promise
+import {JwtService} from '@nestjs/jwt'
 
 const scrypt =promisify(_scrypt)
 
 @Injectable()
 export class AuthService {
-    constructor(private usersService: UsersService){}
+    constructor(
+        private usersService: UsersService,
+        ){}
 
     async signUp( username:string, email:string, password:string){
         // see if email is in use
@@ -44,6 +47,9 @@ export class AuthService {
         if (storedHash !== hash.toString('hex')) {
             throw new BadRequestException("Invalid Credentials")
         }
+        
         return user
+
+
     }
 }

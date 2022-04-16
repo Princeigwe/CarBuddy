@@ -20,7 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
   ],
   providers: [
     AuthService,
-    LocalStrategy, 
+    // LocalStrategy, 
     JwtStrategy,
   ], // making authService and all Passport strategies available to the application
   exports: [AuthService]
