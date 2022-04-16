@@ -18,7 +18,11 @@ import { JwtStrategy } from './jwt.strategy';
       signOptions: {expiresIn: '120s'}
     })
   ],
-  providers: [AuthService,LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy, 
+    JwtStrategy,
+  ], // making authService and all Passport strategies available to the application
   exports: [AuthService]
 })
 export class AuthModule {}

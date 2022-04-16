@@ -7,6 +7,7 @@ export type User = any
 @Injectable()
 export class UsersService {
 
+  ////////////////////////////////////////////////////////////////////////////////////////
   // for testing purposes
   private readonly users = [
     {
@@ -23,11 +24,13 @@ export class UsersService {
     },
   ];
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find(user => user.username === username);
+  async findOne(email: string): Promise<User | undefined> {
+    return this.users.find(user => user.email === email);
   }
 
+  ////////////////////////////////////////////////////////////////////////////
   // the real code for database
+
     // constructor(
     //   @InjectRepository(User)  private repo: Repository<User> // create repository for User Entity, and inject it as a dependency in the service.
     // ){}
