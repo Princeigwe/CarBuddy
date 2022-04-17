@@ -44,7 +44,7 @@ export class UsersController {
     @Get(':id') // Get request with Parameter
     async findUser(@Param('id') id: string) {
         // change the ID parameter to number, and call the service on it 
-        const user = await this.usersService.findOneId(parseInt(id))
+        const user = await this.usersService.findOneById(parseInt(id))
         if (!user) {
             throw new NotFoundException(`User with id ${id} not found`)
         }

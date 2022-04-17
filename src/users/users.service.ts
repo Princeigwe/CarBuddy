@@ -41,7 +41,7 @@ export class UsersService {
     }
 
     // get user instance with an ID
-    findOneId( id: number) {      
+    findOneById( id: number) {      
       return this.userRepo.findOne(id)
     }
 
@@ -51,7 +51,9 @@ export class UsersService {
     }
 
     findEmail(email: string) {
-      return this.userRepo.findOne({email})
+      const user = this.userRepo.findOne({email})
+      if (user) {return user}
+      throw new NotFoundException('User not found')
     }
 
     findUsername(username: string) {
@@ -71,7 +73,7 @@ export class UsersService {
 
     //update one or more attributes of the user instance, with the ID provided
     async update( id: number, attrs: Partial<User>) {
-      const user = await this.findOneId(id)
+      const user = await this.findOneById(id)
       // if there was no user with this ID, throw an error
       if (!user) { 
         throw new NotFoundException(`User with ${id} does not exist`)
@@ -83,7 +85,7 @@ export class UsersService {
 
     // remove a user instance
     async remove(id: number) {
-      const user = await this.findOneId(id)
+      const user = await this.findOneById(id)
       // if user is not found, throw error
       if (!user){
         throw new NotFoundException(`User ${id} does not exist`)
