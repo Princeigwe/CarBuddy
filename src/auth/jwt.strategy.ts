@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy){
         })
     }
 
-    async validate(payload: any) { // validate the user making the request to give token
+    async validate(payload: any) { // validate the user with token attached to it
         return this.usersService.findOneById(payload.userId)
     }
 }

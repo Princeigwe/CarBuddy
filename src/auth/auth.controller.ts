@@ -2,6 +2,7 @@ import { Controller, Get, Request, Post, UseGuards, Body, HttpCode, Res } from '
 import {AuthService} from './auth.service'
 import {CreateUserDto} from '../users/dtos/create-user.dto'
 import {LocalAuthGuard} from './local-auth.guard'
+import {JwtAuthGuard} from './jwt-auth.guard'
 
 @Controller('auth')
 export class AuthController{
@@ -10,10 +11,16 @@ export class AuthController{
     ){}
 
     @Post('register')
-    async register(@Body() body) {
-        return this.authService.register(body.email, body.password, body.username)
+    async register(@Body() body: CreateUserDto) {
+        return this.authService.register( body.username, body.email, body.password)
     }
 
+
+    /* 
+    on the endpoint 'auth/login' call Use the Guard - LocalAuthGuard
+    which will require the user to authenticate with username and password,
+    and attach a token to the response token.
+    */
     @HttpCode(200)
     @UseGuards(LocalAuthGuard)
     @Post('login')
@@ -23,5 +30,4 @@ export class AuthController{
         response.cookie(cookie, {httpOnly: true}) // attaching jwt token to cookie in response
         return response.send(user)
     }
-
 }

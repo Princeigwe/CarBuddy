@@ -55,19 +55,4 @@ export class AuthService {
         const token = this.jwtService.sign(payload)
         return token
     }
-    
-    // async validate(email: string, password: string) {
-    //     const user = await this.usersService.findOne(email);  
-    //     if (!user){return null}
-    //     const passwordValid = password === user.password
-    //     return passwordValid ? user : null;
-    // }
-
-    // // remember this is for the test database (userId)
-    // async login(user: any){
-    //     const payload = {email: user.email, sub: user.userId}
-    //     return {
-    //         access_token: this.jwtService.sign(payload) // signing jwt to user payload
-    //     }
-    // }
 }
