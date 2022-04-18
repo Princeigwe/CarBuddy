@@ -1,5 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
+import { ThrottlerModule} from '@nestjs/throttler'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -18,7 +19,12 @@ import { AuthModule } from './auth/auth.module';
   }),
   UsersModule,
   ReportsModule,
-  AuthModule],
+  AuthModule,
+  ThrottlerModule.forRoot({
+    ttl: 60,
+    limit: 10, // limiting number of requests to API to 10 in 60 seconds
+  }),
+],
   controllers: [AppController],
   providers: [AppService],
 })

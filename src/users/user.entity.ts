@@ -13,7 +13,7 @@ export class User {
     @Column() // marking username column
     username: string;
 
-    @Exclude() // exclude the password when printing the API response
     @Column() // marking password column
+    @Exclude() // exclude the password when printing the API response
     password: string;
 }

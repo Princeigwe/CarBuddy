@@ -7,7 +7,7 @@ import {AuthService} from './auth.service' // import AuthService to be used
 
 
 
-@Controller('auth')
+@Controller('users')
 export class UsersController {
     constructor(
         private usersService: UsersService,

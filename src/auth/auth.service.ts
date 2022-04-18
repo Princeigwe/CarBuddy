@@ -1,4 +1,4 @@
-import {Injectable, BadRequestException, NotFoundException} from '@nestjs/common'
+import {Injectable, BadRequestException, NotFoundException, UseInterceptors, ClassSerializerInterceptor} from '@nestjs/common'
 import { UsersService } from '../users/users.service' // import UsersService to be used
 import {randomBytes, scrypt as _scrypt} from 'crypto' // for password hashing and salting
 import { promisify } from 'util' // convers a function to a Promise
@@ -10,6 +10,7 @@ const scrypt =promisify(_scrypt)
 export class AuthService {
     constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
+    @UseInterceptors(ClassSerializerInterceptor)
     async register( username:string, email:string, password:string){
         // see if email is in use
         const users = await this.usersService.find(email)
@@ -36,6 +37,7 @@ export class AuthService {
     }
 
 
+    @UseInterceptors(ClassSerializerInterceptor)
     async getAuthenticatedUser(email:string, password:string){
         const [user] = await this.usersService.find(email)
         if (!user) {
