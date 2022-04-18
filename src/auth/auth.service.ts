@@ -31,7 +31,8 @@ export class AuthService {
         const user = await this.usersService.create( username, email, result); // creating user with email, and result as password
 
         // Return the new user
-        return user
+        // return user;
+        return {'id': user.id, 'email': user.email, 'username': user.username}
     }
 
 
@@ -46,13 +47,17 @@ export class AuthService {
         if (storedHash !== hash.toString('hex')) {
             throw new BadRequestException("Invalid Credentials")
         }
-        
-        return user
+        // return user
+        return {'id': user.id, 'email': user.email, 'username': user.username}
     }
 
     public getCookieWithJwtToken(userId: number){
         const payload = {userId}
         const token = this.jwtService.sign(payload)
         return token
+    }
+
+    public getCookieForLogOut() {
+        return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
     }
 }
