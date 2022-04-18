@@ -6,16 +6,20 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import {User} from './users/user.entity'
-import {Report} from 'src/reports/report.entity'
+import {UserProfile} from './profiles/profiles.entity'
+import {Report} from './reports/report.entity'
 import { AuthModule } from './auth/auth.module';
+import { ProfilesModule } from './profiles/profiles.module';
+
 
 
 @Module({
   imports: [ TypeOrmModule.forRoot({
     type: 'sqlite', 
     database: 'db.sqlite', 
-    entities: [User, Report],
-    synchronize: true // automatically change structure of data entities when changes apply. Should be used only for development environment
+    entities: [User, Report, UserProfile],
+    synchronize: true, // automatically change structure of data entities when changes apply. Should be used only for development environment
+    autoLoadEntities: true, // to automatically load new entities
   }),
   UsersModule,
   ReportsModule,
@@ -24,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
     ttl: 60,
     limit: 10, // limiting number of requests to API to 10 in 60 seconds
   }),
+  ProfilesModule,
 ],
   controllers: [AppController],
   providers: [AppService],
