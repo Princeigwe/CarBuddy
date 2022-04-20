@@ -1,14 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
 import {User} from '../users/user.entity'
 
+
+export enum MaritalStatus {
+    SINGLE = "single",
+    MARRIED = "married",
+    DIVORCED = "divorced"
+}
+
 @Entity()
 export class UserProfile { 
 
     @PrimaryGeneratedColumn()
     id: number
-
-    @Column()
-    age: number
 
     @Column()
     firstName: string
@@ -17,7 +21,17 @@ export class UserProfile {
     lastName: string
 
     @Column()
-    status: string
+    age: number
+
+    // @Column({
+    //     type: "enum",
+    //     enum: MaritalStatus,
+    //     default: MaritalStatus.SINGLE
+    // })
+    // maritalStatus: MaritalStatus
+
+    @Column()
+    maritalStatus: string
 
     @Column()
     telephone: string

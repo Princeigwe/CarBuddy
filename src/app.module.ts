@@ -15,11 +15,19 @@ import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [ TypeOrmModule.forRoot({
+    // type: 'mysql',
+    // host: 'localhost',
+    // port: 3306,
+    // username: 'root',
+    // password: 'root',
+    // database: 'test',
+    // entities: [User, Report, UserProfile],
+    // synchronize: true,
     type: 'sqlite', 
     database: 'db.sqlite', 
     entities: [User, Report, UserProfile],
+    autoLoadEntities: true, // to automatically load entities
     synchronize: true, // automatically change structure of data entities when changes apply. Should be used only for development environment
-    autoLoadEntities: true, // to automatically load new entities
   }),
   UsersModule,
   ReportsModule,

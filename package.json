@@ -34,6 +34,7 @@
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
     "csurf": "^1.11.0",
+    "mysql2": "^2.3.3",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

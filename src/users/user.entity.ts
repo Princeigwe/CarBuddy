@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from "typeorm";
 import {Exclude} from 'class-transformer'
 import {UserProfile} from '../profiles/profiles.entity'
 

@@ -14,9 +14,11 @@ export class UsersController {
         private authService: AuthService,
         ){}
 
+    // adding query parameter to get request fixed the issue of having two GET requests, and one not returning a response
     @UseInterceptors(ClassSerializerInterceptor)
-    @Get() // get users without query
-    retrieveAllUsers(){
+    @Get() // get users with(out) query
+    async retrieveAllUsers(@Query('email') email:string ){
+        if (email) { return await this.usersService.find(email)}
         return this.usersService.findAll()
     }
 
@@ -30,12 +32,6 @@ export class UsersController {
             throw new NotFoundException(`User with id ${id} not found`)
         }
         return user
-    }
-
-    @Get() // get request to retrieve users with the query string "email" provided
-    async findAllUsers(@Query('email') email: string) {
-        const users = await this.usersService.find(email)
-        return users
     }
 
     @Delete(':id') // delete request on a user
