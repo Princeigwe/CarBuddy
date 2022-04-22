@@ -15,19 +15,20 @@ import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [ TypeOrmModule.forRoot({
-    // type: 'mysql',
-    // host: 'localhost',
-    // port: 3306,
-    // username: 'root',
-    // password: 'root',
-    // database: 'test',
-    // entities: [User, Report, UserProfile],
-    // synchronize: true,
-    type: 'sqlite', 
-    database: 'db.sqlite', 
+    type: 'postgres',
+    host: 'car_postgres', // the host should be the name of the postgres container... that was how I was able to connect.
+    port: 5432,
+    // port: process.env.DB_PORT,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE_NAME,
     entities: [User, Report, UserProfile],
-    autoLoadEntities: true, // to automatically load entities
-    synchronize: true, // automatically change structure of data entities when changes apply. Should be used only for development environment
+    synchronize: true,
+    // type: 'sqlite', 
+    // database: 'db.sqlite', 
+    // entities: [User, Report, UserProfile],
+    // autoLoadEntities: true, // to automatically load entities
+    // synchronize: true, // automatically change structure of data entities when changes apply. Should be used only for development environment
   }),
   UsersModule,
   ReportsModule,

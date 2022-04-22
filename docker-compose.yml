@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+
+  web:
+    container_name: car_web
+    build: 
+      context: . # build the the docker image[Dockerfile] that's in the current directory
+      target: development # build only development section of the docker image
+    ports:
+      - 9229:9229 # host_port:container_port should be in sync
+      - 3000:3000
+    command: npm run start:dev
+    volumes:
+      - .:/usr/src/app # mounting the current directory inside the container
+      - /usr/src/app/node_modules # mounting node_modules inside the container
+    env_file:
+      - .env # calling the .env file
+    depends_on:
+      - postgres
+  
+  postgres:
+    container_name: car_postgres
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+      # POSTGRES_HOST: ${DB_HOST}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./var/lib/postgresql/data
