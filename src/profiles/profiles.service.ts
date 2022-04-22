@@ -2,12 +2,16 @@ import { Injectable, NotFoundException, HttpException, HttpStatus, Query } from 
 import {Not, Repository} from 'typeorm'
 import {InjectRepository} from '@nestjs/typeorm'
 import {UserProfile} from './profiles.entity'
+import {User} from '../users/user.entity';
+import {UsersService} from '../users/users.service'
 
 @Injectable()
 export class ProfilesService {
 
     constructor(
-        @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>
+        @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>,
+        // private userService: UsersService,
+        // @InjectRepository(User)  private user: Repository<User>,
     ){}
     
     async createUserProfile(
@@ -16,9 +20,12 @@ export class ProfilesService {
         age: number, 
         maritalStatus, 
         telephone: string, 
-        address: string){
+        address: string,
+        )
+        {
             const userProfile = this.userProfileRepo.create({firstName, lastName, age, maritalStatus, telephone, address});
-            return await this.userProfileRepo.save(userProfile)
+            await this.userProfileRepo.save(userProfile)
+            return userProfile
         }
 
     async findAll() {

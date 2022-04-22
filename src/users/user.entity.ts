@@ -22,5 +22,5 @@ export class User {
         one to one relationship, with ability to call user entity from userProfile entity
     */
     @OneToOne(() => UserProfile, (userProfile) => userProfile.user)
-    profile: UserProfile;
+    profile: UserProfile[];
 }

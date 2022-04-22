@@ -42,7 +42,7 @@ export class UserProfile {
     /** 
         one to one relationship to User entity, with ability to call this entity for user entity
     */
-    @OneToOne(() => User, (user) => user.profile)
-    @JoinColumn() // this entity owns the relationship
-    user: User
+    @OneToOne(() => User, (user) => user.profile, {cascade: true, onDelete: "CASCADE", eager: true}) // User Entity will be referenced to in the database because [cascade:true]
+    @JoinColumn() // this entity owns the relationship [Foreign Key column]
+    user: User[]
 }

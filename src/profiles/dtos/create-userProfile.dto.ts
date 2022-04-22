@@ -1,4 +1,5 @@
-import {IsString, IsNumber} from 'class-validator'
+import {IsString, IsNumber, IsNotEmpty} from 'class-validator'
+import {User} from '../../users/user.entity'
 
 export enum MaritalStatus {
     SINGLE = "single",
@@ -25,5 +26,8 @@ export class CreateUserProfileDto {
 
     @IsString()
     address: string
+
+    // @IsNotEmpty()
+    // user: User
 
 }
