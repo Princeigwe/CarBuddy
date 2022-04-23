@@ -10,6 +10,7 @@ import {UserProfile} from './profiles/profiles.entity'
 import {Report} from './reports/report.entity'
 import { AuthModule } from './auth/auth.module';
 import { ProfilesModule } from './profiles/profiles.module';
+import { CaslModule } from './casl/casl.module';
 
 
 
@@ -39,6 +40,7 @@ import { ProfilesModule } from './profiles/profiles.module';
     limit: 10, // limiting number of requests to API to 10 in 60 seconds
   }),
   ProfilesModule,
+  CaslModule,
 ],
   controllers: [AppController],
   providers: [AppService],

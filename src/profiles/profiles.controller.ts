@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Patch, Body, Query, Param, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Patch, Body, Query, Param, Request, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserProfileDto } from './dtos/create-userProfile.dto';
 import {ProfilesService} from '../profiles/profiles.service'
 import {UpdateUserProfileDto} from './dtos/update-userProfile.dto';
@@ -42,7 +42,8 @@ export class ProfilesController {
     @Get(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin) // only user with admin role can access this resource
-    getUserProfileById(@Param('id') id: string) { 
+    getUserProfileById(@Param('id') id: string, @Request() request) { 
+        const user = request.user
         return this.profilesService.getUserProfileById(parseInt(id))
     }
 
@@ -55,7 +56,7 @@ export class ProfilesController {
     // }
 
     @Delete(':id')
-    deleteUserProfileById(@Param('id') id: string) {
+    deleteUserProfileById(@Param('id') id: string, @Request() request) {
         return this.profilesService.deleteUserProfileById(parseInt(id))
     }
 }
