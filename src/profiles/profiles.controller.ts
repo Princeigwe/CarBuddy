@@ -8,7 +8,7 @@ import {Role} from '../enums/role.enum'
 import {RolesGuard} from '../roles.guards'
 
 @Controller('profiles')
-@UseGuards(RolesGuard)
+// @UseGuards(RolesGuard)
 export class ProfilesController {
 
     constructor(
@@ -17,22 +17,31 @@ export class ProfilesController {
 
     @Post()
     @UseGuards(JwtAuthGuard) // to create profile, user must be logged in with jwt token
-    // @Roles(Role.Admin, Role.User)
+    // @Roles(Role.Admin, Role.User) // making the profile resource available to users with both admin and user roles, still the same when uncommented
     createProfile(
         @Body() body: CreateUserProfileDto, @Request() request) {
         const user = request.user
         return this.profilesService.createUserProfile(body.firstName, body.lastName, body.age, body.maritalStatus, body.telephone, body.address, user)
     }
     
+
+    /**
+     * 
+     * RolesGuard works well with JwtAuthGuard... I think it creates an issue when it is placed alone without JwtAuthGuard
+     */
+
     // adding query parameter to get request fixed the issue of having two GET requests, and one not returning a response
     @Get()
-    @UseGuards(JwtAuthGuard) // to query a profile, user must be logged in with jwt token
+    @UseGuards(JwtAuthGuard, RolesGuard) // to query a profile, user must be logged in with jwt token
+    @Roles(Role.Admin, Role.User) // making the profile resource available to users with both admin and user roles
     async queryUserProfiles(@Query('firstName') firstName: string) {
         if(firstName) {return await this.profilesService.findFirstName(firstName)}
         return this.profilesService.findAll()
     }
     
     @Get(':id')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin) // only user with admin role can access this resource
     getUserProfileById(@Param('id') id: string) { 
         return this.profilesService.getUserProfileById(parseInt(id))
     }
