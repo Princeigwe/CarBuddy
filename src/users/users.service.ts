@@ -2,17 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {User} from 'src/users/user.entity'
+import {Role} from '../enums/role.enum'
 
 // export type User = any
 @Injectable()
 export class UsersService {
 
     constructor(
-      @InjectRepository(User)  private userRepo: Repository<User> // create repository for User Entity, and inject it as a dependency in the service.
+      @InjectRepository(User)  private userRepo: Repository<User>, // create repository for User Entity, and inject it as a dependency in the service.
     ){}
 
-    create(username: string, email:string, password:string){
-        const user = this.userRepo.create({username, email, password}); // create a user instance in the User Repository
+    /**
+     * 
+     * @param role tried to pass the role parameter of type Role enum, but it gave strange error. Ended up making it optional
+     */
+    create(username: string, email:string, password:string, role?:Role){
+        const user = this.userRepo.create({username, email, password, role}); // create a user instance in the User Repository
         return this.userRepo.save(user) // save the user instance
     }
 
