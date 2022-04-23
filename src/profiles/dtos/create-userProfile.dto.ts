@@ -1,11 +1,7 @@
-import {IsString, IsNumber, IsNotEmpty} from 'class-validator'
+import {IsString, IsNumber, IsNotEmpty, IsEnum} from 'class-validator'
 import {User} from '../../users/user.entity'
+import {MaritalStatus} from 'src/enums/maritalStatus.enum'
 
-export enum MaritalStatus {
-    SINGLE = "single",
-    MARRIED = "married",
-    DIVORCED = "divorced"
-}
 
 export class CreateUserProfileDto {
 
@@ -18,8 +14,9 @@ export class CreateUserProfileDto {
     @IsNumber()
     age: number
 
-    @IsString()
-    maritalStatus: string
+    @IsNotEmpty()
+    @IsEnum(MaritalStatus)
+    maritalStatus: MaritalStatus
 
     @IsString()
     telephone: string

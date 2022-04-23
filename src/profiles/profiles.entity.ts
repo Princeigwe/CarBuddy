@@ -1,12 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
 import {User} from '../users/user.entity'
-
-
-export enum MaritalStatus {
-    SINGLE = "single",
-    MARRIED = "married",
-    DIVORCED = "divorced"
-}
+import {MaritalStatus} from '../enums/maritalStatus.enum'
 
 @Entity()
 export class UserProfile { 
@@ -23,15 +17,12 @@ export class UserProfile {
     @Column()
     age: number
 
-    // @Column({
-    //     type: "enum",
-    //     enum: MaritalStatus,
-    //     default: MaritalStatus.SINGLE
-    // })
-    // maritalStatus: MaritalStatus
-
-    @Column()
-    maritalStatus: string
+    @Column({
+        type: "enum",
+        enum: MaritalStatus,
+        default: MaritalStatus.SINGLE
+    })
+    maritalStatus: MaritalStatus
 
     @Column()
     telephone: string
@@ -44,5 +35,5 @@ export class UserProfile {
     */
     @OneToOne(() => User, (user) => user.profile, {cascade: true, onDelete: "CASCADE", eager: true}) // User Entity will be referenced to in the database because [cascade:true]
     @JoinColumn() // this entity owns the relationship [Foreign Key column]
-    user: User[]
+    user: User
 }

@@ -1,33 +1,26 @@
-import { Injectable, NotFoundException, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException, HttpStatus, Query, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import {Not, Repository} from 'typeorm'
 import {InjectRepository} from '@nestjs/typeorm'
 import {UserProfile} from './profiles.entity'
+import {MaritalStatus} from '../enums/maritalStatus.enum'
 import {User} from '../users/user.entity';
-import {UsersService} from '../users/users.service'
 
 @Injectable()
 export class ProfilesService {
 
     constructor(
-        @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>,
-        // private userService: UsersService,
-        // @InjectRepository(User)  private user: Repository<User>,
+        @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>
     ){}
     
-    async createUserProfile(
-        firstName: string, 
-        lastName: string, 
-        age: number, 
-        maritalStatus, 
-        telephone: string, 
-        address: string,
-        )
+    @UseInterceptors(ClassSerializerInterceptor)
+    async createUserProfile(firstName: string, lastName: string, age: number, maritalStatus: MaritalStatus, telephone: string, address: string, user: User)
         {
-            const userProfile = this.userProfileRepo.create({firstName, lastName, age, maritalStatus, telephone, address});
+            const userProfile = this.userProfileRepo.create({firstName, lastName, age, maritalStatus, telephone, address, user: user});
             await this.userProfileRepo.save(userProfile)
             return userProfile
         }
 
+    @UseInterceptors(ClassSerializerInterceptor)
     async findAll() {
         return await this.userProfileRepo.find()
     }
@@ -40,6 +33,7 @@ export class ProfilesService {
         return userProfile;
     }
 
+    @UseInterceptors(ClassSerializerInterceptor)
     findFirstName(firstName: string) {
         const userProfile = this.userProfileRepo.find({firstName})
         if (!userProfile) {

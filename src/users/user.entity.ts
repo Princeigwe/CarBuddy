@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from "typeorm";
 import {Exclude} from 'class-transformer'
 import {UserProfile} from '../profiles/profiles.entity'
+import { Role } from "../enums/role.enum";
 
 @Entity() // marking User as a database table
 export class User {
@@ -8,19 +9,22 @@ export class User {
     @PrimaryGeneratedColumn() // marking id as primary key column 
     id: number;
 
+    @Column({type: "enum", enum: Role, default: Role.User})
+    role: Role;
+
     @Column() // marking email column
     email: string;
 
-    @Column() // marking username column
+    @Column({unique: true}) // marking username column
     username: string;
 
-    @Column() // marking password column
     @Exclude() // exclude the password when printing the API response
+    @Column() // marking password column
     password: string;
 
     /** 
         one to one relationship, with ability to call user entity from userProfile entity
     */
     @OneToOne(() => UserProfile, (userProfile) => userProfile.user)
-    profile: UserProfile[];
+    profile: UserProfile;
 }

@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
+
 const cookieSession = require('cookie-session');
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
@@ -16,6 +17,7 @@ async function bootstrap() {
 
   // application should provide cookies
   app.use(cookieParser()); 
+
 
   // for csrf protection
   // app.use(csurf())

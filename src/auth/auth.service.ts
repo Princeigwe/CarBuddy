@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service' // import UsersService to 
 import {randomBytes, scrypt as _scrypt} from 'crypto' // for password hashing and salting
 import { promisify } from 'util' // convers a function to a Promise
 import {JwtService} from '@nestjs/jwt'
+import {Role} from '../enums/role.enum'
 
 const scrypt =promisify(_scrypt)
 
@@ -11,7 +12,7 @@ export class AuthService {
     constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
     @UseInterceptors(ClassSerializerInterceptor)
-    async register( username:string, email:string, password:string){
+    async register(username:string, email:string, password:string, role: Role){
         // see if email is in use
         const users = await this.usersService.find(email)
         if (users.length){ // if there is an array of users with this email,throw an exception 
@@ -29,11 +30,11 @@ export class AuthService {
         const result = salt + "." + hash.toString("hex");
         
         // Create a new user and save it
-        const user = await this.usersService.create( username, email, result); // creating user with email, and result as password
+        const user = await this.usersService.create(username, email, result,  role); // creating user with email, and result as password
 
         // Return the new user
         // return user;
-        return {'id': user.id, 'email': user.email, 'username': user.username}
+        return {'id': user.id, 'email': user.email, 'username': user.username, 'role': user.role}
     }
 
 
@@ -50,7 +51,7 @@ export class AuthService {
             throw new BadRequestException("Invalid Credentials")
         }
         // return user
-        return {'id': user.id, 'email': user.email, 'username': user.username}
+        return {'id': user.id, 'email': user.email, 'username': user.username, 'role': user.role}
     }
 
     public getCookieWithJwtToken(userId: number){

@@ -24,6 +24,7 @@ import { ProfilesModule } from './profiles/profiles.module';
     database: process.env.DB_DATABASE_NAME,
     entities: [User, Report, UserProfile],
     synchronize: true,
+    ////////////////////////////////////////////////
     // type: 'sqlite', 
     // database: 'db.sqlite', 
     // entities: [User, Report, UserProfile],
