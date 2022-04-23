@@ -1,5 +1,4 @@
 import {IsString, IsNumber, IsNotEmpty, IsEnum} from 'class-validator'
-import {User} from '../../users/user.entity'
 import {MaritalStatus} from 'src/enums/maritalStatus.enum'
 
 
@@ -23,8 +22,5 @@ export class CreateUserProfileDto {
 
     @IsString()
     address: string
-
-    // @IsNotEmpty()
-    // user: User
 
 }

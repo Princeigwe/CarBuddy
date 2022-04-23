@@ -1,11 +1,5 @@
-import {IsString, IsNumber, IsOptional} from 'class-validator'
-
-
-export enum MaritalStatus {
-    SINGLE = "single",
-    MARRIED = "married",
-    DIVORCED = "divorced"
-}
+import {IsString, IsNumber, IsOptional, IsEnum} from 'class-validator'
+import {MaritalStatus} from 'src/enums/maritalStatus.enum'
 
 export class UpdateUserProfileDto {
 
@@ -21,9 +15,9 @@ export class UpdateUserProfileDto {
     @IsOptional()
     age: number
 
-    @IsString()
+    @IsEnum(MaritalStatus)
     @IsOptional()
-    maritalStatus: string
+    maritalStatus: MaritalStatus
 
     @IsString()
     @IsOptional()
