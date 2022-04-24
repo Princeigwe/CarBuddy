@@ -49,11 +49,13 @@ export class ProfilesController {
 
     
 
-    // @Patch(':id')
-    // updateUserProfileById(@Param('id') id: string, @Body() body: UpdateUserProfileDto) {
-    //     const userProfile = this.profilesService.updateUserProfileById(parseInt(id), body)
-    //     return userProfile
-    // }
+    @Patch(':id')
+    @UseGuards(JwtAuthGuard)
+    updateUserProfileById(@Param('id') id: string, @Body() body: UpdateUserProfileDto, @Request() request) {
+        const user = request.user
+        const userProfile = this.profilesService.updateUserProfileById(parseInt(id), body, user)
+        return userProfile
+    }
 
     @Delete(':id')
     @UseGuards(JwtAuthGuard)

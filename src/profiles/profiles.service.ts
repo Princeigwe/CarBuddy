@@ -45,13 +45,19 @@ export class ProfilesService {
         return userProfile
     }
 
-    async updateUserProfileById(id: number, attrs: Partial<UserProfile>) {
+    async updateUserProfileById(id: number, attrs: Partial<UserProfile>, user: User) {
         const userProfile = await this.getUserProfileById(id);
         if (!userProfile) { 
             throw new NotFoundException("Profile does not exist") 
         }
-        Object.assign(userProfile, attrs);
-        return this.userProfileRepo.save(userProfile)
+
+        const ability = this.caslAbilityFactory.createForUser(user)
+        if(ability.can(Action.Update, userProfile)) {
+            Object.assign(userProfile, attrs);
+            return this.userProfileRepo.save(userProfile)
+        }else{
+            return new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
     }
 
     async deleteUserProfileById(id:number, user:User) {
@@ -60,7 +66,7 @@ export class ProfilesService {
             throw new NotFoundException("Profile does not exist")
         }
 
-        const ability = this.caslAbilityFactory.createForUser(user);
+        const ability = this.caslAbilityFactory.createForUser(user); // calling casl authorization ability
         if (ability.can(Action.Delete, userProfile)) {
             this.userProfileRepo.delete(userProfile)
             return new HttpException('Profile Deleted', HttpStatus.GONE)
