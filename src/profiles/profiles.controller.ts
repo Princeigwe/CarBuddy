@@ -56,7 +56,9 @@ export class ProfilesController {
     // }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     deleteUserProfileById(@Param('id') id: string, @Request() request) {
-        return this.profilesService.deleteUserProfileById(parseInt(id))
+        const user = request.user
+        return this.profilesService.deleteUserProfileById(parseInt(id), user)
     }
 }

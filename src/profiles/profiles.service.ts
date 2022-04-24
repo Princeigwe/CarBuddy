@@ -4,12 +4,15 @@ import {InjectRepository} from '@nestjs/typeorm'
 import {UserProfile} from './profiles.entity'
 import {MaritalStatus} from '../enums/maritalStatus.enum'
 import {User} from '../users/user.entity';
+import {CaslAbilityFactory} from '../casl/casl-ability.factory'
+import {Action} from '../enums/action.enum'
 
 @Injectable()
 export class ProfilesService {
 
     constructor(
-        @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>
+        @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>,
+        private caslAbilityFactory: CaslAbilityFactory
     ){}
     
     @UseInterceptors(ClassSerializerInterceptor)
@@ -51,13 +54,19 @@ export class ProfilesService {
         return this.userProfileRepo.save(userProfile)
     }
 
-    async deleteUserProfileById(id:number) {
+    async deleteUserProfileById(id:number, user:User) {
         const userProfile = await this.getUserProfileById(id)
         if (!userProfile) {
             throw new NotFoundException("Profile does not exist")
         }
-        this.userProfileRepo.delete(userProfile)
-        return new HttpException('Profile Deleted', HttpStatus.FORBIDDEN)
+
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (ability.can(Action.Delete, userProfile)) {
+            this.userProfileRepo.delete(userProfile)
+            return new HttpException('Profile Deleted', HttpStatus.GONE)
+        }else{
+            return new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
     }
 
 }
