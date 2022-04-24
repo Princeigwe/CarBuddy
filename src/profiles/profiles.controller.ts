@@ -8,7 +8,6 @@ import {Role} from '../enums/role.enum'
 import {RolesGuard} from '../roles.guards'
 
 @Controller('profiles')
-// @UseGuards(RolesGuard)
 export class ProfilesController {
 
     constructor(
