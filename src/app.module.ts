@@ -11,6 +11,7 @@ import {Report} from './reports/report.entity'
 import { AuthModule } from './auth/auth.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { CaslModule } from './casl/casl.module';
+import { CarsModule } from './cars/cars.module';
 
 
 
@@ -41,6 +42,7 @@ import { CaslModule } from './casl/casl.module';
   }),
   ProfilesModule,
   CaslModule,
+  CarsModule,
 ],
   controllers: [AppController],
   providers: [AppService],

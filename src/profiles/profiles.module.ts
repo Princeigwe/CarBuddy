@@ -5,11 +5,13 @@ import { ProfilesController } from './profiles.controller';
 import {UserProfile} from './profiles.entity'
 import {UsersModule} from '../users/users.module'
 import {CaslModule} from '../casl/casl.module'
+import {CarsModule} from '../cars/cars.module'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserProfile]),
     forwardRef( () => UsersModule ),
+    forwardRef( () => CarsModule ),
     forwardRef( () => CaslModule),
   ],
   providers: [ProfilesService],

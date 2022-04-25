@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import {User} from '../users/user.entity'
 import {MaritalStatus} from '../enums/maritalStatus.enum'
+import {Car} from '../cars/models/cars.entity'
 
 @Entity()
 export class UserProfile { 
@@ -36,4 +37,10 @@ export class UserProfile {
     @OneToOne(() => User, (user) => user.profile, {cascade: true, onDelete: "CASCADE", eager: true}) // User Entity will be referenced to in the database because [cascade:true]
     @JoinColumn() // this entity owns the relationship [Foreign Key column]
     user: User
+
+    /**
+     *  this userProfile can access Car entities under it, and each Car can access the user profile from 'dealer' attribute
+     */
+    @OneToMany(()=>Car, (car) => car.dealer)
+    cars: Car[]
 }
