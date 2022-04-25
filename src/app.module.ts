@@ -5,9 +5,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
+
+
 import {User} from './users/user.entity'
 import {UserProfile} from './profiles/profiles.entity'
 import {Report} from './reports/report.entity'
+import {Car} from './cars/models/cars.entity'
+import {ExtraFeature} from './cars/models/extraFeature.entity'
+
+
 import { AuthModule } from './auth/auth.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { CaslModule } from './casl/casl.module';
@@ -24,7 +30,7 @@ import { CarsModule } from './cars/cars.module';
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE_NAME,
-    entities: [User, Report, UserProfile],
+    entities: [User, Report, UserProfile, Car, ExtraFeature],
     synchronize: true,
     ////////////////////////////////////////////////
     // type: 'sqlite', 
