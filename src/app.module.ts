@@ -6,12 +6,16 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 
+////////////////////////////////////////
+// ENTITIES
 
 import {User} from './users/user.entity'
 import {UserProfile} from './profiles/profiles.entity'
 import {Report} from './reports/report.entity'
 import {Car} from './cars/models/cars.entity'
 import {ExtraFeature} from './cars/models/extraFeature.entity'
+
+////////////////////////////////////////
 
 
 import { AuthModule } from './auth/auth.module';

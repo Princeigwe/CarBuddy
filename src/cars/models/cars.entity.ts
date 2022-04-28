@@ -1,13 +1,15 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne} from 'typeorm'
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, TableInheritance} from 'typeorm'
 import {UserProfile} from '../../profiles/profiles.entity'
 import {ExtraFeature} from './extraFeature.entity'
 import {TransmissionType} from '../../enums/transmissionType.enum'
 import {FuelType} from '../../enums/fuelType.enum'
-import {DriverType} from '../../enums/driveType.enum'
+import {DriveType} from '../../enums/driveType.enum'
 import {UseType} from '../../enums/useType.enum'
 import {CarStyle} from '../../enums/carStyle.enum'
+import {CarAvailability} from '../../enums/carAvailability.enum'
 
 @Entity()
+@TableInheritance({ column: { type: "varchar", name: "type" } })
 export class Car {
 
     @PrimaryGeneratedColumn()
@@ -16,13 +18,13 @@ export class Car {
     @Column({type: 'enum', enum: CarStyle, default: CarStyle.SEDAN})
     style: CarStyle
 
-    @Column({type: 'bytea'})
-    image: Buffer
+    // @Column({type: 'bytea'})
+    // image: Buffer
 
     // @Column({type: 'bytea'})
     // image: string
 
-    @Column({type: 'int', length: 4})
+    @Column()
     releaseYear: number
 
     @Column({type: 'varchar', length: 60})
@@ -34,13 +36,13 @@ export class Car {
     @Column({type: 'enum', enum: UseType, default: UseType.FAIRLY_USED})
     useType: UseType // data type will be an enum
 
-    @Column({type: 'decimal', precision: 10, scale: 2, default: 0.0})
+    @Column({type: 'int'})
     estimatedPrice: number
 
-    @Column()
-    isAvailable:boolean
+    @Column({type: 'enum', enum: CarAvailability, default: CarAvailability.PRIVATE})
+    availability:CarAvailability
 
-    @Column({type: 'int', length: 6})
+    @Column({type: 'int'})
     mileage: number
 
     @Column({type: 'varchar', length: 50})
@@ -52,17 +54,17 @@ export class Car {
     @Column({type: 'varchar', length: 10})
     interiorColour: string
 
-    @Column({type: 'int', length: 6})
+    @Column({type: 'int'})
     milesPerGallon: number
 
     @Column({type: 'varchar', length: 30})
     engine: string
 
-    @Column({type: 'enum', enum: DriverType, default: DriverType.FWD})
-    driveType: string
+    @Column({type: 'enum', enum: DriveType, default: DriveType.FWD})
+    driveType: DriveType
 
     @Column({type: 'enum', enum: FuelType, default: FuelType.GASOLINE})
-    fuelType: string
+    fuelType: FuelType
 
     @Column({type: 'enum', enum: TransmissionType, default: TransmissionType.AUTOMATIC})
     transmissionType: TransmissionType
@@ -73,8 +75,8 @@ export class Car {
     @ManyToOne(()=>UserProfile, (userProfile) => userProfile.cars)
     dealer: UserProfile
 
-    // one-to-one relationship to ExtraFeature entity
-    @OneToOne(() => ExtraFeature, (extraFeature) => extraFeature.carModel)
-    extraFeature: ExtraFeature
+    // // one-to-one relationship to ExtraFeature entity
+    // @OneToOne(() => ExtraFeature, (extraFeature) => extraFeature.carModel)
+    // extraFeature: ExtraFeature
 
 }

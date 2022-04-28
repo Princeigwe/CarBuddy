@@ -1,8 +1,9 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from 'typeorm'
+import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ChildEntity} from 'typeorm'
 import {Car} from './cars.entity'
 
-@Entity()
-export class ExtraFeature {
+// @Entity()
+@ChildEntity()
+export class ExtraFeature extends Car {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -26,7 +27,7 @@ export class ExtraFeature {
     featureSix: string
 
     // one-to-one relationship with Car entity
-    @OneToOne( () => Car, (car) => car.extraFeature)
-    @JoinColumn()
-    carModel: Car
+    // @OneToOne( () => Car, (car) => car.extraFeature)
+    // @JoinColumn()
+    // carModel: Car
 }
