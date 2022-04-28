@@ -30,7 +30,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
   
   pgadmin:
     image: dpage/pgadmin4
@@ -43,3 +43,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
       - ./var/lib/pgadmin
+
+volumes:
+  pgdata:

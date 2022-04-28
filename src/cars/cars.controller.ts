@@ -17,7 +17,9 @@ const storage = diskStorage({
     // defining what to name image files as in the uploads folder
     filename: function (req, image, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, image.fieldname + '-' + uniqueSuffix)}
+    cb(null, image.fieldname + '-' + uniqueSuffix)
+    },
+
 })
 
 
