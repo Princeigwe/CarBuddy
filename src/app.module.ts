@@ -22,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { CaslModule } from './casl/casl.module';
 import { CarsModule } from './cars/cars.module';
+import {MulterModule} from  '@nestjs/platform-express'
 
 
 
@@ -53,6 +54,15 @@ import { CarsModule } from './cars/cars.module';
   ProfilesModule,
   CaslModule,
   CarsModule,
+  // MulterModule.register({
+  //   storage: diskStorage({
+  //     destination: './uploads',
+  //     filename: function (req, image, cb) {
+  //       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+  //       cb(null, image.fieldname + '-' + uniqueSuffix)
+  //     }
+  //   })
+  // }) // setting Multer options
 ],
   controllers: [AppController],
   providers: [AppService],

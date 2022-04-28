@@ -5,6 +5,22 @@ import {CarsService} from '../cars/services/cars.service'
 import {ExtraFeatureService} from '../cars/services/extra-feature.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
+import {diskStorage} from 'multer'
+
+
+// defining how the image files are stored
+const storage = diskStorage({
+    // defining where the image files are stored
+    destination: function (req, image, cb) {
+        cb(null, 'src/uploads')
+    },
+    // defining what to name image files as in the uploads folder
+    filename: function (req, image, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, image.fieldname + '-' + uniqueSuffix)}
+})
+
+
 @Controller('cars')
 export class CarsController {
 
@@ -13,19 +29,29 @@ export class CarsController {
         // private extraFeatureService: ExtraFeatureService
         ) {}
 
-    @Post()
+
+    @Post('image')
     @UseInterceptors(FileInterceptor('image'))
+    async uploadedFile(@UploadedFile() file) {
+        const response = {
+            originalFile: file.filename
+        }
+        return response
+    }
+    
+
+    @Post()
+    @UseInterceptors(FileInterceptor('image', {storage: storage}))
     putUpCarForSale(
         @Body() carProfile: PutUpCarForSaleDto,
-        // @UploadedFile() image: Express.Multer.File,
+        @UploadedFile() image: Express.Multer.File,
         // @Body() extraFeature: ExtraFeatureDto, 
         @Request() request) {
         // extraFeature = this.extraFeatureService.addFeatures(extraFeature)
         const user = request.user
-        // const processedImage = ("\\x" + image.toString()) as any;
         return this.carsService.putUpCarForSale(
+            image.originalname,
             carProfile.style,
-            // processedImage,
             carProfile.releaseYear,
             carProfile.brand,
             carProfile.model,
