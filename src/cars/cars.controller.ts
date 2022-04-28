@@ -44,18 +44,18 @@ export class CarsController {
     
 
     @Post()
-    @UseInterceptors(FileInterceptor('image', {storage: storage}))
+    @UseInterceptors(FileInterceptor('file', {storage: storage}))
     putUpCarForSale(
         @Body() carProfile: PutUpCarForSaleDto,
-        @UploadedFile() image: Express.Multer.File,
+        @UploadedFile() file: Express.Multer.File,
         // @Body() extraFeature: ExtraFeatureDto, 
         @Request() request) {
         // extraFeature = this.extraFeatureService.addFeatures(extraFeature)
         const user = request.user
         // if image name does not match jpg|png|jpeg
-        if(!image.originalname.match(/\.(jpg|png|jpeg)$/)){throw new BadRequestException("Only image files are allowed")}        
+        if(!file.originalname.match(/\.(jpg|png|jpeg)$/)){throw new BadRequestException("Only image files are allowed")}        
         return this.carsService.putUpCarForSale(
-            image.originalname,
+            file.originalname,
             carProfile.style,
             carProfile.releaseYear,
             carProfile.brand,

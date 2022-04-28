@@ -16,7 +16,7 @@ export class Car {
     id: number
 
     @Column({type: 'bytea', nullable: true})
-    image: string
+    file: string
 
     @Column({type: 'enum', enum: CarStyle, default: CarStyle.SEDAN})
     style: CarStyle

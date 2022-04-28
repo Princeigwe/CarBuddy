@@ -20,7 +20,7 @@ export class CarsService {
     ) {}
 
     async putUpCarForSale(
-        image: string,
+        file: string,
         style: CarStyle, 
         releaseYear: number, 
         brand: string, 
@@ -43,7 +43,7 @@ export class CarsService {
             // const processedImage = ("\\x" + image.toString("hex")) as any;
             // extraFeature = this.extraFeatureRepo.create({featureOne})
             const carProfile = this.carRepo.create({
-                image,
+                file,
                 style,  
                 releaseYear, 
                 brand, 
