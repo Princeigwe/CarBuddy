@@ -54,15 +54,6 @@ import {MulterModule} from  '@nestjs/platform-express'
   ProfilesModule,
   CaslModule,
   CarsModule,
-  // MulterModule.register({
-  //   storage: diskStorage({
-  //     destination: './uploads',
-  //     filename: function (req, image, cb) {
-  //       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-  //       cb(null, image.fieldname + '-' + uniqueSuffix)
-  //     }
-  //   })
-  // }) // setting Multer options
 ],
   controllers: [AppController],
   providers: [AppService],

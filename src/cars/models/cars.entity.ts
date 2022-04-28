@@ -15,22 +15,11 @@ export class Car {
     @PrimaryGeneratedColumn()
     id: number
 
-    //  * TODO: remember to delete all cars' data and remove nullable option
-    // */
     @Column({type: 'bytea', nullable: true})
     image: string
 
     @Column({type: 'enum', enum: CarStyle, default: CarStyle.SEDAN})
     style: CarStyle
-
-    // /** 
-    //  * TODO: remember to delete all cars' data and remove nullable option
-    // */
-    // @Column({type: 'bytea', nullable: true})
-    // image: Buffer
-
-    // /** 
-    
 
     @Column()
     releaseYear: number

@@ -14,8 +14,6 @@ export class PutUpCarForSaleDto {
     @IsEnum(CarStyle)
     style: CarStyle
 
-    // image: string
-
     @Type( () => Number )
     @IsNumber()
     releaseYear: number

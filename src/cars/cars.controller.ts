@@ -53,8 +53,7 @@ export class CarsController {
         // extraFeature = this.extraFeatureService.addFeatures(extraFeature)
         const user = request.user
         // if image name does not match jpg|png|jpeg
-        if(!image.originalname.match(/\.(jpg|png|jpeg)$/)){throw new BadRequestException("Only image files are allowed")}
-
+        if(!image.originalname.match(/\.(jpg|png|jpeg)$/)){throw new BadRequestException("Only image files are allowed")}        
         return this.carsService.putUpCarForSale(
             image.originalname,
             carProfile.style,
