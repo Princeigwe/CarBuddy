@@ -1,4 +1,4 @@
-import { Controller,  Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header} from '@nestjs/common';
+import { Controller,  Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException} from '@nestjs/common';
 import { PutUpCarForSaleDto } from './dtos/putUpCarForSale.dto';
 import {ExtraFeatureDto} from './dtos/extraFeatures.dto'
 import {CarsService} from '../cars/services/cars.service'
@@ -6,6 +6,7 @@ import {ExtraFeatureService} from '../cars/services/extra-feature.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
 import {diskStorage} from 'multer'
+
 
 
 // defining how the image files are stored
@@ -51,6 +52,9 @@ export class CarsController {
         @Request() request) {
         // extraFeature = this.extraFeatureService.addFeatures(extraFeature)
         const user = request.user
+        // if image name does not match jpg|png|jpeg
+        if(!image.originalname.match(/\.(jpg|png|jpeg)$/)){throw new BadRequestException("Only image files are allowed")}
+
         return this.carsService.putUpCarForSale(
             image.originalname,
             carProfile.style,
