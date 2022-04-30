@@ -1,6 +1,9 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory} from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import {NestExpressApplication} from '@nestjs/platform-express'
+import {join} from 'path'
+const express = require('express')
 
 
 const cookieSession = require('cookie-session');
@@ -8,7 +11,7 @@ import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule); // running Nest on Express
   // app.use(cookieSession({
   //   keys: ['asdfghjkl'],
   // }))
@@ -26,7 +29,12 @@ async function bootstrap() {
   app.enableCors({
     credentials: true, // credentials will be accessed
   });
-  
+
+  app.use('/uploads' , express.static(join(__dirname, '..', 'uploads')));
+
+
+  // app.use('/src/public' , express.static(path.join(__dirname, '..', 'public')));
+
   // apps should use pipes
   app.useGlobalPipes(
     new ValidationPipe({

@@ -23,6 +23,8 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { CaslModule } from './casl/casl.module';
 import { CarsModule } from './cars/cars.module';
 import {MulterModule} from  '@nestjs/platform-express'
+import { ServeStaticModule } from '@nestjs/serve-static';
+import {join} from 'path'
 
 
 
@@ -54,6 +56,9 @@ import {MulterModule} from  '@nestjs/platform-express'
   ProfilesModule,
   CaslModule,
   CarsModule,
+  // ServeStaticModule.forRoot({
+  //   rootPath: join(__dirname, '..', 'uploads'),
+  // })
 ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,15 +1,15 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, TableInheritance} from 'typeorm'
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, TableInheritance, JoinColumn, JoinTable} from 'typeorm'
 import {UserProfile} from '../../profiles/profiles.entity'
-import {ExtraFeature} from './extraFeature.entity'
 import {TransmissionType} from '../../enums/transmissionType.enum'
 import {FuelType} from '../../enums/fuelType.enum'
 import {DriveType} from '../../enums/driveType.enum'
 import {UseType} from '../../enums/useType.enum'
 import {CarStyle} from '../../enums/carStyle.enum'
 import {CarAvailability} from '../../enums/carAvailability.enum'
+import {ExtraFeature} from './extraFeature.entity'
 
 @Entity()
-@TableInheritance({ column: { type: "varchar", name: "type" } })
+// @TableInheritance({ column: { type: "varchar", name: "type" } })
 export class Car {
 
     @PrimaryGeneratedColumn()
@@ -72,8 +72,8 @@ export class Car {
     @ManyToOne(()=>UserProfile, (userProfile) => userProfile.cars)
     dealer: UserProfile
 
-    // // one-to-one relationship to ExtraFeature entity
-    // @OneToOne(() => ExtraFeature, (extraFeature) => extraFeature.carModel)
-    // extraFeature: ExtraFeature
+    //  one-to-one relationship to ExtraFeature entity
+    @OneToOne(() => ExtraFeature, (extraFeature) => extraFeature.carModel, {eager: true})
+    extraFeature: ExtraFeature
 
 }

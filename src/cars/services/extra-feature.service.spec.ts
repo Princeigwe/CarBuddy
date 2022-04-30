@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExtraFeatureService } from '../services/extra-feature.service';
+import { ExtraFeatureService } from './extra-feature.service';
 
 describe('ExtraFeatureService', () => {
   let service: ExtraFeatureService;
