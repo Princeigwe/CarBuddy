@@ -1,33 +1,25 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ChildEntity} from 'typeorm'
+import {Entity, Column, OneToOne, PrimaryGeneratedColumn, JoinColumn} from 'typeorm'
 import {Car} from './cars.entity'
 
-// @Entity()
-@ChildEntity()
-export class ExtraFeature extends Car {
+@Entity()
+export class ExtraFeature {
 
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({nullable: true, length: 20})
+    @Column()
     featureOne: string
 
-    @Column({nullable: true, length: 20})
+    @Column()
     featureTwo: string
 
-    @Column({nullable: true, length: 20})
+    @Column()
     featureThree: string
 
-    @Column({nullable: true, length: 20})
+    @Column()
     featureFour: string
 
-    @Column({nullable: true, length: 20})
-    featureFive: string
-
-    @Column({nullable: true, length: 20})
-    featureSix: string
-
-    // one-to-one relationship with Car entity
-    // @OneToOne( () => Car, (car) => car.extraFeature)
-    // @JoinColumn()
-    // carModel: Car
+    @OneToOne( () => Car, (car) => car.extraFeature, {cascade: true})
+    @JoinColumn()
+    carModel: Car
 }

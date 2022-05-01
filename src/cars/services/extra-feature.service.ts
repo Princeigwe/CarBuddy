@@ -1,22 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm'
-import {Repository} from 'typeorm'
+import { Injectable, BadRequestException } from '@nestjs/common';
+import {Car} from '../models/cars.entity'
 import {ExtraFeature} from '../models/extraFeature.entity'
+import {Repository} from 'typeorm'
+import {InjectRepository} from '@nestjs/typeorm'
+import {CarsService} from './cars.service'
 
 @Injectable()
 export class ExtraFeatureService {
-    constructor(@InjectRepository(ExtraFeature) private extraFeatureRepo: Repository<ExtraFeature>) {}
+    constructor( 
+        @InjectRepository(ExtraFeature) private extraFeatureRepo: Repository<ExtraFeature>,
+        private carsService: CarsService
+        ) {}
 
-    async addFeatures(
-        featureOne: string,
-        featureTwo: string,
-        featureThree: string,
-        featureFour: string,
-        featureFive: string,
-        featureSix: string,
-    ) {
-        const features = this.extraFeatureRepo.create({featureOne, featureTwo, featureThree, featureFour, featureFive, featureSix})
-        await this.extraFeatureRepo.save(features)
-        return features
+    async addFeature(featureOne: string, featureTwo: string, featureThree: string, featureFour: string, carModelId: number) {
+        const carModel = await this.carsService.getAllCarsForSaleById(carModelId)
+        if (!carModel) {throw new BadRequestException(`Car with ${carModelId} does not exist`)}
+        const feature = this.extraFeatureRepo.create({featureOne, featureTwo, featureThree, featureFour, carModel})
+        return this.extraFeatureRepo.save(feature)
     }
 }
