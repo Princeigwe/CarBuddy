@@ -83,13 +83,13 @@ export class CarsService {
 
     editCarForSale() {}
 
-    async queryCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType(brand?: string, estPrice?: number, driveType?: string, useType?: string) {
+    async queryPublicCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType(brand?: string, estPrice?: number, driveType?: string, useType?: string) {
         // tried to write this with switch-case, didn't work properly.
-        if(estPrice && useType) { return await this.carRepo.find({ where: {estimatedPrice: estPrice, useType: useType}}) }
-        else if(brand) { return await this.carRepo.find({ where: { brand: brand}}) }
-        else if(estPrice) { return await this.carRepo.find({ where: {estimatedPrice: estPrice} }) }
-        else if( driveType ) { return await this.carRepo.find({ where: {driveType: driveType}}) }
-        else if(useType ) { return await this.carRepo.find({ where: {useType: useType}}) }
+        if(estPrice && useType) { return await this.carRepo.find({ where: {estimatedPrice: estPrice, useType: useType, availability: CarAvailability.PUBLIC}}) }
+        else if(brand) { return await this.carRepo.find({ where: { brand: brand, availability: CarAvailability.PUBLIC}}) }
+        else if(estPrice) { return await this.carRepo.find({ where: {estimatedPrice: estPrice, availability: CarAvailability.PUBLIC} }) }
+        else if(driveType) { return await this.carRepo.find({ where: {driveType: driveType, availability: CarAvailability.PUBLIC}}) }
+        else if(useType ) { return await this.carRepo.find({ where: {useType: useType, availability: CarAvailability.PUBLIC}}) }
     }
 
     // drop the table

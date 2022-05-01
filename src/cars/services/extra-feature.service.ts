@@ -12,8 +12,9 @@ export class ExtraFeatureService {
         private carsService: CarsService
         ) {}
 
+    // this method gets a car entity by its id, and adds its extra feature
     async addFeature(featureOne: string, featureTwo: string, featureThree: string, featureFour: string, carModelId: number) {
-        const carModel = await this.carsService.getAllCarsForSaleById(carModelId)
+        const carModel = await this.carsService.getCarForSaleById(carModelId)
         if (!carModel) {throw new BadRequestException(`Car with ${carModelId} does not exist`)}
         const feature = this.extraFeatureRepo.create({featureOne, featureTwo, featureThree, featureFour, carModel})
         return this.extraFeatureRepo.save(feature)

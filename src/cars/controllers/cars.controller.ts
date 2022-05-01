@@ -1,4 +1,4 @@
-import { Controller,  Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile } from '@nestjs/common';
+import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query } from '@nestjs/common';
 import { PutUpCarForSaleDto } from '../dtos/putUpCarForSale.dto';
 import {ExtraFeatureDto} from '../dtos/extraFeatures.dto'
 import {CarsService} from '../services/cars.service'
@@ -6,6 +6,8 @@ import {CarsService} from '../services/cars.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
 import {diskStorage} from 'multer'
+import {DriveType} from '../../enums/driveType.enum'
+
 import {ExtraFeature} from '../models/extraFeature.entity'
 
 
@@ -78,14 +80,25 @@ export class CarsController {
         )
     }
 
+    /**
+     * TODO: this method should only be accessed by the Admin user
+     * This is to get all cars for sale in the database, both [Private and Public]. THis should only be accessed by the Admin user
+     */
     @Get()
-    getAllCarsForSale () {
+    getAllCarsForSaleOrByQuery() {
         return this.carsService.getAllCarsForSale()
+    }
+
+    // GET endpoint with(out) query parameters
+    @Get('public')
+    getAllPublicCarsForSale(@Query('brand') brand?: string, @Query('estPrice') estPrice?: any, @Query('driveType') driveType?: string, @Query('useType') useType?: string) {
+        if( estPrice || driveType || useType || brand ) { return this.carsService.queryPublicCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType( brand, estPrice, driveType, useType) }
+        return this.carsService.getAllPublicCarsForSale()
     }
 
     @Get(':id')
     getAllCarsForSaleById (@Param('id') id: string) {
-        return this.carsService.getAllCarsForSaleById(parseInt(id))
+        return this.carsService.getCarForSaleById(parseInt(id))
     }
 
     @Delete()
