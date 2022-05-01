@@ -2,28 +2,24 @@ import { Injectable, Response} from '@nestjs/common';
 import {UserProfile} from '../../profiles/profiles.entity'
 import {Car} from '../models/cars.entity'
 import { InjectRepository } from '@nestjs/typeorm';
-import {Repository} from 'typeorm'
-// import {ExtraFeature} from '../models/extraFeature.entity'
+import {Repository, Any} from 'typeorm'
 import { CarStyle } from '../../enums/carStyle.enum';
 import {UseType} from '../../enums/useType.enum'
 import {DriveType} from '../../enums/driveType.enum'
 import {FuelType} from '../../enums/fuelType.enum'
 import {TransmissionType} from '../../enums/transmissionType.enum'
 import {CarAvailability} from '../../enums/carAvailability.enum'
-import {ExtraFeature} from '../models/extraFeature.entity'
 
-// import {ExtraFeatureService} from './extra-feature.service'
+
 
 @Injectable()
 export class CarsService {
 
     constructor(
         @InjectRepository(Car) private carRepo: Repository<Car>,
-        // private extraFeatureService: ExtraFeatureService
-
-        // @InjectRepository(ExtraFeature) private extraFeatureRepo: Repository<ExtraFeature>
     ) {}
 
+    // this method is to POST a car for sale
     async putUpCarForSale(
         file: string,
         style: CarStyle, 
@@ -74,18 +70,34 @@ export class CarsService {
         
     }
 
-    async getAllCarsForSaleById(id: number) {
+    async getCarForSaleById(id: number) {
         const carModel =  await this.carRepo.findOne(id)
         return carModel
     }
 
-    getAllCarsForSalePublic() {}
+    // getting all cars that are available to the public
+    async getAllPublicCarsForSale() {
+        const publicCars = await this.carRepo.find({ where: { availability: CarAvailability.PUBLIC }})
+        return publicCars
+    }
 
     editCarForSale() {}
 
-    getCarsByBrand() {}
+    async queryCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType(brand?: string, estPrice?: number, driveType?: string, useType?: string) {
+        // tried to write this with switch-case, didn't work properly.
+        if(estPrice && useType) { return await this.carRepo.find({ where: {estimatedPrice: estPrice, useType: useType}}) }
+        else if(brand) { return await this.carRepo.find({ where: { brand: brand}}) }
+        else if(estPrice) { return await this.carRepo.find({ where: {estimatedPrice: estPrice} }) }
+        else if( driveType ) { return await this.carRepo.find({ where: {driveType: driveType}}) }
+        else if(useType ) { return await this.carRepo.find({ where: {useType: useType}}) }
+    }
 
+    // drop the table
     async deleteCarForSale() {
         return await this.carRepo.clear()
+    }
+
+    async deleteCarForSaleById() {
+
     }
 }
