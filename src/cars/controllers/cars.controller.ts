@@ -1,20 +1,23 @@
-import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query } from '@nestjs/common';
+import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query, UseGuards } from '@nestjs/common';
 import { PutUpCarForSaleDto } from '../dtos/putUpCarForSale.dto';
-import {ExtraFeatureDto} from '../dtos/extraFeatures.dto'
+import {JwtAuthGuard} from '../../auth/jwt-auth.guard'
 import {CarsService} from '../services/cars.service'
-// import {ExtraFeatureService} from '../cars/services/extra-feature.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
 import {diskStorage} from 'multer'
-import {DriveType} from '../../enums/driveType.enum'
+import {RolesGuard} from '../../roles.guards'
+import {Role} from '../../enums/role.enum'
+import {Roles} from '../../roles.decorator'
+import {CarAvailability} from '../../enums/carAvailability.enum'
 
-import {ExtraFeature} from '../models/extraFeature.entity'
-
-
-import { of } from 'rxjs';
-import {join} from 'path'
-import { createReadStream } from 'fs'
-const path = require('path')
+// import {ExtraFeatureDto} from '../dtos/extraFeatures.dto'
+// import {ExtraFeatureService} from '../cars/services/extra-feature.service'
+// import {DriveType} from '../../enums/driveType.enum'
+// import {ExtraFeature} from '../models/extraFeature.entity'
+// import { of } from 'rxjs';
+// import {join} from 'path'
+// import { createReadStream } from 'fs'
+// const path = require('path')
 
 
 
@@ -51,10 +54,11 @@ export class CarsController {
 
 
     @Post()
+    @UseGuards(JwtAuthGuard) // login required to put up car for sale
     @UseInterceptors(FileInterceptor('file', {storage: storage}))
     putUpCarForSale( @Body() carProfile: PutUpCarForSaleDto, @UploadedFile() file: Express.Multer.File, @Request() request) {
-
         const user = request.user
+
         // if image name does not match jpg|png|jpeg
         if(!file.originalname.match(/\.(jpg|png|jpeg)$/)) { throw new BadRequestException("Only image files are allowed") }   
 
@@ -85,6 +89,8 @@ export class CarsController {
      * This is to get all cars for sale in the database, both [Private and Public]. THis should only be accessed by the Admin user
      */
     @Get()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin) // getting all cars (both private and public) should only be accessed by the Admin user
     getAllCarsForSaleOrByQuery() {
         return this.carsService.getAllCarsForSale()
     }
@@ -97,7 +103,8 @@ export class CarsController {
     }
 
     @Get(':id')
-    getAllCarsForSaleById (@Param('id') id: string) {
+    async getCarForSaleById (@Param('id') id: string, @Request() request) {
+        const user = request.user
         return this.carsService.getCarForSaleById(parseInt(id))
     }
 
