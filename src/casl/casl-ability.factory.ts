@@ -3,9 +3,10 @@ import {UserProfile} from '../profiles/profiles.entity'
 import {User} from '../users/user.entity'
 import {Action} from '../enums/action.enum'
 import {Injectable} from '@nestjs/common'
+import {Car} from '../cars/models/cars.entity'
 
 // subject models [entities]
-type Subjects = InferSubjects<typeof User| typeof UserProfile> | 'all';
+type Subjects = InferSubjects<typeof User| typeof Car | typeof UserProfile> | 'all';
 
 // defining application ability to execute actions on subjects
 export type AppAbility = Ability<[Action, Subjects]>;
@@ -36,7 +37,13 @@ export class CaslAbilityFactory {
          */
         can(Action.Update, UserProfile, {user: userEntity});
         can(Action.Delete, UserProfile, {user: userEntity})
-        
+
+        /** 
+         * give permission to read car if the dealer is the user that created the model
+         * give permission to delete car if the dealer is the user that created the model
+        */
+        can(Action.Read, Car, {dealer: userEntity});
+        can(Action.Delete, Car, {dealer: userEntity})
 
         // return the build of ability and actions on subjects
         return build({
