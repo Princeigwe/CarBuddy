@@ -38,9 +38,5 @@ export class UserProfile {
     @JoinColumn() // this entity owns the relationship [Foreign Key column]
     user: User
 
-    /**
-     *  this userProfile can access Car entities under it, and each Car can access the user profile from 'dealer' attribute
-     */
-    @OneToMany(()=>Car, (car) => car.dealer)
-    cars: Car[]
+    
 }
