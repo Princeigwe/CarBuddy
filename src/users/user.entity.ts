@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, OneToMany } from "typeorm";
 import {Exclude} from 'class-transformer'
 import {UserProfile} from '../profiles/profiles.entity'
 import { Role } from "../enums/role.enum";
+import {Car} from '../cars/models/cars.entity'
 
 @Entity() // marking User as a database table
 export class User {
@@ -27,4 +28,7 @@ export class User {
     */
     @OneToOne(() => UserProfile, (userProfile) => userProfile.user)
     profile: UserProfile;
+
+    @OneToMany(() => Car, (car) => car.dealer) 
+    cars: Car[];
 }
