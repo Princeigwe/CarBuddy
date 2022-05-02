@@ -72,7 +72,7 @@ export class Car {
     extraFeature: ExtraFeature
 
     //  many cars can be linked to a UserProfile, and the UserProfile can access the Car entities by 'cars' attribute
-    @ManyToOne(() => User, (user) => user.cars)
+    @ManyToOne(() => User, (user) => user.cars, {eager: true})
     dealer: User
 
 }

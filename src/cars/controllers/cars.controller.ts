@@ -98,14 +98,17 @@ export class CarsController {
     // GET endpoint with(out) query parameters
     @Get('public')
     getAllPublicCarsForSale(@Query('brand') brand?: string, @Query('estPrice') estPrice?: any, @Query('driveType') driveType?: string, @Query('useType') useType?: string) {
-        if( estPrice || driveType || useType || brand ) { return this.carsService.queryPublicCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType( brand, estPrice, driveType, useType) }
+        if( estPrice || driveType || useType || brand ) { 
+            return this.carsService.queryPublicCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType( brand, estPrice, driveType, useType) 
+        }
         return this.carsService.getAllPublicCarsForSale()
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     async getCarForSaleById (@Param('id') id: string, @Request() request) {
         const user = request.user
-        return this.carsService.getCarForSaleById(parseInt(id))
+        return this.carsService.getCarForSaleById(parseInt(id), user)
     }
 
     @Delete()

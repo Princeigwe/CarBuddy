@@ -1,4 +1,4 @@
-import { Injectable, Response} from '@nestjs/common';
+import { Injectable, Response, HttpException, HttpStatus} from '@nestjs/common';
 import {UserProfile} from '../../profiles/profiles.entity'
 import {Car} from '../models/cars.entity'
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,7 +9,9 @@ import {DriveType} from '../../enums/driveType.enum'
 import {FuelType} from '../../enums/fuelType.enum'
 import {TransmissionType} from '../../enums/transmissionType.enum'
 import {CarAvailability} from '../../enums/carAvailability.enum'
-
+import {User} from '../../users/user.entity'
+import {CaslAbilityFactory} from '../../casl/casl-ability.factory'
+import {Action} from '../../enums/action.enum'
 
 
 @Injectable()
@@ -17,6 +19,7 @@ export class CarsService {
 
     constructor(
         @InjectRepository(Car) private carRepo: Repository<Car>,
+        private caslAbilityFactory: CaslAbilityFactory
     ) {}
 
     // this method is to POST a car for sale
@@ -38,7 +41,7 @@ export class CarsService {
         driveType: DriveType, 
         fuelType: FuelType, 
         transmissionType: TransmissionType, 
-        dealer: UserProfile,
+        dealer: User,
         ) {
             // JSON.parse(file.toString())
             const carProfile = this.carRepo.create({
@@ -70,9 +73,29 @@ export class CarsService {
         
     }
 
-    async getCarForSaleById(id: number) {
+    /**
+     * 
+     * TODO: if the car that is to be requested is available to the public, it should be accessed by anyone,
+     * TODO: else only the Admin User, and the user who put if up can access it.
+     */
+    async getCarForSaleById(id: number, dealer: User) {
+        const ability = this.caslAbilityFactory.createForUser(dealer)
         const carModel =  await this.carRepo.findOne(id)
-        return carModel
+        if (carModel.availability == CarAvailability.PUBLIC){
+            return carModel
+        }
+        else{
+            /*
+                normally, it should have Action.Read permission, but this gives read access to other users, when the car is not available to the public.
+                if the code is written as "if(carModel.dealer == user){return carModel}", the Admin User won't have access to it either.
+            */
+            if (ability.can(Action.Create, carModel)) {
+                return carModel
+            }
+            else {
+                throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+            }
+        }
     }
 
     // getting all cars that are available to the public
