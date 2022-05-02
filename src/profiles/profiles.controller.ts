@@ -2,8 +2,8 @@ import { Controller, Post, Get, Delete, Patch, Body, Query, Param, Request, UseG
 import { CreateUserProfileDto } from './dtos/create-userProfile.dto';
 import {ProfilesService} from '../profiles/profiles.service'
 import {UpdateUserProfileDto} from './dtos/update-userProfile.dto';
-import {JwtAuthGuard} from 'src/auth/jwt-auth.guard'
-import { Roles } from 'src/roles.decorator';
+import {JwtAuthGuard} from '../auth/jwt-auth.guard'
+import { Roles } from '../roles.decorator';
 import {Role} from '../enums/role.enum'
 import {RolesGuard} from '../roles.guards'
 
