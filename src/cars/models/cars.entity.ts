@@ -7,6 +7,7 @@ import {UseType} from '../../enums/useType.enum'
 import {CarStyle} from '../../enums/carStyle.enum'
 import {CarAvailability} from '../../enums/carAvailability.enum'
 import {ExtraFeature} from './extraFeature.entity'
+import {User} from '../../users/user.entity'
 
 @Entity()
 // @TableInheritance({ column: { type: "varchar", name: "type" } })
@@ -66,14 +67,12 @@ export class Car {
     @Column({type: 'enum', enum: TransmissionType, default: TransmissionType.AUTOMATIC})
     transmissionType: TransmissionType
 
-    /**
-     * many cars can be linked to a UserProfile, and the UserProfile can access the Car entities by 'cars' attribute
-     */
-    @ManyToOne(()=>UserProfile, (userProfile) => userProfile.cars)
-    dealer: UserProfile
-
     //  one-to-one relationship to ExtraFeature entity
     @OneToOne(() => ExtraFeature, (extraFeature) => extraFeature.carModel, {eager: true})
     extraFeature: ExtraFeature
+
+    //  many cars can be linked to a UserProfile, and the UserProfile can access the Car entities by 'cars' attribute
+    @ManyToOne(() => User, (user) => user.cars)
+    dealer: User
 
 }
