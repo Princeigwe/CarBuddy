@@ -1,5 +1,6 @@
 import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query, UseGuards } from '@nestjs/common';
 import { PutUpCarForSaleDto } from '../dtos/putUpCarForSale.dto';
+import { UpdateCarForSaleDto } from '../dtos/updateCarForSale.dto';
 import {JwtAuthGuard} from '../../auth/jwt-auth.guard'
 import {CarsService} from '../services/cars.service'
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -9,16 +10,6 @@ import {RolesGuard} from '../../roles.guards'
 import {Role} from '../../enums/role.enum'
 import {Roles} from '../../roles.decorator'
 import {CarAvailability} from '../../enums/carAvailability.enum'
-
-// import {ExtraFeatureDto} from '../dtos/extraFeatures.dto'
-// import {ExtraFeatureService} from '../cars/services/extra-feature.service'
-// import {DriveType} from '../../enums/driveType.enum'
-// import {ExtraFeature} from '../models/extraFeature.entity'
-// import { of } from 'rxjs';
-// import {join} from 'path'
-// import { createReadStream } from 'fs'
-// const path = require('path')
-
 
 
 // defining how the image files are stored
@@ -91,9 +82,10 @@ export class CarsController {
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin) // getting all cars (both private and public) should only be accessed by the Admin user
-    getAllCarsForSaleOrByQuery() {
+    getAllCarsForSale() {
         return this.carsService.getAllCarsForSale()
     }
+
 
     // GET endpoint with(out) query parameters
     @Get('public')
@@ -111,8 +103,24 @@ export class CarsController {
         return this.carsService.getCarForSaleById(parseInt(id), user)
     }
 
+    @Patch(':id')
+    @UseGuards(JwtAuthGuard)
+    editCarForSale ( @Param('id') id: string, @Body() car: UpdateCarForSaleDto, @Request() request) {
+        const user = request.user
+        return this.carsService.editCarForSale( parseInt(id), car, user )
+    }
+
     @Delete()
-    deleteCarsForSale () { 
-        return this.carsService.deleteCarForSale()
+    @UseGuards(JwtAuthGuard)
+    @Roles(Role.Admin) // deleting all data from base, should be done only by the Admin User
+    deleteAllCarsForSale () { 
+        return this.carsService.deleteAllCarsForSale()
+    }
+
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    deleteCarForSaleById ( @Param('id') id: string , @Request() request) {
+        const user = request.user
+        return this.carsService.deleteCarForSaleById(parseInt(id), user)
     }
 }

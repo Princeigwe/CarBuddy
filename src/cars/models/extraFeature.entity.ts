@@ -19,7 +19,7 @@ export class ExtraFeature {
     @Column()
     featureFour: string
 
-    @OneToOne( () => Car, (car) => car.extraFeature, {cascade: true})
+    @OneToOne( () => Car, (car) => car.extraFeature, {onDelete: 'CASCADE', cascade: true})
     @JoinColumn()
     carModel: Car
 }

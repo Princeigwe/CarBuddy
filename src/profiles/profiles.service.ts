@@ -74,5 +74,4 @@ export class ProfilesService {
             return new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
         }
     }
-
 }

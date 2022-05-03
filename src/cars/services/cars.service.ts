@@ -1,4 +1,4 @@
-import { Injectable, Response, HttpException, HttpStatus} from '@nestjs/common';
+import { Injectable, Response, HttpException, HttpStatus, NotFoundException} from '@nestjs/common';
 import {UserProfile} from '../../profiles/profiles.entity'
 import {Car} from '../models/cars.entity'
 import { InjectRepository } from '@nestjs/typeorm';
@@ -70,7 +70,6 @@ export class CarsService {
 
     async getAllCarsForSale() {
         return await this.carRepo.find()
-        
     }
 
     /**
@@ -104,7 +103,20 @@ export class CarsService {
         return publicCars
     }
 
-    editCarForSale() {}
+    async editCarForSale(id: number, attrs: Partial<Car>, dealer: User) {
+        const carModel = await this.carRepo.findOne(id)
+        const ability = this.caslAbilityFactory.createForUser(dealer)
+        if (!carModel) {
+            throw new NotFoundException(`Car Profile with id: ${id} does not exist`)
+        }
+        else{
+            if(ability.can(Action.Update, carModel)){
+                Object.assign(carModel, attrs) // make the update
+                return this.carRepo.save(carModel)
+            }
+            else{ throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN) }
+        }
+    }
 
     async queryPublicCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType(brand?: string, estPrice?: number, driveType?: string, useType?: string) {
         // tried to write this with switch-case, didn't work properly.
@@ -116,11 +128,20 @@ export class CarsService {
     }
 
     // drop the table
-    async deleteCarForSale() {
+    async deleteAllCarsForSale() {
         return await this.carRepo.clear()
     }
 
-    async deleteCarForSaleById() {
+    async deleteCarForSaleById(id: number, dealer: User) {
+        const carModel = await this.getCarForSaleById(id, dealer)
+        const ability =  this.caslAbilityFactory.createForUser(dealer)
 
+        if (ability.can(Action.Delete, carModel)){
+            this.carRepo.remove(carModel)
+            return new HttpException('Car Profile Deleted', HttpStatus.GONE)
+        }
+        else{
+            throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
     }
 }

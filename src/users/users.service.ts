@@ -52,12 +52,12 @@ export class UsersService {
       return await this.userRepo.find()
     }
 
-    //update one or more attributes of the user instance, with the ID provided
+    //update one or more attributes of the user instance optionally, with the ID provided
     async update( id: number, attrs: Partial<User>) {
       const user = await this.findOneById(id)
       // if there was no user with this ID, throw an error
       if (!user) { 
-        throw new NotFoundException(`User with ${id} does not exist`)
+        throw new NotFoundException(`User with id: ${id} does not exist`)
       }
       // if user was found, make an update
       Object.assign(user, attrs) // make the update
