@@ -7,19 +7,19 @@ export class ExtraFeature {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({nullable: true})
     featureOne: string
 
-    @Column()
+    @Column({nullable: true})
     featureTwo: string
 
-    @Column()
+    @Column({nullable: true})
     featureThree: string
 
-    @Column()
+    @Column({nullable: true})
     featureFour: string
 
-    @OneToOne( () => Car, (car) => car.extraFeature, {onDelete: 'CASCADE', cascade: true})
+    @OneToOne( () => Car, (car) => car.extraFeature, {onDelete: 'CASCADE'})
     @JoinColumn()
     carModel: Car
 }
