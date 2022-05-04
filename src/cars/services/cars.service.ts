@@ -88,7 +88,7 @@ export class CarsService {
                 normally, it should have Action.Read permission, but this gives read access to other users, when the car is not available to the public.
                 if the code is written as "if(carModel.dealer == user){return carModel}", the Admin User won't have access to it either.
             */
-            if (ability.can(Action.Create, carModel)) {
+            if ( carModel.dealer || ability.can(Action.Manage, carModel)) {
                 return carModel
             }
             else {

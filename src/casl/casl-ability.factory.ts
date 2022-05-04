@@ -40,11 +40,10 @@ export class CaslAbilityFactory {
         can(Action.Delete, UserProfile, {user: userEntity})
 
         /** 
-         * give permission to read car if the dealer is the user that created the model[complicated... understand better in cars.services.getCarForSaleById]
          * give permission to delete car if the dealer is the user that created the model
          * give permission to update car if the dealer is the user that created the model
         */
-        can(Action.Create, Car, {dealer: userEntity})
+        
         can(Action.Update, Car, {dealer: userEntity})
         can(Action.Delete, Car, {dealer: userEntity})
 
