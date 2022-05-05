@@ -114,6 +114,13 @@ export class ExtraFeatureService {
         return new HttpException('Cars features Deleted', HttpStatus.GONE)
     }
 
+    /**
+     * It deletes a car feature by id, but only if the user is the dealer of the car model that the
+     * feature belongs to, or if the user has the ability to manage the car model
+     * @param {number} id - The id of the extra feature to be deleted
+     * @param {User} user - User - the user object that is passed in from the controller
+     * @returns return new HttpException('Car feature Deleted', HttpStatus.GONE)
+     */
     async deleteExtraFeatureById(id:number, user: User) {
         const ability = this.caslAbilityFactory.createForUser(user)
         const extraFeature = await this.extraFeatureRepo.findOne({ where: { id: id}, relations: ['carModel'] })
