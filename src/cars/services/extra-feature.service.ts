@@ -11,8 +11,6 @@ import {CarAvailability} from '../../enums/carAvailability.enum'
 import { Role } from 'src/enums/role.enum';
 
 
-
-
 @Injectable()
 export class ExtraFeatureService {
     constructor( 
@@ -21,15 +19,17 @@ export class ExtraFeatureService {
         private caslAbilityFactory: CaslAbilityFactory
         ) {}
 
-
+    // a car feature can only be added here if the logged in user is the car dealer, or the Admin user. 
     async addExtraFeature ( featureOne: string, featureTwo: string, featureThree: string, featureFour: string, carModelId: number, user: User ) {
         
         const ability = this.caslAbilityFactory.createForUser(user)
         
         const carModel = await this.carsService.getCarForSaleById(carModelId, user);
 
+        console.log(carModel.dealer);
+
         // casl authentication: if the logged in user is the car dealer, or the admin, create the car feature
-        if ( carModel.dealer == user || ability.can(Action.Manage, carModel) ) {
+        if ( JSON.stringify(carModel.dealer) === JSON.stringify(user) || ability.can(Action.Manage, carModel) ) {
             const extraFeature = this.extraFeatureRepo.create({featureOne, featureTwo, featureThree, featureFour, carModel})
             return await this.extraFeatureRepo.save(extraFeature)
         }else {
@@ -37,9 +37,43 @@ export class ExtraFeatureService {
         }
     }
 
-    async getExtraFeatures() { 
+    // this will be used by the admin user to get all extra features for cars that are both private and open to the public
+    async getExtraFeatures () { 
         const extraFeatures = this.extraFeatureRepo.find()
         return extraFeatures
+    }
+
+    // writing a "getFeatures for public cars is not necessary"
+
+
+    /**
+     * If the car model is public, return the extra feature. If the car model is private, check if the
+     * user is the dealer or has the ability to manage the car model. If so, return the extra feature.
+     * If not, throw a forbidden response
+     * @param {number} id - the id of the extra feature
+     * @param {User} user - User - the user that is currently logged in
+     * @returns The extra feature with the given id.
+     */
+    async getExtraFeatureById (id: number, user: User) {
+        const ability = this.caslAbilityFactory.createForUser(user)
+        const extraFeature = await this.extraFeatureRepo.findOne({ where: { id: id}, relations: ['carModel'] })
+        const carModel = extraFeature.carModel
+
+        console.log(extraFeature)
+        console.log(carModel)
+
+        if (carModel['availability'] == CarAvailability.PUBLIC) {
+            return extraFeature
+        }
+        else{
+            
+            if(JSON.stringify(carModel.dealer) === JSON.stringify(user) || ability.can(Action.Manage, carModel)) {
+                return extraFeature
+            }
+            else{ 
+                throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+            }
+        }
     }
 
     // TODO: remember to add casl authentication for adding feature to car
@@ -62,7 +96,7 @@ export class ExtraFeatureService {
 
     // TODO: this method will be available to only Admin User
     deleteFeatures() {
-        this.extraFeatureRepo.clear()
+        this.extraFeatureRepo.delete({})
         return new HttpException('Cars features Deleted', HttpStatus.GONE)
     }
 
