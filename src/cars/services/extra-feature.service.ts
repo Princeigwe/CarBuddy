@@ -37,13 +37,15 @@ export class ExtraFeatureService {
         }
     }
 
-    // this will be used by the admin user to get all extra features for cars that are both private and open to the public
+    // this will be used by the admin user 
     async getExtraFeatures () { 
         const extraFeatures = this.extraFeatureRepo.find()
         return extraFeatures
     }
 
-    // writing a "getFeatures for public cars is not necessary"
+
+
+    // writing a "getFeatures for public cars" is not necessary since it can be viewed from car Profile
 
 
     /**
@@ -76,8 +78,15 @@ export class ExtraFeatureService {
         }
     }
 
-    // TODO: remember to add casl authentication for adding feature to car
-    // TODO: This is probably not working because the entity 'extraFeature' is linked to car entity which uses Authentication before it can be updated
+
+    /**
+     * It updates an extra feature by id, if the user is the dealer of the car model of the extra
+     * feature or if the user has the ability to manage the car model of the extra feature
+     * @param {number} id - number - the id of the extra feature to be updated
+     * @param attrs - Partial<ExtraFeature>
+     * @param {User} user - User - the user object that is passed in from the controller
+     * @returns The updated extra feature
+     */
     async updateExtraFeatureById (id: number, attrs: Partial<ExtraFeature>, user: User) { 
         const ability = this.caslAbilityFactory.createForUser(user)
         const extraFeature = await this.extraFeatureRepo.findOne({ where: { id: id}, relations: ['carModel'] })
@@ -99,11 +108,31 @@ export class ExtraFeatureService {
         }
     }
 
-    // TODO: this method will be available to only Admin User
+    // this method will be available to only Admin User
     deleteFeatures() {
         this.extraFeatureRepo.delete({})
         return new HttpException('Cars features Deleted', HttpStatus.GONE)
     }
 
+    async deleteExtraFeatureById(id:number, user: User) {
+        const ability = this.caslAbilityFactory.createForUser(user)
+        const extraFeature = await this.extraFeatureRepo.findOne({ where: { id: id}, relations: ['carModel'] })
+        const carModel = extraFeature.carModel
 
+        console.log(carModel.dealer)
+
+        if(!extraFeature) {
+            throw new NotFoundException(`Car feature with id ${id} not found`)
+        }
+        else {
+
+            if (JSON.stringify(carModel.dealer) === JSON.stringify(user) || ability.can(Action.Manage, carModel)) {
+                this.extraFeatureRepo.delete(extraFeature)
+                return new HttpException('Car feature Deleted', HttpStatus.GONE)
+            }
+            else{
+                throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+            }
+        }
+    }
 }
