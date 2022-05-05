@@ -79,12 +79,17 @@ export class ExtraFeatureService {
     // TODO: remember to add casl authentication for adding feature to car
     // TODO: This is probably not working because the entity 'extraFeature' is linked to car entity which uses Authentication before it can be updated
     async updateExtraFeatureById (id: number, attrs: Partial<ExtraFeature>, user: User) { 
-        const extraFeature = await this.extraFeatureRepo.findOne(id)
+        const ability = this.caslAbilityFactory.createForUser(user)
+        const extraFeature = await this.extraFeatureRepo.findOne({ where: { id: id}, relations: ['carModel'] })
+        const carModel = extraFeature.carModel
+
+        console.log(carModel.dealer)
+        
         if(!extraFeature) {
             throw new NotFoundException(`Car feature with id ${id} not found`)
         }
         else {
-            if (user.role == Role.Admin) {
+            if (JSON.stringify(carModel.dealer) === JSON.stringify(user) || ability.can(Action.Manage, carModel)) {
                 Object.assign(extraFeature, attrs)
                 return await this.extraFeatureRepo.save(extraFeature)
             }
