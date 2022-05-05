@@ -47,7 +47,6 @@ export class CaslAbilityFactory {
         can(Action.Update, Car, {dealer: userEntity})
         can(Action.Delete, Car, {dealer: userEntity})
 
-
         // return the build of ability and actions on subjects
         return build({
             detectSubjectType: (item) => item.constructor as ExtractSubjectType<Subjects>,

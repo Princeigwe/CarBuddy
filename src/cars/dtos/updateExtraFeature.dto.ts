@@ -1,6 +1,6 @@
 import { IsOptional, IsString, IsNumber } from "class-validator";
 
-export class ExtraFeatureDto {
+export class UpdateExtraFeatureDto {
 
     @IsOptional()
     @IsString()
@@ -18,7 +18,4 @@ export class ExtraFeatureDto {
     @IsString()
     featureFour: string
 
-    @IsOptional()
-    @IsNumber()
-    carModelId: number
 }

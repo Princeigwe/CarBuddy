@@ -68,11 +68,12 @@ export class Car {
     transmissionType: TransmissionType
 
     //  one-to-one relationship to ExtraFeature entity
-    @OneToOne(() => ExtraFeature, (extraFeature) => extraFeature.carModel, {eager: true})
+    // if there is an update in in the ExtraFeature entity, it will be updated automatically in the database when Car entity is saved
+    @OneToOne(() => ExtraFeature, (extraFeature) => extraFeature.carModel, {eager: true, cascade: true})
     extraFeature: ExtraFeature
 
     //  many cars can be linked to a UserProfile, and the UserProfile can access the Car entities by 'cars' attribute
-    @ManyToOne(() => User, (user) => user.cars, {eager: true})
+    @ManyToOne(() => User, (user) => user.cars, {eager: true, onDelete:"CASCADE"})
     dealer: User
 
 }

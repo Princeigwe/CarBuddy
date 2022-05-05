@@ -12,9 +12,8 @@ export class ExtraFeatureController {
     constructor(private extraFeatureService: ExtraFeatureService) {}
 
     @Post()
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
-    addExtraFeature (@Body() body: ExtraFeatureDto,@Request() request) {
+    @UseGuards(JwtAuthGuard)
+    addExtraFeature (@Body() body: ExtraFeatureDto, @Request() request) {
         const user = request.user;
         return this.extraFeatureService.addExtraFeature(
             body.featureOne,
@@ -27,21 +26,37 @@ export class ExtraFeatureController {
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     getExtraFeatures() {
         return this.extraFeatureService.getExtraFeatures()
-    } 
+    }
+
+    @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    getExtraFeatureById ( @Param('id') id: string, @Request() request) {
+        const user = request.user
+        return this.extraFeatureService.getExtraFeatureById( parseInt(id), user)
+    }
 
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
-    @Roles(Role.Admin)
     updateExtraFeatureById( @Param('id') id: string, @Body() body: UpdateExtraFeatureDto, @Request() request) {
         const user = request.user
         return this.extraFeatureService.updateExtraFeatureById(parseInt(id), body, user)
     }
 
     @Delete()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     deleteFeatures () {
         return this.extraFeatureService.deleteFeatures()
     }
 
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    deleteExtraFeatureById ( @Param('id') id: string, @Request() request) {
+        const user = request.user
+        return this.extraFeatureService.deleteExtraFeatureById(parseInt(id), user)
+    }
 }

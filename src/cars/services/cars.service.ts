@@ -129,7 +129,7 @@ export class CarsService {
 
     // drop the table
     async deleteAllCarsForSale() {
-        return await this.carRepo.clear()
+        return await this.carRepo.delete({}) // .clear() does not truncate table when there's a foreign key constraint [typeORM issue]
     }
 
     async deleteCarForSaleById(id: number, dealer: User) {
