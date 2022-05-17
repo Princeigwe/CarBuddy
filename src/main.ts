@@ -5,6 +5,10 @@ import {NestExpressApplication} from '@nestjs/platform-express'
 import {join} from 'path'
 const express = require('express')
 
+import * as session from 'express-session';
+let RedisStore = require('connect-redis')(session) //import REDIS session storage
+// const { createClient } = require("redis")
+// let redisClient = createClient()
 
 const cookieSession = require('cookie-session');
 import * as cookieParser from 'cookie-parser';
@@ -19,7 +23,17 @@ async function bootstrap() {
   
 
   // application should provide cookies
-  app.use(cookieParser()); 
+  app.use(cookieParser());
+  
+  // using http sessions
+  // app.use(
+  //   session({
+  //     store: new RedisStore({client: redisClient}),
+  //     secret: 'my-secret', // TODO: make this a secret, for real [it should not be seen]
+  //     resave: false,
+  //     saveUninitialized: false,
+  //   }),
+  // );
 
 
   // for csrf protection

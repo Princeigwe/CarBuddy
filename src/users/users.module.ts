@@ -11,7 +11,7 @@ import {ProfilesModule} from '../profiles/profiles.module'
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef( () => AuthModule ),
-    forwardRef( () => ProfilesModule)
+    forwardRef( () => ProfilesModule),
   ],
   controllers: [UsersController],
   providers: [UsersService, AuthService],

@@ -3,6 +3,7 @@ import {Exclude} from 'class-transformer'
 import {UserProfile} from '../profiles/profiles.entity'
 import { Role } from "../enums/role.enum";
 import {Car} from '../cars/models/cars.entity'
+// import {Cart} from '../cart/models/cart.entity'
 
 @Entity() // marking User as a database table
 export class User {
@@ -31,4 +32,7 @@ export class User {
 
     @OneToMany(() => Car, (car) => car.dealer) 
     cars: Car[];
+
+    // @OneToOne( () => Cart, (cart) => cart.owner)
+    // cart:Cart
 }

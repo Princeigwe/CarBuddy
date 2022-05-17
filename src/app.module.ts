@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { ThrottlerModule} from '@nestjs/throttler'
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -25,11 +26,15 @@ import { CarsModule } from './cars/cars.module';
 import {MulterModule} from  '@nestjs/platform-express'
 import { ServeStaticModule } from '@nestjs/serve-static';
 import {join} from 'path'
+import { CartModule } from './cart/cart.module';
 
 
 
 @Module({
-  imports: [ TypeOrmModule.forRoot({
+  imports: [ 
+    MongooseModule.forRoot('mongodb://mongo:mongo@car_mongodb'),
+
+    TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'car_postgres', // the host should be the name of the postgres container... that was how I was able to connect.
     port: 5432,
@@ -56,6 +61,7 @@ import {join} from 'path'
   ProfilesModule,
   CaslModule,
   CarsModule,
+  CartModule,
   // ServeStaticModule.forRoot({
   //   rootPath: join(__dirname, '..', 'uploads'),
   // })
