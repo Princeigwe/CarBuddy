@@ -34,6 +34,8 @@ import { CartModule } from './cart/cart.module';
   imports: [ 
     MongooseModule.forRoot('mongodb://mongo:mongo@car_mongodb'),
 
+    
+
     TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'car_postgres', // the host should be the name of the postgres container... that was how I was able to connect.
