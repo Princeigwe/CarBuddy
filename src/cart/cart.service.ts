@@ -22,8 +22,9 @@ export class CartService {
     }
 
     async addToCart(cartOwnerEmail: string, productName: string, quantity: number, price: number): Promise<any> {
-        const product = new this.productModel({productName, quantity, price})
-        const cart = this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: product} })
+        const product = new this.productModel({productName: productName, quantity: quantity, price: price})
+        const cart = this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: productName, quantity, price} })
+        console.log(product)
         return cart
     }
 
