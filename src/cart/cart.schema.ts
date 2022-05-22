@@ -31,7 +31,7 @@ export class Cart {
     // items: Product[];
 
     @Prop({ type: mongoose.Schema.Types.Array })
-    items: Product[];
+    items: [];
 
 }
 
