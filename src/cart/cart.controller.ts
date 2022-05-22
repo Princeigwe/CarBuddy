@@ -18,13 +18,15 @@ export class CartController {
     }
 
     // @Post(':cartOwnerEmail')
-    // addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() productName: string, @Body() quantity: number, @Body() price: number) {
-    //     return this.cartService.addToCart(cartOwnerEmail, productName, quantity, price)
+    // addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {
+    //     return this.cartService.addToCart(cartOwnerEmail, createProduct)
     // }
 
+
+    // 'id' here is the car ID. 'carId' as body gives an entity column error
     @Post(':cartOwnerEmail')
     addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {
-        return this.cartService.addToCart(cartOwnerEmail, createProduct)
+        return this.cartService.addToCart(cartOwnerEmail, createProduct.carId, createProduct.quantity)
     }
 
     @Delete()

@@ -77,7 +77,7 @@ export class CarsService {
      * TODO: if the car that is to be requested is available to the public, it should be accessed by anyone,
      * TODO: else only the Admin User, and the user who put if up can access it.
      */
-    async getCarForSaleById(id: number, dealer?: User) {
+    async getCarForSaleById(id: number, dealer: User) {
         const ability = this.caslAbilityFactory.createForUser(dealer)
         const carModel =  await this.carRepo.findOne(id)
         if (carModel.availability == CarAvailability.PUBLIC){
@@ -94,6 +94,17 @@ export class CarsService {
             else {
                 throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
             }
+        }
+    }
+
+    // this is to be used in the cart service
+    async getPublicCarByIdForCart(id: number) {
+        const carModel = await this.carRepo.findOne(id)
+        if (carModel.availability == CarAvailability.PUBLIC) {
+            return carModel
+        }
+        else {
+            throw new NotFoundException('Car Not Found')
         }
     }
 

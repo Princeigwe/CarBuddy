@@ -3,13 +3,14 @@ import {Cart, CartDocument, Product, ProductDocument} from './cart.schema'
 import {Model} from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateProductDto } from './dtos/createProduct.dto';
+import {CarsService } from '../cars/services/cars.service'
 
 @Injectable()
 export class CartService {
     constructor(
         @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
         @InjectModel(Product.name) private productModel: Model<ProductDocument>,
-
+        private carsService: CarsService
     ) {}
 
     async createCart(cartOwnerEmail: string) {
@@ -22,17 +23,40 @@ export class CartService {
         return carts
     }
 
-    // async addToCart(cartOwnerEmail: string, productName: string, quantity: number, price: number): Promise<any> {
-    //     const product = new this.productModel({productName: productName, quantity: quantity, price: price});
-    //     const cart = this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: productName, quantity, price} })
-    //     console.log(JSON.stringify(product))
+    // async addToCart(cartOwnerEmail: string, createProduct: CreateProductDto): Promise<any> {
+    //     const cart = this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: createProduct} })
+    //     console.log(cart)
     //     return cart
     // }
 
-    async addToCart(cartOwnerEmail: string, createProduct: CreateProductDto): Promise<any> {
-        const cart = this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: createProduct} })
-        console.log(cart)
-        return cart
+    async addToCart(cartOwnerEmail: string, id: number, quantity: number) {
+        const car = await this.carsService.getPublicCarByIdForCart(id)
+        const totalPrice = car.estimatedPrice * quantity
+
+        const product = {
+            style: car.style,
+            releaseYear: car.releaseYear,
+            brand: car.brand,
+            model: car.model,
+            useType: car.useType,
+            estimatedPrice: car.estimatedPrice,
+            mileage: car.mileage,
+            location: car.location,
+            exteriorColour: car.exteriorColour,
+            interiorColour: car.interiorColour,
+            milesPerGallon: car.milesPerGallon,
+            engine: car.engine,
+            driveType: car.driveType,
+            fuelType: car.fuelType,
+            transmissionType: car.transmissionType,
+            dealer: car.dealer,
+            extraFeature: car.extraFeature,
+            quantity: quantity,
+            totalPrice: totalPrice,
+        }
+        await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: product} })
+        // console.log(cart)
+        // return cart
     }
 
     async deleteCarts() {

@@ -1,14 +1,11 @@
-import {IsString, IsNumber} from 'class-validator'
+import {IsNumber} from 'class-validator'
 
 export class CreateProductDto {
 
-    @IsString()
-    productName: string
+    @IsNumber()
+    carId: number
 
     @IsNumber()
     quantity: number
-
-    @IsNumber()
-    price: number
 
 }
