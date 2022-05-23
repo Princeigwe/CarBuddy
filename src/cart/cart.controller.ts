@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Query } from '@nestjs/common';
+import { QueryResult } from 'typeorm';
 import {CartService} from './cart.service'
 import { CreateProductDto } from './dtos/createProduct.dto';
 
@@ -13,9 +14,17 @@ export class CartController {
     }
 
     @Get()
-    getCarts() {
+    getCartsOrGetByEmail(@Query('email') cartOwnerEmail: string) {
+        if (cartOwnerEmail) { 
+            return this.cartService.getCartByEmail(cartOwnerEmail)
+        }
         return this.cartService.getCarts()
     }
+
+    // @Get()
+    // getCartByEmail(@Query('email') cartOwnerEmail: string) {
+    //     return this.cartService.getCartByEmail(cartOwnerEmail)
+    // }
 
     // @Post(':cartOwnerEmail')
     // addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {
@@ -23,7 +32,6 @@ export class CartController {
     // }
 
 
-    // 'id' here is the car ID. 'carId' as body gives an entity column error
     @Post(':cartOwnerEmail')
     addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {
         return this.cartService.addToCart(cartOwnerEmail, createProduct.carId, createProduct.quantity)

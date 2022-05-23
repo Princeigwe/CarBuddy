@@ -29,6 +29,11 @@ export class CartService {
     //     return cart
     // }
 
+    async getCartByEmail(cartOwnerEmail: string) {
+        const cart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
+        return cart
+    }
+
     async addToCart(cartOwnerEmail: string, id: number, quantity: number) {
         const car = await this.carsService.getPublicCarByIdForCart(id)
         const totalPrice = car.estimatedPrice * quantity
@@ -55,8 +60,7 @@ export class CartService {
             totalPrice: totalPrice,
         }
         await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: product} })
-        // console.log(cart)
-        // return cart
+        return await this.getCartByEmail(cartOwnerEmail)
     }
 
     async deleteCarts() {
