@@ -63,6 +63,7 @@ export class CartService {
         // adding the item to the cart items array
         await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: product} })
 
+
         // returning only value of the items key
         let cart = await this.cartModel.findOne( { 'cartOwnerEmail': cartOwnerEmail } )
 
@@ -76,7 +77,7 @@ export class CartService {
         let finalTotal = prices.reduce( (accumulate,current) => accumulate + current, 0 ) // cart final Total price
 
         // setting finalTotal  field to finalTotal
-        await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: product}, $set: {finalTotal: finalTotal} })
+        await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $set: {finalTotal: finalTotal} })
 
     }
 
