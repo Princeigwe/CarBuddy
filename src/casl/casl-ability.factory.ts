@@ -30,22 +30,22 @@ export class CaslAbilityFactory {
             can(Action.Read, 'all'); // read-only access to every resource
         }
 
-        /**
-         * adding extra actions for specific resources
-         * 
-         * give permission to update profile if it was created by its user
-         * give permission to delete profile if it was created by its user
-         */
-        can(Action.Update, UserProfile, {user: userEntity});
-        can(Action.Delete, UserProfile, {user: userEntity})
+        // /**
+        //  * adding extra actions for specific resources
+        //  * 
+        //  * give permission to update profile if it was created by its user
+        //  * give permission to delete profile if it was created by its user
+        //  */
+        // can(Action.Update, UserProfile, {user: userEntity});
+        // can(Action.Delete, UserProfile, {user: userEntity})
 
-        /** 
-         * give permission to delete car if the dealer is the user that created the model
-         * give permission to update car if the dealer is the user that created the model
-        */
+        // /** 
+        //  * give permission to delete car if the dealer is the user that created the model
+        //  * give permission to update car if the dealer is the user that created the model
+        // */
         
-        can(Action.Update, Car, {dealer: userEntity})
-        can(Action.Delete, Car, {dealer: userEntity})
+        // can(Action.Update, Car, {dealer: userEntity})
+        // can(Action.Delete, Car, {dealer: userEntity})
 
         // return the build of ability and actions on subjects
         return build({

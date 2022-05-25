@@ -121,7 +121,7 @@ export class CarsService {
             throw new NotFoundException(`Car Profile with id: ${id} does not exist`)
         }
         else{
-            if(ability.can(Action.Update, carModel)){
+            if(ability.can(Action.Update, carModel) || JSON.stringify(carModel.dealer) === JSON.stringify(dealer)  ){
                 Object.assign(carModel, attrs) // make the update
                 return this.carRepo.save(carModel)
             }
@@ -147,7 +147,7 @@ export class CarsService {
         const carModel = await this.getCarForSaleById(id, dealer)
         const ability =  this.caslAbilityFactory.createForUser(dealer)
 
-        if (ability.can(Action.Delete, carModel)){
+        if (ability.can(Action.Delete, carModel) || JSON.stringify(carModel.dealer) === JSON.stringify(dealer) ){
             this.carRepo.remove(carModel)
             return new HttpException('Car Profile Deleted', HttpStatus.GONE)
         }
