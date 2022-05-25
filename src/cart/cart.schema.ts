@@ -27,11 +27,11 @@ export class Cart {
     @Prop()
     cartOwnerEmail: string;
 
-    // @Prop( {type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }] } )
-    // items: Product[];
-
     @Prop({ type: mongoose.Schema.Types.Array })
     items: [];
+
+    @Prop()
+    finalTotal: number;
 
 }
 

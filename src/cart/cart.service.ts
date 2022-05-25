@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import {Cart, CartDocument, Product, ProductDocument} from './cart.schema'
 import {Model} from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
@@ -59,11 +59,31 @@ export class CartService {
             quantity: quantity,
             totalPrice: totalPrice,
         }
+
+        // adding the item to the cart items array
         await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: product} })
-        return await this.getCartByEmail(cartOwnerEmail)
+
+        // returning only value of the items key
+        let cart = await this.cartModel.findOne( { 'cartOwnerEmail': cartOwnerEmail } )
+
+        let prices: number[] = []
+
+        for (var item of cart.items) {
+            prices.push(item['totalPrice'])
+        }
+
+        // summing items in the prices array with TypeScript reduce method
+        let finalTotal = prices.reduce( (accumulate,current) => accumulate + current, 0 ) // cart final Total price
+
+        // setting finalTotal  field to finalTotal
+        await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: product}, $set: {finalTotal: finalTotal} })
+
     }
 
+
+    // TODO: this area should be available to the admin only
     async deleteCarts() {
         await this.cartModel.remove();
+        return new HttpException('Carts Deleted', HttpStatus.GONE)
     }
 }
