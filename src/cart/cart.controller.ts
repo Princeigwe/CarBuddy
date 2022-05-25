@@ -26,11 +26,6 @@ export class CartController {
     //     return this.cartService.getCartByEmail(cartOwnerEmail)
     // }
 
-    // @Post(':cartOwnerEmail')
-    // addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {
-    //     return this.cartService.addToCart(cartOwnerEmail, createProduct)
-    // }
-
 
     @Post(':cartOwnerEmail')
     addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {

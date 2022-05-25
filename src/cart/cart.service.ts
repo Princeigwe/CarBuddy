@@ -23,12 +23,6 @@ export class CartService {
         return carts
     }
 
-    // async addToCart(cartOwnerEmail: string, createProduct: CreateProductDto): Promise<any> {
-    //     const cart = this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $push: {items: createProduct} })
-    //     console.log(cart)
-    //     return cart
-    // }
-
     async getCartByEmail(cartOwnerEmail: string) {
         const cart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
         return cart
