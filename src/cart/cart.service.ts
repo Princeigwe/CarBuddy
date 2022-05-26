@@ -1,15 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import {Cart, CartDocument, Product, ProductDocument} from './cart.schema'
+import {Cart, CartDocument} from './cart.schema'
 import {Model} from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateProductDto } from './dtos/createProduct.dto';
 import {CarsService } from '../cars/services/cars.service'
 
 @Injectable()
 export class CartService {
     constructor(
         @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
-        @InjectModel(Product.name) private productModel: Model<ProductDocument>,
         private carsService: CarsService
     ) {}
 
@@ -102,7 +100,7 @@ export class CartService {
             }
     
             // summing items in the prices array with TypeScript reduce method
-            let finalTotal = prices.reduce( (accumulate,current) => accumulate + current, 0 ) // cart final Total price
+            let finalTotal = prices.reduce( (accumulate, current) => accumulate + current, 0 ) // cart final Total price
     
             // setting finalTotal  field to finalTotal
             await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $set: {finalTotal: finalTotal} })
