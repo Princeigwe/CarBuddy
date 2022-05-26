@@ -148,16 +148,18 @@ export class CartService {
         const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
 
         const cartItems = userCart.items
-        console.log(cartItems)
         
         // getting the item that has carId parameter value as the value of 'carId' field.
         let item = cartItems.find(item => item['carId'] === carId)
         
         let priceToReduct = item['totalPrice']
-        console.log(priceToReduct)
 
         // update the cart by removing the item from the cart items list, and reduct the item price from the cart total price
         await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $inc: { finalTotal: -priceToReduct }, $pull: { items: { carId: carId } } })
+    }
+
+    async clearCart(cartOwnerEmail: string) {
+        await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $pull: { items: {  } }, $set: { finalTotal: 0 } })
     }
 
 

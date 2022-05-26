@@ -15,6 +15,7 @@ export class CartController {
 
     @Get()
     getCartsOrGetByEmail(@Query('email') cartOwnerEmail: string) {
+        // if email is given as a query parameter ...
         if (cartOwnerEmail) { 
             return this.cartService.getCartByEmail(cartOwnerEmail)
         }
@@ -33,7 +34,16 @@ export class CartController {
     }
 
     @Delete(':cartOwnerEmail')
-    removeFromCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Query('carId') carId: string) {
-        return this.cartService.removeFromCart(cartOwnerEmail, parseInt(carId));
+    clearCartOrRemoveFromCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Query('carId') carId: string) {
+        // if carId is given as a query parameter
+        if(carId) {
+            return this.cartService.removeFromCart(cartOwnerEmail, parseInt(carId));
+        }
+        return this.cartService.clearCart(cartOwnerEmail)
     }
+
+    // @Delete(':cartOwnerEmail')
+    // clearCart(@Param('cartOwnerEmail') cartOwnerEmail: string) {
+    //     return this.cartService.clearCart(cartOwnerEmail)
+    // }
 }
