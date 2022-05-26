@@ -13,20 +13,24 @@ export class CartService {
         private carsService: CarsService
     ) {}
 
+
     async createCart(cartOwnerEmail: string) {
         const cart = new this.cartModel(cartOwnerEmail)
         return cart.save()
     }
+
 
     async getCarts() {
         const carts = await this.cartModel.find()
         return carts
     }
 
+
     async getCartByEmail(cartOwnerEmail: string) {
         const cart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
         return cart
     }
+
 
     // 'id' here is the id of the car that will be added to the cart
     async addToCart(cartOwnerEmail: string, id: number, quantity: number) {
@@ -105,6 +109,7 @@ export class CartService {
         }
     }
 
+
     // 'id' here is the id of the car that will be added to the cart
     async removeFromCart( cartOwnerEmail: string, carId: number) {
 
@@ -119,6 +124,7 @@ export class CartService {
         // update the cart by removing the item from the cart items list, and reduct the item price from the cart total price
         await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $inc: { finalTotal: -priceToReduct }, $pull: { items: { carId: carId } } })
     }
+
 
     // method to clear all items from the cart
     async clearCart(cartOwnerEmail: string) {
