@@ -21,11 +21,6 @@ export class CartController {
         return this.cartService.getCarts()
     }
 
-    // @Get()
-    // getCartByEmail(@Query('email') cartOwnerEmail: string) {
-    //     return this.cartService.getCartByEmail(cartOwnerEmail)
-    // }
-
 
     @Post(':cartOwnerEmail')
     addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {
@@ -35,5 +30,10 @@ export class CartController {
     @Delete()
     deleteCarts() {
         return this.cartService.deleteCarts()
+    }
+
+    @Delete(':cartOwnerEmail')
+    removeFromCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Query('carId') carId: string) {
+        return this.cartService.removeFromCart(cartOwnerEmail, parseInt(carId));
     }
 }

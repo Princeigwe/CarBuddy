@@ -28,6 +28,7 @@ export class CartService {
         return cart
     }
 
+    // 'id' here is the id of the car that will be added to the cart
     async addToCart(cartOwnerEmail: string, id: number, quantity: number) {
 
         const car = await this.carsService.getPublicCarByIdForCart(id)
@@ -67,7 +68,8 @@ export class CartService {
 
             await this.cartModel.updateOne({
                 cartOwnerEmail: cartOwnerEmail, 
-    
+
+                'items.carId': car.id,
                 'items.style': car.style,
                 'items.releaseYear': car.releaseYear,
                 'items.brand': car.brand,
@@ -95,6 +97,7 @@ export class CartService {
         else {
 
             const product = {
+                carId: car.id,
                 style: car.style,
                 releaseYear: car.releaseYear,
                 brand: car.brand,
@@ -139,10 +142,28 @@ export class CartService {
 
     }
 
+    // 'id' here is the id of the car that will be added to the cart
+    async removeFromCart( cartOwnerEmail: string, carId: number) {
+
+        const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
+
+        const cartItems = userCart.items
+        console.log(cartItems)
+        
+        // getting the item that has carId parameter value as the value of 'carId' field.
+        let item = cartItems.find(item => item['carId'] === carId)
+        
+        let priceToReduct = item['totalPrice']
+        console.log(priceToReduct)
+
+        // update the cart by removing the item from the cart items list, and reduct the item price from the cart total price
+        await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $inc: { finalTotal: -priceToReduct }, $pull: { items: { carId: carId } } })
+    }
+
 
     // TODO: this area should be available to the admin only
     async deleteCarts() {
-        await this.cartModel.remove();
+        await this.cartModel.deleteMany();
         return new HttpException('Carts Deleted', HttpStatus.GONE)
     }
 }

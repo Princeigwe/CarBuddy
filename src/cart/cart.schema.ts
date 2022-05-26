@@ -30,7 +30,7 @@ export class Cart {
     @Prop({ type: mongoose.Schema.Types.Array })
     items: [];
 
-    @Prop()
+    @Prop({default: 0})
     finalTotal: number;
 
 }
