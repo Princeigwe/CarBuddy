@@ -40,23 +40,7 @@ export class CartService {
         const itemExists = await this.cartModel.findOne({
             cartOwnerEmail: cartOwnerEmail, 
 
-            'items.style': car.style,
-            'items.releaseYear': car.releaseYear,
-            'items.brand': car.brand,
-            'items.model': car.model,
-            'items.useType': car.useType,
-            'items.estimatedPrice': car.estimatedPrice,
-            'items.mileage': car.mileage,
-            'items.location': car.location,
-            'items.exteriorColour': car.exteriorColour,
-            'items.interiorColour': car.interiorColour,
-            'items.milesPerGallon': car.milesPerGallon,
-            'items.engine': car.engine,
-            'items.driveType': car.driveType,
-            'items.fuelType': car.fuelType,
-            'items.transmissionType': car.transmissionType,
-            'items.dealer': car.dealer,
-            'items.extraFeature': car.extraFeature,
+            'items.carId': car.id,
 
         })
 
@@ -68,28 +52,9 @@ export class CartService {
 
             await this.cartModel.updateOne({
                 cartOwnerEmail: cartOwnerEmail, 
-
                 'items.carId': car.id,
-                'items.style': car.style,
-                'items.releaseYear': car.releaseYear,
-                'items.brand': car.brand,
-                'items.model': car.model,
-                'items.useType': car.useType,
-                'items.estimatedPrice': car.estimatedPrice,
-                'items.mileage': car.mileage,
-                'items.location': car.location,
-                'items.exteriorColour': car.exteriorColour,
-                'items.interiorColour': car.interiorColour,
-                'items.milesPerGallon': car.milesPerGallon,
-                'items.engine': car.engine,
-                'items.driveType': car.driveType,
-                'items.fuelType': car.fuelType,
-                'items.transmissionType': car.transmissionType,
-                'items.dealer': car.dealer,
-                'items.extraFeature': car.extraFeature,
-    
             }, {
-                $inc: { 'items.$[].quantity': quantity, 'items.$[].totalPrice': addNewPrice, finalTotal: addNewPrice }
+                $inc: { 'items.$.quantity': quantity, 'items.$.totalPrice': addNewPrice, finalTotal: addNewPrice }
             })
         }
 
@@ -137,16 +102,13 @@ export class CartService {
     
             // setting finalTotal  field to finalTotal
             await this.cartModel.updateOne( {'cartOwnerEmail': cartOwnerEmail}, { $set: {finalTotal: finalTotal} })
-
         }
-
     }
 
     // 'id' here is the id of the car that will be added to the cart
     async removeFromCart( cartOwnerEmail: string, carId: number) {
 
         const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
-
         const cartItems = userCart.items
         
         // getting the item that has carId parameter value as the value of 'carId' field.
@@ -158,6 +120,7 @@ export class CartService {
         await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $inc: { finalTotal: -priceToReduct }, $pull: { items: { carId: carId } } })
     }
 
+    // method to clear all items from the cart
     async clearCart(cartOwnerEmail: string) {
         await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $pull: { items: {  } }, $set: { finalTotal: 0 } })
     }
