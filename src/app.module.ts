@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
+import {EventEmitterModule } from '@nestjs/event-emitter'
 
 ////////////////////////////////////////
 // ENTITIES
@@ -64,6 +65,7 @@ import { CartModule } from './cart/cart.module';
   CaslModule,
   CarsModule,
   CartModule,
+  EventEmitterModule.forRoot(),
   // ServeStaticModule.forRoot({
   //   rootPath: join(__dirname, '..', 'uploads'),
   // })

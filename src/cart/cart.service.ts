@@ -3,6 +3,8 @@ import {Cart, CartDocument} from './cart.schema'
 import {Model} from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
 import {CarsService } from '../cars/services/cars.service'
+import {OnEvent} from '@nestjs/event-emitter'
+import {UserRegisteredEvent} from '../events/user.registered.event'
 
 @Injectable()
 export class CartService {
@@ -12,8 +14,11 @@ export class CartService {
     ) {}
 
 
-    async createCart(cartOwnerEmail: string) {
-        const cart = new this.cartModel(cartOwnerEmail)
+    // creating user cart with cartOwnerEmail by listening to the event, user.registered
+    @OnEvent('user.registered')
+    async createCartEvent(payload: UserRegisteredEvent) {
+        let cartOwnerEmail = payload.email
+        const cart = new this.cartModel({cartOwnerEmail})
         return cart.save()
     }
 

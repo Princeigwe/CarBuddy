@@ -4,12 +4,20 @@ import {randomBytes, scrypt as _scrypt} from 'crypto' // for password hashing an
 import { promisify } from 'util' // convers a function to a Promise
 import {JwtService} from '@nestjs/jwt'
 import {Role} from '../enums/role.enum'
+import {CartService} from '../cart/cart.service'
+
+import {EventEmitter2} from '@nestjs/event-emitter'
+import {UserRegisteredEvent} from '../events/user.registered.event'
 
 const scrypt =promisify(_scrypt)
 
 @Injectable()
 export class AuthService {
-    constructor(private usersService: UsersService, private jwtService: JwtService) {}
+    constructor(
+        private usersService: UsersService, 
+        private jwtService: JwtService,
+        private eventEmitter: EventEmitter2
+    ) {}
 
     @UseInterceptors(ClassSerializerInterceptor)
     async register(username:string, email:string, password:string, role: Role){
@@ -32,7 +40,9 @@ export class AuthService {
         // Create a new user and save it
         const user = await this.usersService.create(username, email, result,  role); // creating user with email, and result as password
 
-        // Return the new user
+        // emitting an event. "user.registered is the name of the event"
+        this.eventEmitter.emit('user.registered', new UserRegisteredEvent(user.email)) // new UserRegisteredEvent(user.email) is the payload that will be used for creating cart
+        
         // return user;
         return {'id': user.id, 'email': user.email, 'username': user.username, 'role': user.role}
     }

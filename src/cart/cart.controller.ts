@@ -8,10 +8,6 @@ import { CreateProductDto } from './dtos/createProduct.dto';
 export class CartController {
     constructor(private cartService: CartService) {}
 
-    @Post()
-    createCart(@Body() cartOwnerEmail: string) {
-        return this.cartService.createCart(cartOwnerEmail)
-    }
 
     @Get()
     getCartsOrGetByEmail(@Query('email') cartOwnerEmail: string) {

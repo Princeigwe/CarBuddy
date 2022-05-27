@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import { Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {User} from 'src/users/user.entity'
@@ -71,7 +71,8 @@ export class UsersService {
       if (!user){
         throw new NotFoundException(`User ${id} does not exist`)
       }
-      return this.userRepo.remove(user) // remove the user entity
+      this.userRepo.remove(user) // remove the user entity
+      return new HttpException('User Deleted', HttpStatus.GONE)
     }
 
     async removeAll() {
