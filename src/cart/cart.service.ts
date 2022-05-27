@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import {Cart, CartDocument} from './cart.schema'
 import {Model} from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose';
@@ -40,6 +40,8 @@ export class CartService {
 
     async getCartByEmail(cartOwnerEmail: string, user: User) {
         const cart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
+        if (!cart) { throw new NotFoundException('Cart Not Found') }
+        
         const ability = this.caslAbilityFactory.createForUser(user)
 
         console.log(JSON.stringify(user.role))
