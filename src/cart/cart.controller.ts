@@ -15,12 +15,15 @@ export class CartController {
 
 
     @Get()
-    getCartsOrGetByEmail(@Query('email') cartOwnerEmail: string) {
-        // if email is given as a query parameter ...
-        if (cartOwnerEmail) { 
-            return this.cartService.getCartByEmail(cartOwnerEmail)
-        }
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
+    getCarts() {
         return this.cartService.getCarts()
+    }
+
+    @Get(':cartOwnerEmail')
+    getCartsByEmail(@Param('cartOwnerEmail') cartOwnerEmail: string) {
+        return this.cartService.getCartByEmail(cartOwnerEmail)
     }
 
 
@@ -45,8 +48,4 @@ export class CartController {
         return this.cartService.clearCart(cartOwnerEmail)
     }
 
-    // @Delete(':cartOwnerEmail')
-    // clearCart(@Param('cartOwnerEmail') cartOwnerEmail: string) {
-    //     return this.cartService.clearCart(cartOwnerEmail)
-    // }
 }

@@ -22,7 +22,7 @@ export class CartService {
         return cart.save()
     }
 
-
+    // this action is available to the admin only
     async getCarts() {
         const carts = await this.cartModel.find()
         return carts
@@ -135,7 +135,7 @@ export class CartService {
     }
 
 
-    // TODO: this area should be available to the admin only
+    // this action is available to the admin only
     async deleteCarts() {
         await this.cartModel.deleteMany();
         return new HttpException('Carts Deleted', HttpStatus.GONE)
