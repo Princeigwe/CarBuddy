@@ -22,8 +22,10 @@ export class CartController {
     }
 
     @Get(':cartOwnerEmail')
-    getCartsByEmail(@Param('cartOwnerEmail') cartOwnerEmail: string) {
-        return this.cartService.getCartByEmail(cartOwnerEmail)
+    @UseGuards(JwtAuthGuard)
+    getCartsByEmail(@Param('cartOwnerEmail') cartOwnerEmail: string, @Request() request) {
+        const user = request.user
+        return this.cartService.getCartByEmail(cartOwnerEmail, user)
     }
 
 

@@ -6,12 +6,19 @@ import {CarsService } from '../cars/services/cars.service'
 import {OnEvent} from '@nestjs/event-emitter'
 import {UserRegisteredEvent} from '../events/user.registered.event'
 import {User} from '../users/user.entity'
+import {Role} from '../enums/role.enum'
+import {CaslAbilityFactory} from '../casl/casl-ability.factory'
+import {Action} from '../enums/action.enum'
+
+
 
 @Injectable()
 export class CartService {
     constructor(
         @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
-        private carsService: CarsService
+        private carsService: CarsService,
+        private caslAbilityFactory: CaslAbilityFactory
+
     ) {}
 
 
@@ -30,9 +37,19 @@ export class CartService {
     }
 
 
-    async getCartByEmail(cartOwnerEmail: string) {
+    async getCartByEmail(cartOwnerEmail: string, user: User) {
         const cart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
-        return cart
+        const ability = this.caslAbilityFactory.createForUser(user)
+
+        console.log(JSON.stringify(user.role))
+
+        // AUTHORIZATION
+        if( JSON.stringify(cart.cartOwnerEmail) == JSON.stringify(user.email) ||  ability.can(Action.Manage, cart) ) {
+            return cart
+        }
+        else {
+            throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
     }
 
 
@@ -45,7 +62,7 @@ export class CartService {
         const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail})
 
         // AUTHORIZATION
-        if(JSON.stringify(user.email) !== JSON.stringify(userCart.cartOwnerEmail) ) {
+        if(JSON.stringify(user.email) !== JSON.stringify(userCart.cartOwnerEmail)) {
             throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
         }
 
@@ -144,7 +161,7 @@ export class CartService {
     async clearCart(cartOwnerEmail: string, user: User) {
 
         const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
-        
+
         // AUTHORIZATION
         if(JSON.stringify(user.email) !== JSON.stringify(userCart.cartOwnerEmail) ) {
             throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)

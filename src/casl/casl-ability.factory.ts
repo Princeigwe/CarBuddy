@@ -5,9 +5,10 @@ import {Action} from '../enums/action.enum'
 import {Injectable} from '@nestjs/common'
 import {Car} from '../cars/models/cars.entity'
 import {ExtraFeature} from '../cars/models/extraFeature.entity'
+import {Cart} from '../cart/cart.schema'
 
 // subject models [entities] registration
-type Subjects = InferSubjects<typeof User| typeof Car | typeof ExtraFeature| typeof UserProfile> | 'all';
+type Subjects = InferSubjects<typeof User| typeof Car | typeof ExtraFeature | typeof Cart| typeof UserProfile> | 'all';
 
 // defining application ability to execute actions on subjects
 export type AppAbility = Ability<[Action, Subjects]>;

@@ -6,6 +6,8 @@ import {Cart, CartSchema } from './cart.schema';
 import {CarsModule} from '../cars/cars.module'
 import {AuthModule} from '../auth/auth.module'
 import {UsersModule} from '../users/users.module'
+import {CaslModule} from '../casl/casl.module'
+
 
 
 @Module({
@@ -13,6 +15,7 @@ import {UsersModule} from '../users/users.module'
     forwardRef( () => (CarsModule) ),
     forwardRef( () => (AuthModule)),
     forwardRef( () => UsersModule),
+    forwardRef( () => CaslModule),
     MongooseModule.forFeature([{ name: Cart.name, schema: CartSchema }])
   ],
   providers: [CartService],
