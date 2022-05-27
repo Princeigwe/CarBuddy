@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { QueryResult } from 'typeorm';
 import {CartService} from './cart.service'
 import { CreateProductDto } from './dtos/createProduct.dto';
@@ -28,8 +28,10 @@ export class CartController {
 
 
     @Post(':cartOwnerEmail')
-    addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto) {
-        return this.cartService.addToCart(cartOwnerEmail, createProduct.carId, createProduct.quantity)
+    @UseGuards(JwtAuthGuard)
+    addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto, @Request() request) {
+        const user = request.user
+        return this.cartService.addToCart(cartOwnerEmail, createProduct.carId, createProduct.quantity, user)
     }
 
     @Delete()

@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {CarsService } from '../cars/services/cars.service'
 import {OnEvent} from '@nestjs/event-emitter'
 import {UserRegisteredEvent} from '../events/user.registered.event'
+import {User} from '../users/user.entity'
 
 @Injectable()
 export class CartService {
@@ -36,19 +37,24 @@ export class CartService {
 
 
     // 'id' here is the id of the car that will be added to the cart
-    async addToCart(cartOwnerEmail: string, id: number, quantity: number) {
+    async addToCart(cartOwnerEmail: string, id: number, quantity: number, user: User) {
 
         const car = await this.carsService.getPublicCarByIdForCart(id)
         const totalPrice = car.estimatedPrice * quantity
+
+        const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail})
+
+        // AUTHORIZATION
+        if(JSON.stringify(user.email) !== JSON.stringify(userCart.cartOwnerEmail) ) {
+            throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
 
         // TODO: to check if the item to be added is already in the cart
         //? there's probably a better way to write this
 
         const itemExists = await this.cartModel.findOne({
             cartOwnerEmail: cartOwnerEmail, 
-
             'items.carId': car.id,
-
         })
 
         // if the item exists in the items list, increment the item quantity and total price, and the cart total Price
