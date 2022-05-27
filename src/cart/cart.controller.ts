@@ -1,7 +1,12 @@
-import { Controller, Post, Body, Get, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { QueryResult } from 'typeorm';
 import {CartService} from './cart.service'
 import { CreateProductDto } from './dtos/createProduct.dto';
+import {JwtAuthGuard} from '../auth/jwt-auth.guard'
+import {RolesGuard} from '../roles.guards'
+import { Roles } from '../roles.decorator';
+import { Role } from '../enums/role.enum';
+
 
 
 @Controller('cart')
@@ -25,6 +30,8 @@ export class CartController {
     }
 
     @Delete()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     deleteCarts() {
         return this.cartService.deleteCarts()
     }
