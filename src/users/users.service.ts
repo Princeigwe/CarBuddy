@@ -3,6 +3,8 @@ import { Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {User} from 'src/users/user.entity'
 import {Role} from '../enums/role.enum'
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import {UserDeletedEvent} from '../events/user.deleted.event'
 
 // export type User = any
 @Injectable()
@@ -10,6 +12,7 @@ export class UsersService {
 
     constructor(
       @InjectRepository(User)  private userRepo: Repository<User>, // create repository for User Entity, and inject it as a dependency in the service.
+      private eventEmitter: EventEmitter2
     ){}
 
     /**
@@ -71,7 +74,10 @@ export class UsersService {
       if (!user){
         throw new NotFoundException(`User ${id} does not exist`)
       }
+      // emit event
+      this.eventEmitter.emit('user.deleted', new UserDeletedEvent(user.email))
       this.userRepo.remove(user) // remove the user entity
+
       return new HttpException('User Deleted', HttpStatus.GONE)
     }
 

@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {CarsService } from '../cars/services/cars.service'
 import {OnEvent} from '@nestjs/event-emitter'
 import {UserRegisteredEvent} from '../events/user.registered.event'
+import {UserDeletedEvent} from '../events/user.deleted.event'
 import {User} from '../users/user.entity'
 import {Role} from '../enums/role.enum'
 import {CaslAbilityFactory} from '../casl/casl-ability.factory'
@@ -170,6 +171,12 @@ export class CartService {
         await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $pull: { items: {  } }, $set: { finalTotal: 0 } })
     }
 
+    // this will be executed when a user is deleted, by an event
+    @OnEvent('user.deleted')
+    async deleteCart(payload: UserDeletedEvent) {
+        let cartOwnerEmail = payload.email
+        await this.cartModel.deleteOne({cartOwnerEmail: cartOwnerEmail})
+    }
 
     // this action is available to the admin only
     async deleteCarts() {
