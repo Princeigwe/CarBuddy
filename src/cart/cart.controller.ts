@@ -42,12 +42,14 @@ export class CartController {
     }
 
     @Delete(':cartOwnerEmail')
-    clearCartOrRemoveFromCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Query('carId') carId: string) {
+    @UseGuards(JwtAuthGuard)
+    clearCartOrRemoveFromCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Query('carId') carId: string, @Request() request) {
+        const user = request.user
         // if carId is given as a query parameter
         if(carId) {
-            return this.cartService.removeFromCart(cartOwnerEmail, parseInt(carId));
+            return this.cartService.removeFromCart(cartOwnerEmail, parseInt(carId), user);
         }
-        return this.cartService.clearCart(cartOwnerEmail)
+        return this.cartService.clearCart(cartOwnerEmail, user)
     }
 
 }

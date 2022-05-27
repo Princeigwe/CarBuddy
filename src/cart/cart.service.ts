@@ -120,10 +120,15 @@ export class CartService {
 
 
     // 'id' here is the id of the car that will be added to the cart
-    async removeFromCart( cartOwnerEmail: string, carId: number) {
+    async removeFromCart( cartOwnerEmail: string, carId: number, user: User) {
 
         const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
         const cartItems = userCart.items
+
+        // AUTHORIZATION
+        if(JSON.stringify(user.email) !== JSON.stringify(userCart.cartOwnerEmail) ) {
+            throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
         
         // getting the item that has carId parameter value as the value of 'carId' field.
         let item = cartItems.find(item => item['carId'] === carId)
@@ -136,7 +141,15 @@ export class CartService {
 
 
     // method to clear all items from the cart
-    async clearCart(cartOwnerEmail: string) {
+    async clearCart(cartOwnerEmail: string, user: User) {
+
+        const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
+        
+        // AUTHORIZATION
+        if(JSON.stringify(user.email) !== JSON.stringify(userCart.cartOwnerEmail) ) {
+            throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
+
         await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $pull: { items: {  } }, $set: { finalTotal: 0 } })
     }
 
