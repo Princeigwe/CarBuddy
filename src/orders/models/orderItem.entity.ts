@@ -59,6 +59,9 @@ export class OrderItem {
     @Column()
     readonly transmissionType: string
 
+    @Column({nullable: true})
+    readonly price: number
+
     @Column()
     readonly dealer: string
 

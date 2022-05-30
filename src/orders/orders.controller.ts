@@ -1,4 +1,4 @@
-import { Controller, Post, Request, UseGuards, Get, Param } from '@nestjs/common';
+import { Controller, Post, Request, UseGuards, Get, Param, Delete } from '@nestjs/common';
 import {OrdersService} from '../orders/orders.service'
 import {JwtAuthGuard} from '../auth/jwt-auth.guard'
 
@@ -16,5 +16,10 @@ export class OrdersController {
     @Get(':id')
     getOrderById(@Param('id') id: string) {
         return this.ordersService.getOrderById(parseInt(id))
+    }
+
+    @Delete()
+    deleteOrders() {
+        return this.ordersService.deleteOrders()
     }
 }

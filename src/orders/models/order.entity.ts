@@ -11,10 +11,13 @@ export class Order {
     readonly buyer: string
 
     @Column()
-    readonly buyer_contact: string
+    readonly buyerContact: string
 
     @Column()
-    readonly buyer_email: string
+    readonly buyerEmail: string
+
+    @Column()
+    totalPrice: number
 
     @CreateDateColumn()
     date_issued: Date

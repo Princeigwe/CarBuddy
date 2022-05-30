@@ -27,24 +27,18 @@ export class OrdersService {
         const userEmail = user.email
         const userProfile = currentUser.profile
 
-        console.log(userProfile)
-        console.log(user.id)
-
         // getting the cart of the current user
         const userCart = await this.cartService.getCartByEmail(userEmail, user)
+        console.log(userCart)
 
         const buyer = `${userProfile.firstName} ${userProfile.lastName}`
-        console.log(buyer)
+        const buyerContact = userProfile.telephone
+        const buyerEmail = user.email
 
-        const buyer_contact = userProfile.telephone
-        console.log(buyer_contact)
+        const totalPrice = userCart['finalTotal']
 
-        const buyer_email = user.email
-
-        const order = this.orderRepo.create({buyer, buyer_contact, buyer_email})
+        const order = this.orderRepo.create({buyer, buyerContact, buyerEmail, totalPrice})
         const savedOrder = await this.orderRepo.save(order)
-
-        console.log(savedOrder)
 
         for(var item of userCart.items) {
             console.log(item)
@@ -64,19 +58,17 @@ export class OrdersService {
             const driveType = item['driveType']
             const fuelType = item['fuelType']
             const transmissionType = item['transmissionType']
+            const price = item['totalPrice']
 
             // getting the item dealer object
             const itemDealerObject = item['dealer']
-            console.log(itemDealerObject)
 
             // to get the profile of the dealer
             const dealerObject = await this.usersService.findOne( { where: {id: itemDealerObject['id']}, relations: ['profile'] } )
             const dealerProfile = dealerObject.profile
-            console.log(dealerProfile)
 
             // this is done in order to get the first and last name of the dealer
-            let dealerNames = `${dealerProfile['firstName']} ${dealerProfile['lastName']}`
-            console.log(dealerNames)
+            const dealerNames = `${dealerProfile['firstName']} ${dealerProfile['lastName']}`
 
             const dealer = dealerNames
             const dealer_contact = dealerProfile.telephone
@@ -100,6 +92,7 @@ export class OrdersService {
                 driveType,
                 fuelType,
                 transmissionType,
+                price,
                 dealer,
                 dealer_contact,
                 dealer_email
@@ -123,7 +116,9 @@ export class OrdersService {
     }
 
 
-    async deleteOrders () {}
+    async deleteOrders () {
+        await this.orderRepo.delete({})
+    }
 
 
     async deleteOrderById () {}
