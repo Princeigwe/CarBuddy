@@ -6,9 +6,10 @@ import {Injectable} from '@nestjs/common'
 import {Car} from '../cars/models/cars.entity'
 import {ExtraFeature} from '../cars/models/extraFeature.entity'
 import {Cart} from '../cart/cart.schema'
+import {Order} from '../orders/models/order.entity'
 
 // subject models [entities] registration
-type Subjects = InferSubjects<typeof User| typeof Car | typeof ExtraFeature | typeof Cart| typeof UserProfile> | 'all';
+type Subjects = InferSubjects<typeof User| typeof Car | typeof ExtraFeature | typeof Cart| typeof Order| typeof UserProfile> | 'all';
 
 // defining application ability to execute actions on subjects
 export type AppAbility = Ability<[Action, Subjects]>;

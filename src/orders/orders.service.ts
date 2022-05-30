@@ -8,6 +8,9 @@ import {CartService} from '../cart/cart.service'
 import {UsersService} from '../users/users.service'
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {OrderCreatedEvent} from '../events/order.created.event'
+import {CaslAbilityFactory} from '../casl/casl-ability.factory'
+import {Action} from '../enums/action.enum'
+
 
 
 @Injectable()
@@ -18,7 +21,8 @@ export class OrdersService {
         @InjectRepository(OrderItem) private orderItemRepo: Repository<OrderItem>,
         private cartService: CartService,
         private usersService: UsersService, 
-        private eventEmitter: EventEmitter2
+        private eventEmitter: EventEmitter2,
+        private caslAbilityFactory: CaslAbilityFactory,
     ) {}
 
 
@@ -124,9 +128,16 @@ export class OrdersService {
 
 
     async getOrderById (id: number, user: User) {
+        const ability = await this.caslAbilityFactory.createForUser(user)
         const order = await this.orderRepo.findOne({ where: {id: id}, relations: ['items']})
-        // if () {}
-        return order
+        if (!order) {
+            throw new NotFoundException( `Order with ${id} not found` )
+        }
+        if ( order.buyerEmail === user.email || ability.can(Action.Manage, order) ) {
+            return order
+        }else{
+            throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
     }
 
 

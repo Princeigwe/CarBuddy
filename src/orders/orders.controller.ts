@@ -32,8 +32,10 @@ export class OrdersController {
 
 
     @Get(':id')
-    getOrderById(@Param('id') id: string) {
-        // return this.ordersService.getOrderById(parseInt(id))
+    @UseGuards(JwtAuthGuard)
+    getOrderById(@Param('id') id: string, @Request() request) {
+        const user = request.user
+        return this.ordersService.getOrderById(parseInt(id), user)
     }
 
     @Delete()

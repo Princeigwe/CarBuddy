@@ -7,6 +7,7 @@ import {OrderItem} from './models/orderItem.entity'
 import {UsersModule} from '../users/users.module'
 import {CartModule} from '../cart/cart.module'
 import {ProfilesModule} from '../profiles/profiles.module'
+import { CaslModule } from '../casl/casl.module';
 
 
 
@@ -15,7 +16,8 @@ import {ProfilesModule} from '../profiles/profiles.module'
     TypeOrmModule.forFeature([ Order, OrderItem ]),
     UsersModule,
     CartModule,
-    ProfilesModule
+    ProfilesModule,
+    CaslModule,
   ],
   providers: [OrdersService],
   controllers: [OrdersController]
