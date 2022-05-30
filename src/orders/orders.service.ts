@@ -5,8 +5,9 @@ import {Order} from './models/order.entity'
 import {OrderItem} from './models/orderItem.entity'
 import {User} from '../users/user.entity'
 import {CartService} from '../cart/cart.service'
-import {ProfilesService} from '../profiles/profiles.service'
 import {UsersService} from '../users/users.service'
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import {OrderCreatedEvent} from '../events/order.created.event'
 
 
 @Injectable()
@@ -15,9 +16,9 @@ export class OrdersService {
     constructor( 
         @InjectRepository(Order) private orderRepo: Repository<Order>, 
         @InjectRepository(OrderItem) private orderItemRepo: Repository<OrderItem>,
-        private profilesService: ProfilesService,
         private cartService: CartService,
-        private usersService: UsersService
+        private usersService: UsersService, 
+        private eventEmitter: EventEmitter2
     ) {}
 
 
@@ -29,12 +30,13 @@ export class OrdersService {
 
         // getting the cart of the current user
         const userCart = await this.cartService.getCartByEmail(userEmail, user)
-        console.log(userCart)
+
 
         const buyer = `${userProfile.firstName} ${userProfile.lastName}`
         const buyerContact = userProfile.telephone
         const buyerEmail = user.email
 
+        // for total price of the order
         const totalPrice = userCart['finalTotal']
 
         const order = this.orderRepo.create({buyer, buyerContact, buyerEmail, totalPrice})
@@ -98,12 +100,13 @@ export class OrdersService {
                 dealer_email
             })
             
-            const savedItem = await this.orderItemRepo.save(orderItem)
-            console.log(savedItem)
+            await this.orderItemRepo.save(orderItem)
 
+            // emitting an event to delete user cart items when order is created
+            this.eventEmitter.emit('order.created', new OrderCreatedEvent(userEmail))
         }
+        
         return savedOrder
-
     }
 
 

@@ -6,6 +6,7 @@ import {CarsService } from '../cars/services/cars.service'
 import {OnEvent} from '@nestjs/event-emitter'
 import {UserRegisteredEvent} from '../events/user.registered.event'
 import {UserDeletedEvent} from '../events/user.deleted.event'
+import { OrderCreatedEvent } from '../events/order.created.event';
 import {User} from '../users/user.entity'
 import {Role} from '../enums/role.enum'
 import {CaslAbilityFactory} from '../casl/casl-ability.factory'
@@ -202,6 +203,14 @@ export class CartService {
             throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
         }
 
+        await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $pull: { items: {  } }, $set: { finalTotal: 0 } })
+    }
+
+
+    // event to clear user cart after order has been created
+    @OnEvent('order.created')
+    async orderCreatedClearCart(payload: OrderCreatedEvent) {
+        const cartOwnerEmail = payload.email
         await this.cartModel.updateOne({cartOwnerEmail: cartOwnerEmail}, { $pull: { items: {  } }, $set: { finalTotal: 0 } })
     }
 
