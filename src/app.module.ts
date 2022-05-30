@@ -16,6 +16,8 @@ import {UserProfile} from './profiles/profiles.entity'
 import {Report} from './reports/report.entity'
 import {Car} from './cars/models/cars.entity'
 import {ExtraFeature} from './cars/models/extraFeature.entity'
+import { Order } from './orders/models/order.entity';
+import {OrderItem} from './orders/models/orderItem.entity';
 
 ////////////////////////////////////////
 
@@ -28,6 +30,7 @@ import {MulterModule} from  '@nestjs/platform-express'
 import { ServeStaticModule } from '@nestjs/serve-static';
 import {join} from 'path'
 import { CartModule } from './cart/cart.module';
+import { OrdersModule } from './orders/orders.module';
 
 
 
@@ -45,7 +48,7 @@ import { CartModule } from './cart/cart.module';
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE_NAME,
-    entities: [User, Report, UserProfile, Car, ExtraFeature],
+    entities: [User, Report, UserProfile, Car, ExtraFeature, Order, OrderItem],
     synchronize: true,
     ////////////////////////////////////////////////
     // type: 'sqlite', 
@@ -66,6 +69,7 @@ import { CartModule } from './cart/cart.module';
   CarsModule,
   CartModule,
   EventEmitterModule.forRoot(),
+  OrdersModule,
   // ServeStaticModule.forRoot({
   //   rootPath: join(__dirname, '..', 'uploads'),
   // })

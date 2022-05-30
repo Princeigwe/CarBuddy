@@ -24,6 +24,8 @@ export class CartService {
 
 
     // creating user cart with cartOwnerEmail by listening to the event, user.registered
+    /* This is a method that listens to the event, user.registered, and creates a cart for the user that
+   just registered. */
     @OnEvent('user.registered')
     async createCartEvent(payload: UserRegisteredEvent) {
         let cartOwnerEmail = payload.email
@@ -32,19 +34,30 @@ export class CartService {
     }
 
     // this action is available to the admin only
+    /**
+     * It returns a promise that resolves to an array of all the carts in the database
+     * @returns An array of all the carts in the database.
+     */
     async getCarts() {
         const carts = await this.cartModel.find()
         return carts
     }
 
 
+    /**
+     * The function gets a cart by email, and if the cart exists, it checks if the user has the ability
+     * to manage the cart. If the user has the ability to manage the cart, the function returns the
+     * cart. If the user does not have the ability to manage the cart, the function throws a forbidden
+     * response
+     * @param {string} cartOwnerEmail - string - the email of the user who owns the cart
+     * @param {User} user - User - this is the user object that is passed in from the controller.
+     * @returns The cart object is being returned.
+     */
     async getCartByEmail(cartOwnerEmail: string, user: User) {
         const cart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
         if (!cart) { throw new NotFoundException('Cart Not Found') }
         
         const ability = this.caslAbilityFactory.createForUser(user)
-
-        console.log(JSON.stringify(user.role))
 
         // AUTHORIZATION
         if( JSON.stringify(cart.cartOwnerEmail) == JSON.stringify(user.email) ||  ability.can(Action.Manage, cart) ) {
@@ -57,6 +70,14 @@ export class CartService {
 
 
     // 'id' here is the id of the car that will be added to the cart
+    /**
+     * The function adds an item to the cart, and if the item already exists in the cart, it increments
+     * the item quantity and total price, and the cart total Price
+     * @param {string} cartOwnerEmail - the email of the user who owns the cart
+     * @param {number} id - the id of the car to be added to the cart
+     * @param {number} quantity - number,
+     * @param {User} user - User is the user that is currently logged in
+     */
     async addToCart(cartOwnerEmail: string, id: number, quantity: number, user: User) {
 
         const car = await this.carsService.getPublicCarByIdForCart(id)
@@ -140,6 +161,12 @@ export class CartService {
 
 
     // 'id' here is the id of the car that will be added to the cart
+    /**
+     * It removes an item from the cart items list, and reduct the item price from the cart total price
+     * @param {string} cartOwnerEmail - the email of the user who owns the cart.
+     * @param {number} carId - number,
+     * @param {User} user - User is the user object that is passed from the controller.
+     */
     async removeFromCart( cartOwnerEmail: string, carId: number, user: User) {
 
         const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
@@ -161,6 +188,11 @@ export class CartService {
 
 
     // method to clear all items from the cart
+    /**
+     * This function clears the cart of the user who is logged in
+     * @param {string} cartOwnerEmail - string - the email of the user who owns the cart
+     * @param {User} user - User - this is the user that is currently logged in.
+     */
     async clearCart(cartOwnerEmail: string, user: User) {
 
         const userCart = await this.cartModel.findOne({cartOwnerEmail: cartOwnerEmail}).exec()
@@ -174,6 +206,7 @@ export class CartService {
     }
 
     // this will be executed when a user is deleted, by an event
+    /* Listening to the event, user.deleted, and deleting the cart of the user that was deleted. */
     @OnEvent('user.deleted')
     async deleteCart(payload: UserDeletedEvent) {
         let cartOwnerEmail = payload.email
@@ -181,6 +214,10 @@ export class CartService {
     }
 
     // this action is available to the admin only
+    /**
+     * It deletes all the carts in the database
+     * @returns A promise
+     */
     async deleteCarts() {
         await this.cartModel.deleteMany();
         return new HttpException('Carts Deleted', HttpStatus.GONE)

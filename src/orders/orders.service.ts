@@ -25,21 +25,102 @@ export class OrdersService {
     async createOrder (user: User) {
         const currentUser = await this.usersService.findOne( { where: {id: user.id}, relations: ['profile'] } )
         const userEmail = user.email
-        // const userProfile = user["profile"] // says undefined
         const userProfile = currentUser.profile
-        console.log(userProfile)
 
+        console.log(userProfile)
         console.log(user.id)
 
+        // getting the cart of the current user
         const userCart = await this.cartService.getCartByEmail(userEmail, user)
-        // const buyer = `${userProfile.firstName} ${userProfile.lastName}`
+
+        const buyer = `${userProfile.firstName} ${userProfile.lastName}`
+        console.log(buyer)
+
+        const buyer_contact = userProfile.telephone
+        console.log(buyer_contact)
+
+        const buyer_email = user.email
+
+        const order = this.orderRepo.create({buyer, buyer_contact, buyer_email})
+        const savedOrder = await this.orderRepo.save(order)
+
+        console.log(savedOrder)
+
+        for(var item of userCart.items) {
+            console.log(item)
+            const vehicleType = item['style']
+            const releaseYear = item['releaseYear']
+            const brand = item['brand']
+            const model = item['model']
+            const quantity = item['quantity']
+            const useType = item['useType']
+            const estimatedPrice = item['estimatedPrice']
+            const mileage = item['mileage']
+            const location = item['location']
+            const exteriorColour = item['exteriorColour']
+            const interiorColour = item['interiorColour']
+            const milesPerGallon = item['milesPerGallon']
+            const engine = item['engine']
+            const driveType = item['driveType']
+            const fuelType = item['fuelType']
+            const transmissionType = item['transmissionType']
+
+            // getting the item dealer object
+            const itemDealerObject = item['dealer']
+            console.log(itemDealerObject)
+
+            // to get the profile of the dealer
+            const dealerObject = await this.usersService.findOne( { where: {id: itemDealerObject['id']}, relations: ['profile'] } )
+            const dealerProfile = dealerObject.profile
+            console.log(dealerProfile)
+
+            // this is done in order to get the first and last name of the dealer
+            let dealerNames = `${dealerProfile['firstName']} ${dealerProfile['lastName']}`
+            console.log(dealerNames)
+
+            const dealer = dealerNames
+            const dealer_contact = dealerProfile.telephone
+            const dealer_email = dealerObject.email
+
+            const orderItem = this.orderItemRepo.create({
+                order,
+                vehicleType,
+                releaseYear,
+                brand,
+                model,
+                quantity,
+                useType,
+                estimatedPrice,
+                mileage,
+                location,
+                exteriorColour,
+                interiorColour,
+                milesPerGallon,
+                engine,
+                driveType,
+                fuelType,
+                transmissionType,
+                dealer,
+                dealer_contact,
+                dealer_email
+            })
+            
+            const savedItem = await this.orderItemRepo.save(orderItem)
+            console.log(savedItem)
+
+        }
+        return savedOrder
+
     }
 
 
     async getOrders () {}
 
 
-    async getOrderById () {}
+    async getOrderById (id: number) {
+        const order = await this.orderRepo.findOne({ where: {id: id}, relations: ['items']})
+        return order
+    }
 
 
     async deleteOrders () {}
