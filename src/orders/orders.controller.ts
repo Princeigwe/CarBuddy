@@ -16,9 +16,24 @@ export class OrdersController {
         return this.ordersService.createOrder(user)
     }
 
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    @Roles(Role.Admin)
+    getOrders() {
+        return this.ordersService.getOrders()
+    }
+
+    @Get('email')
+    @UseGuards(JwtAuthGuard)
+    getOrdersByUserEmail(@Request() request) {
+        const user = request.user
+        return this.ordersService.getOrdersByUserEmail(user)
+    }
+
+
     @Get(':id')
     getOrderById(@Param('id') id: string) {
-        return this.ordersService.getOrderById(parseInt(id))
+        // return this.ordersService.getOrderById(parseInt(id))
     }
 
     @Delete()

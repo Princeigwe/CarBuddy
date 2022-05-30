@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Repository} from 'typeorm'
 import {Order} from './models/order.entity'
@@ -110,14 +110,22 @@ export class OrdersService {
     }
 
 
-    // this action should be only for admin users
+    // this action should for admin users and the owner of the order created
     async getOrders () {
-        return await this.orderRepo.find()
+        return this.orderRepo.find()
     }
 
 
-    async getOrderById (id: number) {
+    // this is meant only for the owner of the orders
+    async getOrdersByUserEmail (user: User) {
+        const orders =  await this.orderRepo.find({ where: {buyerEmail: user.email}})
+        return orders
+    }
+
+
+    async getOrderById (id: number, user: User) {
         const order = await this.orderRepo.findOne({ where: {id: id}, relations: ['items']})
+        // if () {}
         return order
     }
 
@@ -130,5 +138,12 @@ export class OrdersService {
 
 
     // this action should be only for admin users
-    async deleteOrderById () {}
+    async deleteOrderById (id: number) {
+        const order = await this.orderRepo.findOne(id)
+        if (!order) { 
+            throw new NotFoundException( `Order with ${id} not found` )
+        }
+        await this.orderRepo.delete(order)
+        return new HttpException('Order Deleted', HttpStatus.GONE)
+    }
 }
