@@ -1,6 +1,9 @@
 import { Controller, Post, Request, UseGuards, Get, Param, Delete } from '@nestjs/common';
 import {OrdersService} from '../orders/orders.service'
 import {JwtAuthGuard} from '../auth/jwt-auth.guard'
+import { Roles } from '../roles.decorator';
+import { RolesGuard } from '../roles.guards';
+import {Role} from '../enums/role.enum'
 
 @Controller('orders')
 export class OrdersController {
@@ -19,6 +22,8 @@ export class OrdersController {
     }
 
     @Delete()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     deleteOrders() {
         return this.ordersService.deleteOrders()
     }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Repository} from 'typeorm'
 import {Order} from './models/order.entity'
@@ -110,7 +110,10 @@ export class OrdersService {
     }
 
 
-    async getOrders () {}
+    // this action should be only for admin users
+    async getOrders () {
+        return await this.orderRepo.find()
+    }
 
 
     async getOrderById (id: number) {
@@ -119,10 +122,13 @@ export class OrdersService {
     }
 
 
+    // this action should be only for admin users
     async deleteOrders () {
         await this.orderRepo.delete({})
+        return new HttpException('Orders Deleted', HttpStatus.GONE)
     }
 
 
+    // this action should be only for admin users
     async deleteOrderById () {}
 }
