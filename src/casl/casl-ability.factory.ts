@@ -38,8 +38,8 @@ export class CaslAbilityFactory {
         //  * give permission to update profile if it was created by its user
         //  * give permission to delete profile if it was created by its user
         //  */
-        // can(Action.Update, UserProfile, {user: userEntity});
-        // can(Action.Delete, UserProfile, {user: userEntity})
+        can(Action.Update, UserProfile, {user: userEntity});
+        can(Action.Delete, UserProfile, {user: userEntity})
 
         // /** 
         //  * give permission to delete car if the dealer is the user that created the model

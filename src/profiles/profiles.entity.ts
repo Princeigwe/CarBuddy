@@ -9,6 +9,9 @@ export class UserProfile {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column({type: 'bytea', nullable: true})
+    file: string
+
     @Column()
     firstName: string
 

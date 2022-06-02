@@ -16,9 +16,9 @@ export class ProfilesService {
     ){}
     
     @UseInterceptors(ClassSerializerInterceptor)
-    async createUserProfile(firstName: string, lastName: string, age: number, maritalStatus: MaritalStatus, telephone: string, address: string, user: User)
+    async createUserProfile(file: string, firstName: string, lastName: string, age: number, maritalStatus: MaritalStatus, telephone: string, address: string, user: User)
         {
-            const userProfile = this.userProfileRepo.create({firstName, lastName, age, maritalStatus, telephone, address, user: user});
+            const userProfile = this.userProfileRepo.create({file, firstName, lastName, age, maritalStatus, telephone, address, user: user});
             await this.userProfileRepo.save(userProfile)
             return userProfile
         }

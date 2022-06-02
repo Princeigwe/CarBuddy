@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Patch, Body, Query, Param, Request, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Patch, Body, Query, Param, Request, UseGuards, HttpException, HttpStatus, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { CreateUserProfileDto } from './dtos/create-userProfile.dto';
 import {ProfilesService} from '../profiles/profiles.service'
 import {UpdateUserProfileDto} from './dtos/update-userProfile.dto';
@@ -6,6 +6,26 @@ import {JwtAuthGuard} from '../auth/jwt-auth.guard'
 import { Roles } from '../roles.decorator';
 import {Role} from '../enums/role.enum'
 import {RolesGuard} from '../roles.guards'
+import {diskStorage} from 'multer'
+import { FileInterceptor } from '@nestjs/platform-express';
+import {Express} from 'express';
+
+
+
+
+// defining how the image files are stored
+const storage = diskStorage({
+    // defining where the image files are stored
+    destination: function (req, image, cb) {
+        cb(null, 'uploads')
+    },
+    // defining what to name image files as in the uploads folder
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.originalname + '-' + uniqueSuffix)
+    },
+
+})
 
 @Controller('profiles')
 export class ProfilesController {
@@ -17,10 +37,23 @@ export class ProfilesController {
     @Post()
     @UseGuards(JwtAuthGuard) // to create profile, user must be logged in with jwt token
     // @Roles(Role.Admin, Role.User) // making the profile resource available to users with both admin and user roles, still the same when uncommented
-    createProfile(
-        @Body() body: CreateUserProfileDto, @Request() request) {
+    @UseInterceptors(FileInterceptor('file', {storage: storage}))
+    createProfile( @Body() body: CreateUserProfileDto, @Request() request, @UploadedFile() file: Express.Multer.File) {
         const user = request.user
-        return this.profilesService.createUserProfile(body.firstName, body.lastName, body.age, body.maritalStatus, body.telephone, body.address, user)
+
+        // if image name does not match jpg|png|jpeg
+        if(!file.originalname.match(/\.(jpg|png|jpeg)$/)) { throw new BadRequestException("Only image files are allowed") } 
+        
+        return this.profilesService.createUserProfile(
+            file.originalname,
+            body.firstName, 
+            body.lastName, 
+            body.age, 
+            body.maritalStatus, 
+            body.telephone, 
+            body.address, 
+            user
+        )
     }
     
 
@@ -31,7 +64,7 @@ export class ProfilesController {
 
     // adding query parameter to get request fixed the issue of having two GET requests, and one not returning a response
     @Get()
-    @UseGuards(JwtAuthGuard, RolesGuard) // to query a profile, user must be logged in with jwt token
+    // @UseGuards(JwtAuthGuard, RolesGuard) // to query a profile, user must be logged in with jwt token
     @Roles(Role.Admin, Role.User) // making the profile resource available to users with both admin and user roles
     async queryUserProfiles(@Query('firstName') firstName: string) {
         if(firstName) {return await this.profilesService.findFirstName(firstName)}

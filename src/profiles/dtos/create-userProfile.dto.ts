@@ -1,5 +1,7 @@
 import {IsString, IsNumber, IsNotEmpty, IsEnum} from 'class-validator'
 import {MaritalStatus} from 'src/enums/maritalStatus.enum'
+import {Type} from 'class-transformer'
+
 
 
 export class CreateUserProfileDto {
@@ -10,6 +12,7 @@ export class CreateUserProfileDto {
     @IsString()
     lastName: string
 
+    @Type( () => Number )
     @IsNumber()
     age: number
 
