@@ -52,7 +52,7 @@ export class ProfilesService {
         }
 
         const ability = this.caslAbilityFactory.createForUser(user)
-        if(ability.can(Action.Update, userProfile)) {
+        if(ability.can(Action.Update, userProfile) || JSON.stringify(user) === JSON.stringify(userProfile.user) ) {
             Object.assign(userProfile, attrs);
             return this.userProfileRepo.save(userProfile)
         }else{
