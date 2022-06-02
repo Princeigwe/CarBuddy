@@ -56,16 +56,16 @@ export class UsersService {
     }
 
     //update one or more attributes of the user instance optionally, with the ID provided
-    async update( id: number, attrs: Partial<User>) {
-      const user = await this.findOneById(id)
-      // if there was no user with this ID, throw an error
-      if (!user) { 
-        throw new NotFoundException(`User with id: ${id} does not exist`)
-      }
-      // if user was found, make an update
-      Object.assign(user, attrs) // make the update
-      return this.userRepo.save(user) // save the update
-    }
+    // async update( id: number, attrs: Partial<User>) {
+    //   const user = await this.findOneById(id)
+    //   // if there was no user with this ID, throw an error
+    //   if (!user) { 
+    //     throw new NotFoundException(`User with id: ${id} does not exist`)
+    //   }
+    //   // if user was found, make an update
+    //   Object.assign(user, attrs) // make the update
+    //   return this.userRepo.save(user) // save the update
+    // }
 
     // remove a user instance
     async remove(id: number) {

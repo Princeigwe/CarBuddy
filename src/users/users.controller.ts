@@ -51,12 +51,12 @@ export class UsersController {
         return this.usersService.removeAll()
     }
 
-    @Patch(':id') // patch request to update a user
-    async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) { 
-        const user = await this.usersService.update(parseInt(id), body)
-        if (!user) {
-            throw new NotFoundException(`User with id ${id} not found`)
-        }
-        return user
-    }
+    // @Patch(':id') // patch request to update a user
+    // async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) { 
+    //     const user = await this.usersService.update(parseInt(id), body)
+    //     if (!user) {
+    //         throw new NotFoundException(`User with id ${id} not found`)
+    //     }
+    //     return user
+    // }
 }
