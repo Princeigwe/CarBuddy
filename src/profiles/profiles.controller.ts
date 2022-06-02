@@ -57,7 +57,8 @@ export class ProfilesController {
     }
 
     @Delete(':id')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     deleteUserProfileById(@Param('id') id: string, @Request() request) {
         const user = request.user
         return this.profilesService.deleteUserProfileById(parseInt(id), user)
