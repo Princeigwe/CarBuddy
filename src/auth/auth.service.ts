@@ -20,6 +20,20 @@ export class AuthService {
     ) {}
 
     @UseInterceptors(ClassSerializerInterceptor)
+    /**
+     * This function takes in a username, email, password, and role, and creates a new user with the
+     * given email and password, and returns the user's id, email, username, and role.
+     * @param {string} username - string, email: string, password: string, role: Role
+     * @param {string} email - the email of the user
+     * @param {string} password - string - the password that the user entered
+     * @param {Role} role - Role - this is the role of the user. It is an enum.
+     * @returns {
+     *         "id": "5f5d8f8f8f8f8f8f8f8f8f8f",
+     *         "email": "test@test.com",
+     *         "username": "test",
+     *         "role": "user"
+     *     }
+     */
     async register(username:string, email:string, password:string, role: Role){
         // see if email is in use
         const users = await this.usersService.find(email)
@@ -48,7 +62,15 @@ export class AuthService {
     }
 
 
+    /* A decorator that is used to serialize the response. */
     @UseInterceptors(ClassSerializerInterceptor)
+    /**
+     * It takes an email and password, finds the user in the database, and then compares the password
+     * to the stored hash. If the password is correct, it returns the user
+     * @param {string} email - The email address of the user.
+     * @param {string} password - The password to hash.
+     * @returns The user object is being returned.
+     */
     async getAuthenticatedUser(email:string, password:string){
         const [user] = await this.usersService.find(email)
         if (!user) {
@@ -64,12 +86,23 @@ export class AuthService {
         return {'id': user.id, 'email': user.email, 'username': user.username, 'role': user.role}
     }
 
+    /**
+     * It takes a userId, creates a payload object with the userId, and then uses the jwtService to
+     * sign the payload and return the token
+     * @param {number} userId - The userId of the user that is being logged in.
+     * @returns A JWT token
+     */
     public getCookieWithJwtToken(userId: number){
         const payload = {userId}
         const token = this.jwtService.sign(payload)
         return token
     }
 
+    /**
+     * It returns a string that contains the cookie name, the cookie value, the cookie path, and the
+     * cookie expiration date
+     * @returns A string that is the cookie for log out.
+     */
     public getCookieForLogOut() {
         return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
     }

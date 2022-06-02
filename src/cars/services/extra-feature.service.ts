@@ -20,13 +20,24 @@ export class ExtraFeatureService {
         ) {}
 
     // a car feature can only be added here if the logged in user is the car dealer, or the Admin user. 
+    /**
+     * The function creates a new car feature, and saves it to the database, if the logged in user is
+     * the car dealer, or the admin
+     * @param {string} featureOne - string, featureTwo: string, featureThree: string, featureFour:
+     * string, carModelId: number, user: User
+     * @param {string} featureTwo - string, featureThree: string, featureFour: string, carModelId:
+     * number, user: User
+     * @param {string} featureThree - string, featureFour: string, carModelId: number, user: User
+     * @param {string} featureFour - string, carModelId: number, user: User
+     * @param {number} carModelId - the id of the car model that the extra feature is being added to
+     * @param {User} user - User - the logged in user
+     * @returns The extra feature is being returned.
+     */
     async addExtraFeature ( featureOne: string, featureTwo: string, featureThree: string, featureFour: string, carModelId: number, user: User ) {
         
         const ability = this.caslAbilityFactory.createForUser(user)
         
         const carModel = await this.carsService.getCarForSaleById(carModelId, user);
-
-        console.log(carModel.dealer);
 
         // casl authentication: if the logged in user is the car dealer, or the admin, create the car feature
         if ( JSON.stringify(carModel.dealer) === JSON.stringify(user) || ability.can(Action.Manage, carModel) ) {

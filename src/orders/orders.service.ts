@@ -27,6 +27,12 @@ export class OrdersService {
 
 
     // this function will get the cart Items in the user cart, in order to create an order
+    /**
+     * The function creates an order for the current user, and then creates an order item for each item
+     * in the user's cart
+     * @param {User} user - User - this is the current user object
+     * @returns The order object is being returned.
+     */
     async createOrder (user: User) {
         const currentUser = await this.usersService.findOne( { where: {id: user.id}, relations: ['profile'] } )
         const userEmail = user.email
