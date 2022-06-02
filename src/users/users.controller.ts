@@ -20,8 +20,6 @@ export class UsersController {
     // adding query parameter to get request fixed the issue of having two GET requests, and one not returning a response
     @UseInterceptors(ClassSerializerInterceptor)
     @Get() // get users with(out) query
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
     async retrieveAllUsers(@Query('email') email:string ){
         if (email) { return await this.usersService.find(email)}
         return this.usersService.findAll()
@@ -40,11 +38,15 @@ export class UsersController {
     }
 
     @Delete(':id') // delete request on a user
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     removeUser(@Param('id') id: string) {
         return this.usersService.remove(parseInt(id))
     }
 
     @Delete()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     removeUsers() {
         return this.usersService.removeAll()
     }
