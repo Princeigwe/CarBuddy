@@ -1,10 +1,13 @@
-import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException, UseInterceptors, ClassSerializerInterceptor, Session, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException, UseInterceptors, ClassSerializerInterceptor, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import {UpdateUserDto} from './dtos/update-user.dto'
 import {LoginUserDto} from './dtos/login-user.dto'
 import {UsersService } from './users.service'
 import {AuthService} from './auth.service' // import AuthService to be used
-
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import {RolesGuard} from '../roles.guards';
+import {Roles} from '../roles.decorator'
+import {Role} from '../enums/role.enum'
 
 
 @Controller('users')
@@ -17,6 +20,8 @@ export class UsersController {
     // adding query parameter to get request fixed the issue of having two GET requests, and one not returning a response
     @UseInterceptors(ClassSerializerInterceptor)
     @Get() // get users with(out) query
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     async retrieveAllUsers(@Query('email') email:string ){
         if (email) { return await this.usersService.find(email)}
         return this.usersService.findAll()
