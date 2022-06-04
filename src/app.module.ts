@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module, forwardRef, CacheModule } from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { ThrottlerModule} from '@nestjs/throttler'
 import { MongooseModule } from '@nestjs/mongoose';
@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import {EventEmitterModule } from '@nestjs/event-emitter'
+
 
 ////////////////////////////////////////
 // ENTITIES
@@ -36,9 +37,11 @@ import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [ 
+    CacheModule.register({
+      ttl: 1000, // cache items time to live set to 30 seconds
+      isGlobal: true // setting the cache module to be used globally in other modules
+    }),
     MongooseModule.forRoot('mongodb://mongo:mongo@car_mongodb'),
-
-    
 
     TypeOrmModule.forRoot({
     type: 'postgres',

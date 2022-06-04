@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException, UseInterceptors, ClassSerializerInterceptor, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Patch, Query, Param, NotFoundException, UseInterceptors, ClassSerializerInterceptor, UseGuards, CacheInterceptor } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import {UpdateUserDto} from './dtos/update-user.dto'
 import {LoginUserDto} from './dtos/login-user.dto'
@@ -18,7 +18,7 @@ export class UsersController {
         ){}
 
     // adding query parameter to get request fixed the issue of having two GET requests, and one not returning a response
-    @UseInterceptors(ClassSerializerInterceptor)
+    @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor) // auto-caching response
     @Get() // get users with(out) query
     async retrieveAllUsers(@Query('email') email:string ){
         if (email) { return await this.usersService.find(email)}
@@ -26,7 +26,7 @@ export class UsersController {
     }
 
     // intercept the incoming request and make changes to it
-    @UseInterceptors(ClassSerializerInterceptor)
+    @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
     @Get(':id') // Get request with Parameter
     async findUser(@Param('id') id: string) {
         // change the ID parameter to number, and call the service on it 

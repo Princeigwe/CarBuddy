@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query, UseGuards, CacheInterceptor } from '@nestjs/common';
 import { PutUpCarForSaleDto } from '../dtos/putUpCarForSale.dto';
 import { UpdateCarForSaleDto } from '../dtos/updateCarForSale.dto';
 import {JwtAuthGuard} from '../../auth/jwt-auth.guard'
@@ -81,6 +81,7 @@ export class CarsController {
      */
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseInterceptors(CacheInterceptor)
     @Roles(Role.Admin) // getting all cars (both private and public) should only be accessed by the Admin user
     getAllCarsForSale() {
         return this.carsService.getAllCarsForSale()
@@ -89,6 +90,7 @@ export class CarsController {
 
     // GET endpoint with(out) query parameters
     @Get('public')
+    @UseInterceptors(CacheInterceptor)
     getAllPublicCarsForSale(@Query('brand') brand?: string, @Query('estPrice') estPrice?: any, @Query('driveType') driveType?: string, @Query('useType') useType?: string) {
         if( estPrice || driveType || useType || brand ) { 
             return this.carsService.queryPublicCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType( brand, estPrice, driveType, useType) 

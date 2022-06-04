@@ -1,4 +1,4 @@
-import { Controller, Post, Request, UseGuards, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Request, UseGuards, Get, Param, Delete, UseInterceptors, CacheInterceptor } from '@nestjs/common';
 import {OrdersService} from '../orders/orders.service'
 import {JwtAuthGuard} from '../auth/jwt-auth.guard'
 import { Roles } from '../roles.decorator';
@@ -17,6 +17,7 @@ export class OrdersController {
     }
 
     @Get()
+    @UseInterceptors(CacheInterceptor)
     @UseGuards(JwtAuthGuard)
     @Roles(Role.Admin)
     getOrders() {
