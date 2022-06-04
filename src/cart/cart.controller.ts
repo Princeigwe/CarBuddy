@@ -6,10 +6,13 @@ import {JwtAuthGuard} from '../auth/jwt-auth.guard'
 import {RolesGuard} from '../roles.guards'
 import { Roles } from '../roles.decorator';
 import { Role } from '../enums/role.enum';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiImplicitQueries } from 'nestjs-swagger-api-implicit-queries-decorator';
 
 
 
 @Controller('cart')
+@ApiTags("Cart")
 export class CartController {
     constructor(private cartService: CartService) {}
 
@@ -22,6 +25,7 @@ export class CartController {
     }
 
     @Get(':cartOwnerEmail')
+    @ApiParam({name:'cartOwnerEmail', description: "Gets the user's cart by email", required: true}) // Param doc for Swagger
     @UseGuards(JwtAuthGuard)
     getCartsByEmail(@Param('cartOwnerEmail') cartOwnerEmail: string, @Request() request) {
         const user = request.user
@@ -30,6 +34,7 @@ export class CartController {
 
 
     @Post(':cartOwnerEmail')
+    @ApiParam({name:'cartOwnerEmail', description: "Adds item to cart by email", required: true}) // Param doc for Swagger
     @UseGuards(JwtAuthGuard)
     addToCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Body() createProduct: CreateProductDto, @Request() request) {
         const user = request.user
@@ -44,6 +49,10 @@ export class CartController {
     }
 
     @Delete(':cartOwnerEmail')
+    @ApiParam({name:'cartOwnerEmail', description: "Removes item or clears the user's cart by email", required: true}) // Param doc for Swagger
+    @ApiImplicitQueries([
+        { name: "carId", description: "gets the ID of the item that is to be removed", required: false}
+    ])
     @UseGuards(JwtAuthGuard)
     clearCartOrRemoveFromCart (@Param('cartOwnerEmail') cartOwnerEmail: string, @Query('carId') carId: string, @Request() request) {
         const user = request.user
