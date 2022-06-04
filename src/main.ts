@@ -3,6 +3,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import {NestExpressApplication} from '@nestjs/platform-express'
 import {join} from 'path'
+import {SwaggerModule, DocumentBuilder} from '@nestjs/swagger' // swagger documentation  packages for nest
+
+
 const express = require('express')
 
 import * as session from 'express-session';
@@ -16,6 +19,14 @@ import * as csurf from 'csurf';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule); // running Nest on Express
+
+  const config = new DocumentBuilder()
+    .setTitle('Car Buddy')
+    .setDescription('API service that helps in buying/ selling your cars.')
+    .setVersion('1.0')
+    .addTag('cars')
+    .build();
+
   // app.use(cookieSession({
   //   keys: ['asdfghjkl'],
   // }))
@@ -56,6 +67,10 @@ async function bootstrap() {
       transform: true,
     }),
   )
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document)
+  
   await app.listen(3000);
 }
 bootstrap();

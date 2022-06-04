@@ -23,13 +23,14 @@
   "dependencies": {
     "@casl/ability": "^5.4.3",
     "@nestjs/common": "^8.0.0",
-    "@nestjs/core": "^7.5.5",
+    "@nestjs/core": "^8.4.6",
     "@nestjs/event-emitter": "^1.1.1",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/mongoose": "^9.0.3",
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^7.5.5",
     "@nestjs/serve-static": "^2.2.2",
+    "@nestjs/swagger": "^5.2.1",
     "@nestjs/throttler": "^2.0.1",
     "@nestjs/typeorm": "^7.1.5",
     "@types/cookie-session": "^2.0.44",
@@ -54,6 +55,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sqlite3": "^5.0.2",
+    "swagger-ui-express": "^4.4.0",
     "typeorm": "^0.2.45"
   },
   "devDependencies": {
