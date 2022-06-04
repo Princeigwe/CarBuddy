@@ -4,8 +4,10 @@ import {JwtAuthGuard} from '../auth/jwt-auth.guard'
 import { Roles } from '../roles.decorator';
 import { RolesGuard } from '../roles.guards';
 import {Role} from '../enums/role.enum'
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 
 @Controller('orders')
+@ApiTags("Orders")
 export class OrdersController {
     constructor(private ordersService: OrdersService) {}
 

@@ -9,6 +9,7 @@ import {RolesGuard} from '../roles.guards'
 import {diskStorage} from 'multer'
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
 
 
@@ -28,6 +29,7 @@ const storage = diskStorage({
 })
 
 @Controller('profiles')
+@ApiTags('Profiles')
 export class ProfilesController {
 
     constructor(

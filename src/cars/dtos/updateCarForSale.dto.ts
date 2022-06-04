@@ -13,6 +13,7 @@ export class UpdateCarForSaleDto {
 
     // @Type( () => Number ) // fixed validation error in multipart/form-data format.
 
+    // this makes up for the openAPI documentation
     @ApiProperty({description: 'Must be an image file with one of jpg|png|jpeg extensions', required: false})
     @IsOptional()
     file?: string
