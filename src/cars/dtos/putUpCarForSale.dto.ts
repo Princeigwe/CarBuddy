@@ -6,7 +6,7 @@ import {DriveType} from '../../enums/driveType.enum'
 import {FuelType} from '../../enums/fuelType.enum'
 import {TransmissionType} from '../../enums/transmissionType.enum'
 import {CarAvailability} from '../../enums/carAvailability.enum'
-import {ApiProperty} from '@nestjs/swagger' // package to describe POST body
+import {ApiProperty} from '@nestjs/swagger' // package to describe POST body parameters
 
 export class PutUpCarForSaleDto {
 

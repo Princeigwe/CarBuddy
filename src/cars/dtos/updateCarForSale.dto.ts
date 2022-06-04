@@ -7,6 +7,7 @@ import {FuelType} from '../../enums/fuelType.enum'
 import {TransmissionType} from '../../enums/transmissionType.enum'
 import {CarAvailability} from '../../enums/carAvailability.enum'
 
+
 export class UpdateCarForSaleDto {
 
     // @Type( () => Number ) // fixed validation error in multipart/form-data format.

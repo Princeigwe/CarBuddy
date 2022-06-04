@@ -6,8 +6,10 @@ import {JwtAuthGuard} from '../../auth/jwt-auth.guard'
 import {RolesGuard} from '../../roles.guards'
 import { Roles } from 'src/roles.decorator';
 import { Role } from 'src/enums/role.enum';
+import {ApiTags} from '@nestjs/swagger'
 
 @Controller('extra-feature')
+@ApiTags('Cars Extra Features')
 export class ExtraFeatureController {
     constructor(private extraFeatureService: ExtraFeatureService) {}
 
