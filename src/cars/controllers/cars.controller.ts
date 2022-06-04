@@ -10,7 +10,10 @@ import {RolesGuard} from '../../roles.guards'
 import {Role} from '../../enums/role.enum'
 import {Roles} from '../../roles.decorator'
 import {CarAvailability} from '../../enums/carAvailability.enum'
-import {ApiParam, ApiTags, ApiConsumes} from '@nestjs/swagger'
+import {ApiParam, ApiTags, ApiConsumes, ApiQuery} from '@nestjs/swagger'
+
+// " npm install nestjs-swagger-api-implicit-queries-decorator --save " was executed
+import { ApiImplicitQueries } from 'nestjs-swagger-api-implicit-queries-decorator';
 
 
 // defining how the image files are stored
@@ -93,6 +96,13 @@ export class CarsController {
 
     // GET endpoint with(out) query parameters
     @Get('public')
+    // openAPI array of queries
+    @ApiImplicitQueries([
+        {name: 'brand', description: 'fetch cars by brand', required: false},
+        {name: 'estPrice', description: 'fetch cars by estimated price', required: false},
+        {name: 'driveType', description: 'fetch cars by drive types', required: false},
+        {name: 'useType', description: 'fetch cars by use types', required: false},
+    ])
     @UseInterceptors(CacheInterceptor)
     getAllPublicCarsForSale(@Query('brand') brand?: string, @Query('estPrice') estPrice?: any, @Query('driveType') driveType?: string, @Query('useType') useType?: string) {
         if( estPrice || driveType || useType || brand ) { 
