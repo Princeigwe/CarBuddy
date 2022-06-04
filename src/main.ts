@@ -24,8 +24,10 @@ async function bootstrap() {
     .setTitle('Car Buddy')
     .setDescription('API service that helps in buying/ selling your cars.')
     .setVersion('1.0')
-    .addTag('cars')
     .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document)
 
   // app.use(cookieSession({
   //   keys: ['asdfghjkl'],
@@ -68,8 +70,7 @@ async function bootstrap() {
     }),
   )
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document)
+  
   
   await app.listen(3000);
 }
