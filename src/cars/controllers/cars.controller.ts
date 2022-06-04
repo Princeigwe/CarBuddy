@@ -10,6 +10,7 @@ import {RolesGuard} from '../../roles.guards'
 import {Role} from '../../enums/role.enum'
 import {Roles} from '../../roles.decorator'
 import {CarAvailability} from '../../enums/carAvailability.enum'
+import {ApiParam, ApiTags, ApiConsumes} from '@nestjs/swagger'
 
 
 // defining how the image files are stored
@@ -28,6 +29,7 @@ const storage = diskStorage({
 
 
 @Controller('cars')
+@ApiTags("Cars") // grouping the endpoints
 export class CarsController {
 
     constructor(private carsService: CarsService) {}
@@ -45,6 +47,7 @@ export class CarsController {
 
 
     @Post()
+    @ApiConsumes('multipart/form-data') // request body API documentation
     @UseGuards(JwtAuthGuard) // login required to put up car for sale
     @UseInterceptors(FileInterceptor('file', {storage: storage}))
     putUpCarForSale( @Body() carProfile: PutUpCarForSaleDto, @UploadedFile() file: Express.Multer.File, @Request() request) {
@@ -106,6 +109,7 @@ export class CarsController {
     }
 
     @Patch(':id')
+    @ApiConsumes('multipart/form-data') // request body type for API documentation
     @UseGuards(JwtAuthGuard)
     editCarForSale ( @Param('id') id: string, @Body() car: UpdateCarForSaleDto, @Request() request) {
         const user = request.user

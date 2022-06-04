@@ -12,6 +12,11 @@ export class PutUpCarForSaleDto {
 
     // @Type( () => Number ) // fixed validation error in multipart/form-data format.
 
+    // this is to make up for car file documentation
+    @ApiProperty({description: 'Must be an image file with one of jpg|png|jpeg extensions'})
+    @IsOptional()
+    file?: string
+
     @ApiProperty({
         description: "This is an array of car styles to choose from. [ 'Truck', 'SUV', 'Sedan', 'Hatchback', 'Coupe', 'Convertible', 'Van' ]",
         example: "Sedan"
