@@ -4,7 +4,7 @@ import {JwtAuthGuard} from '../auth/jwt-auth.guard'
 import { Roles } from '../roles.decorator';
 import { RolesGuard } from '../roles.guards';
 import {Role} from '../enums/role.enum'
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @Controller('orders')
 @ApiTags("Orders")
@@ -18,6 +18,7 @@ export class OrdersController {
         return this.ordersService.createOrder(user)
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Get()
     @UseInterceptors(CacheInterceptor)
     @UseGuards(JwtAuthGuard)
@@ -26,6 +27,7 @@ export class OrdersController {
         return this.ordersService.getOrders()
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and owner of the order"})
     @Get('email')
     @UseGuards(JwtAuthGuard)
     getOrdersByUserEmail(@Request() request) {
@@ -34,6 +36,7 @@ export class OrdersController {
     }
 
 
+    @ApiOperation({summary: "This action is only done by the admin user and owner of the order"})
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     getOrderById(@Param('id') id: string, @Request() request) {
@@ -41,6 +44,7 @@ export class OrdersController {
         return this.ordersService.getOrderById(parseInt(id), user)
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and owner of the order"})
     @Delete()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)

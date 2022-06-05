@@ -6,7 +6,7 @@ import {JwtAuthGuard} from '../auth/jwt-auth.guard'
 import {RolesGuard} from '../roles.guards'
 import { Roles } from '../roles.decorator';
 import { Role } from '../enums/role.enum';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ApiImplicitQueries } from 'nestjs-swagger-api-implicit-queries-decorator';
 
 
@@ -17,6 +17,7 @@ export class CartController {
     constructor(private cartService: CartService) {}
 
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
@@ -24,6 +25,7 @@ export class CartController {
         return this.cartService.getCarts()
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and cart owner"})
     @Get(':cartOwnerEmail')
     @ApiParam({name:'cartOwnerEmail', description: "Gets the user's cart by email", required: true}) // Param doc for Swagger
     @UseGuards(JwtAuthGuard)
@@ -33,6 +35,7 @@ export class CartController {
     }
 
 
+    @ApiOperation({summary: "This action is only done by the admin user and cart owner"})
     @Post(':cartOwnerEmail')
     @ApiParam({name:'cartOwnerEmail', description: "Adds item to cart by email", required: true}) // Param doc for Swagger
     @UseGuards(JwtAuthGuard)
@@ -41,6 +44,7 @@ export class CartController {
         return this.cartService.addToCart(cartOwnerEmail, createProduct.carId, createProduct.quantity, user)
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Delete()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
@@ -48,6 +52,7 @@ export class CartController {
         return this.cartService.deleteCarts()
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and the cart owner"})
     @Delete(':cartOwnerEmail')
     @ApiParam({name:'cartOwnerEmail', description: "Removes item or clears the user's cart by email", required: true}) // Param doc for Swagger
     @ApiImplicitQueries([

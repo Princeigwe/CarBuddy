@@ -3,8 +3,10 @@ import {AuthService} from './auth.service'
 import {CreateUserDto} from '../users/dtos/create-user.dto'
 import {LocalAuthGuard} from './local-auth.guard'
 import {JwtAuthGuard} from './jwt-auth.guard'
+import { ApiOperation, ApiTags, ApiBody } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags("Auth")
 export class AuthController{
     constructor(
         private authService: AuthService
@@ -21,6 +23,9 @@ export class AuthController{
     which will require the user to authenticate with username and password,
     and attach a token to the response token.
     */
+    @ApiOperation({
+        summary: 'To log into the service, with {email, password}',
+    })
     @HttpCode(200)
     @UseGuards(LocalAuthGuard)
     @Post('login')

@@ -6,13 +6,14 @@ import {JwtAuthGuard} from '../../auth/jwt-auth.guard'
 import {RolesGuard} from '../../roles.guards'
 import { Roles } from 'src/roles.decorator';
 import { Role } from 'src/enums/role.enum';
-import {ApiTags} from '@nestjs/swagger'
+import {ApiTags, ApiOperation} from '@nestjs/swagger'
 
 @Controller('extra-feature')
 @ApiTags('Cars Extra Features')
 export class ExtraFeatureController {
     constructor(private extraFeatureService: ExtraFeatureService) {}
 
+    @ApiOperation({summary: "This action is only done by the admin user and car dealer"})
     @Post()
     @UseGuards(JwtAuthGuard)
     addExtraFeature (@Body() body: ExtraFeatureDto, @Request() request) {
@@ -27,6 +28,7 @@ export class ExtraFeatureController {
         )
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
@@ -41,6 +43,7 @@ export class ExtraFeatureController {
         return this.extraFeatureService.getExtraFeatureById( parseInt(id), user)
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and car dealer"})
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
     updateExtraFeatureById( @Param('id') id: string, @Body() body: UpdateExtraFeatureDto, @Request() request) {
@@ -48,6 +51,7 @@ export class ExtraFeatureController {
         return this.extraFeatureService.updateExtraFeatureById(parseInt(id), body, user)
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Delete()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
@@ -55,6 +59,7 @@ export class ExtraFeatureController {
         return this.extraFeatureService.deleteFeatures()
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and car dealer"})
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     deleteExtraFeatureById ( @Param('id') id: string, @Request() request) {

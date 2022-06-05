@@ -9,7 +9,8 @@ import {RolesGuard} from '../roles.guards'
 import {diskStorage} from 'multer'
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiImplicitQueries } from 'nestjs-swagger-api-implicit-queries-decorator';
 
 
 
@@ -66,6 +67,9 @@ export class ProfilesController {
 
     // adding query parameter to get request fixed the issue of having two GET requests, and one not returning a response
     @Get()
+    @ApiImplicitQueries([
+        { name: "firstName", description: "fetch profiles by first name", required: false },
+    ])
     @UseInterceptors(CacheInterceptor) // auto-caching response
     // @UseGuards(JwtAuthGuard, RolesGuard) // to query a profile, user must be logged in with jwt token
     @Roles(Role.Admin, Role.User) // making the profile resource available to users with both admin and user roles
@@ -74,16 +78,16 @@ export class ProfilesController {
         return this.profilesService.findAll()
     }
     
+    
     @Get(':id')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin) // only user with admin role can access this resource
+    @UseGuards(JwtAuthGuard)
     getUserProfileById(@Param('id') id: string, @Request() request) { 
         const user = request.user
         return this.profilesService.getUserProfileById(parseInt(id))
     }
 
     
-
+    @ApiOperation({summary: "This action is only done by the admin user and user of the profile "})
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
     updateUserProfileById(@Param('id') id: string, @Body() body: UpdateUserProfileDto, @Request() request) {
@@ -92,6 +96,7 @@ export class ProfilesController {
         return userProfile
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and user of the profile"})
     @Delete(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)

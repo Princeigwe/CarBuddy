@@ -8,9 +8,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {RolesGuard} from '../roles.guards';
 import {Roles} from '../roles.decorator'
 import {Role} from '../enums/role.enum'
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
 @Controller('users')
+@ApiTags("Users")
 export class UsersController {
     constructor(
         private usersService: UsersService,
@@ -37,6 +39,7 @@ export class UsersController {
         return user
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Delete(':id') // delete request on a user
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
@@ -44,6 +47,7 @@ export class UsersController {
         return this.usersService.remove(parseInt(id))
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Delete()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)

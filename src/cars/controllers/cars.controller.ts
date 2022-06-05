@@ -10,7 +10,7 @@ import {RolesGuard} from '../../roles.guards'
 import {Role} from '../../enums/role.enum'
 import {Roles} from '../../roles.decorator'
 import {CarAvailability} from '../../enums/carAvailability.enum'
-import {ApiParam, ApiTags, ApiConsumes, ApiQuery} from '@nestjs/swagger'
+import {ApiParam, ApiTags, ApiConsumes, ApiOperation} from '@nestjs/swagger'
 
 // " npm install nestjs-swagger-api-implicit-queries-decorator --save " was executed
 import { ApiImplicitQueries } from 'nestjs-swagger-api-implicit-queries-decorator';
@@ -85,6 +85,7 @@ export class CarsController {
      * TODO: this method should only be accessed by the Admin user
      * This is to get all cars for sale in the database, both [Private and Public]. THis should only be accessed by the Admin user
      */
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @UseInterceptors(CacheInterceptor)
@@ -111,6 +112,7 @@ export class CarsController {
         return this.carsService.getAllPublicCarsForSale()
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and car dealer, if the car is made private"})
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     async getCarForSaleById (@Param('id') id: string, @Request() request) {
@@ -118,6 +120,7 @@ export class CarsController {
         return this.carsService.getCarForSaleById(parseInt(id), user)
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and car dealer"})
     @Patch(':id')
     @ApiConsumes('multipart/form-data') // request body type for API documentation
     @UseGuards(JwtAuthGuard)
@@ -126,6 +129,7 @@ export class CarsController {
         return this.carsService.editCarForSale( parseInt(id), car, user )
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user"})
     @Delete()
     @UseGuards(JwtAuthGuard)
     @Roles(Role.Admin) // deleting all data from base, should be done only by the Admin User
@@ -133,6 +137,7 @@ export class CarsController {
         return this.carsService.deleteAllCarsForSale()
     }
 
+    @ApiOperation({summary: "This action is only done by the admin user and car dealer"})
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     deleteCarForSaleById ( @Param('id') id: string , @Request() request) {
