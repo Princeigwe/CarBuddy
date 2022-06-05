@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query, UseGuards, CacheInterceptor } from '@nestjs/common';
+import { Controller, Post, Patch, Get, Delete, Body, Request, UseInterceptors, UploadedFile, Header, BadRequestException, Response, Param, StreamableFile, Query, UseGuards, CacheInterceptor, ClassSerializerInterceptor } from '@nestjs/common';
 import { PutUpCarForSaleDto } from '../dtos/putUpCarForSale.dto';
 import { UpdateCarForSaleDto } from '../dtos/updateCarForSale.dto';
 import {JwtAuthGuard} from '../../auth/jwt-auth.guard'
@@ -88,7 +88,7 @@ export class CarsController {
     @ApiOperation({summary: "This action is only done by the admin user"})
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @UseInterceptors(CacheInterceptor)
+    @UseInterceptors(CacheInterceptor, ClassSerializerInterceptor)
     @Roles(Role.Admin) // getting all cars (both private and public) should only be accessed by the Admin user
     getAllCarsForSale() {
         return this.carsService.getAllCarsForSale()
@@ -104,7 +104,7 @@ export class CarsController {
         {name: 'driveType', description: 'fetch cars by drive types', required: false},
         {name: 'useType', description: 'fetch cars by use types', required: false},
     ])
-    @UseInterceptors(CacheInterceptor)
+    @UseInterceptors(CacheInterceptor, ClassSerializerInterceptor)
     getAllPublicCarsForSale(@Query('brand') brand?: string, @Query('estPrice') estPrice?: any, @Query('driveType') driveType?: string, @Query('useType') useType?: string) {
         if( estPrice || driveType || useType || brand ) { 
             return this.carsService.queryPublicCarsByBrandOrAndEstimatedPriceOrAndDriveTypeOrAndUseType( brand, estPrice, driveType, useType) 
@@ -115,6 +115,7 @@ export class CarsController {
     @ApiOperation({summary: "This action is only done by the admin user and car dealer, if the car is made private"})
     @Get(':id')
     @UseGuards(JwtAuthGuard)
+    @UseInterceptors(ClassSerializerInterceptor)
     async getCarForSaleById (@Param('id') id: string, @Request() request) {
         const user = request.user
         return this.carsService.getCarForSaleById(parseInt(id), user)

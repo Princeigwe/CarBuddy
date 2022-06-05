@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Patch, Body, Query, Param, Request, UseGuards, HttpException, HttpStatus, UseInterceptors, UploadedFile, BadRequestException, CacheInterceptor } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Patch, Body, Query, Param, Request, UseGuards, HttpException, HttpStatus, UseInterceptors, UploadedFile, BadRequestException, CacheInterceptor, ClassSerializerInterceptor } from '@nestjs/common';
 import { CreateUserProfileDto } from './dtos/create-userProfile.dto';
 import {ProfilesService} from '../profiles/profiles.service'
 import {UpdateUserProfileDto} from './dtos/update-userProfile.dto';
@@ -70,7 +70,7 @@ export class ProfilesController {
     @ApiImplicitQueries([
         { name: "firstName", description: "fetch profiles by first name", required: false },
     ])
-    @UseInterceptors(CacheInterceptor) // auto-caching response
+    @UseInterceptors(CacheInterceptor, ClassSerializerInterceptor) // auto-caching response
     // @UseGuards(JwtAuthGuard, RolesGuard) // to query a profile, user must be logged in with jwt token
     @Roles(Role.Admin, Role.User) // making the profile resource available to users with both admin and user roles
     async queryUserProfiles(@Query('firstName') firstName: string) {
@@ -81,6 +81,7 @@ export class ProfilesController {
     
     @Get(':id')
     @UseGuards(JwtAuthGuard)
+    @UseInterceptors(ClassSerializerInterceptor)
     getUserProfileById(@Param('id') id: string, @Request() request) { 
         const user = request.user
         return this.profilesService.getUserProfileById(parseInt(id))
