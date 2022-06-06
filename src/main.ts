@@ -16,6 +16,7 @@ let RedisStore = require('connect-redis')(session) //import REDIS session storag
 const cookieSession = require('cookie-session');
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
+import Helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule); // running Nest on Express
@@ -33,7 +34,9 @@ async function bootstrap() {
   //   keys: ['asdfghjkl'],
   // }))
 
-  
+  if (process.env.PRODUCTION == 'true') {
+    app.use(Helmet()); // wrapper function for some web security functions
+  }
 
   // application should provide cookies
   app.use(cookieParser());
