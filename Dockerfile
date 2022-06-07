@@ -42,3 +42,5 @@ COPY --from=development /usr/src/app/dist ./dist
 
 # run the application
 CMD ["node", "dist/main"]
+
+LABEL maintainer="Prince Igwenagha"
