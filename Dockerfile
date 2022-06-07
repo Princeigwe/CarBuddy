@@ -7,7 +7,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # install development dependencies
-RUN npm install --only=development
+# RUN npm install --only=development
+RUN npm install
 
 # copy the application code to the working directory of image
 COPY . .
