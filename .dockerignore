@@ -1,7 +1,0 @@
-db.sqlite
-.gitignore
-mongo-volume
-node_modules
-
-docker-compose.yml
-init-mongo.js
