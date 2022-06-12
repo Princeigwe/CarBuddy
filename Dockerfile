@@ -13,6 +13,7 @@ RUN npm install --only=development --force
 # copy the application code to the working directory of image
 COPY . .
 
+EXPOSE 3000
 #  build the application
 RUN npm run build
 
@@ -33,12 +34,14 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 #  so that Typescript isn't installed in the production image
-RUN npm install --only=production
+RUN npm install --only=production --force
 
 COPY . .
 
 #  copy the compiled javascript code to out production image
 COPY --from=development /usr/src/app/dist ./dist
+
+EXPOSE 3000
 
 # run the application
 CMD ["node", "dist/main"]
