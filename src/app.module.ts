@@ -45,8 +45,10 @@ import { OrdersModule } from './orders/orders.module';
 
     TypeOrmModule.forRoot({
     type: 'postgres',
-    host: 'car_postgres', // the host should be the name of the postgres container... that was how I was able to connect.
-    port: 5432,
+    host: process.env.RDS_HOSTNAME, // the host should be the name of the postgres container... that was how I was able to connect.
+    port: parseInt(process.env.RDS_PORT),
+
+
     // port: process.env.DB_PORT,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,

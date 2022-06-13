@@ -29,7 +29,9 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE_NAME}
-      # POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_HOST: ${RDS_HOSTNAME}
+      POSTGRES_PORT: ${RDS_PORT}
+
     ports:
       - 5432:5432
     volumes:
