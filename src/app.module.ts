@@ -50,9 +50,9 @@ import { OrdersModule } from './orders/orders.module';
 
 
     // port: process.env.DB_PORT,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE_NAME,
+    username: process.env.RDS_USERNAME,
+    password: process.env.RDS_PASSWORD,
+    database: process.env.RDS_DB_NAME,
     entities: [User, Report, UserProfile, Car, ExtraFeature, Order, OrderItem],
     synchronize: true,
     ////////////////////////////////////////////////
