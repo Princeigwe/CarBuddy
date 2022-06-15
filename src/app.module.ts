@@ -50,6 +50,8 @@ import { OrdersModule } from './orders/orders.module';
 
 
     // port: process.env.DB_PORT,
+
+    // these environment variables are related to AWS RDS variables
     username: process.env.RDS_USERNAME,
     password: process.env.RDS_PASSWORD,
     database: process.env.RDS_DB_NAME,
