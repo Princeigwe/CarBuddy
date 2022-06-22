@@ -34,6 +34,7 @@
     "@nestjs/throttler": "^2.0.1",
     "@nestjs/typeorm": "^7.1.5",
     "@types/cookie-session": "^2.0.44",
+    "aws-sdk": "^2.1154.0",
     "cache-manager": "^4.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",

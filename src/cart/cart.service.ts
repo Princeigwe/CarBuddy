@@ -12,6 +12,9 @@ import {Role} from '../enums/role.enum'
 import {CaslAbilityFactory} from '../casl/casl-ability.factory'
 import {Action} from '../enums/action.enum'
 
+// import DynamoDB defined methods
+import { createCart } from '../aws/cartDynamoDB/createCart';
+
 
 
 @Injectable()
@@ -30,8 +33,14 @@ export class CartService {
     @OnEvent('user.registered')
     async createCartEvent(payload: UserRegisteredEvent) {
         let cartOwnerEmail = payload.email
-        const cart = new this.cartModel({cartOwnerEmail})
-        return cart.save()
+        
+        // if the running node environment is production... create new cart Document on DynamoDB
+        if(process.env.NODE_ENV == 'production') {
+            createCart(cartOwnerEmail)
+        }else{
+            const cart = new this.cartModel({cartOwnerEmail})
+            return cart.save()
+        }
     }
 
     // this action is available to the admin only

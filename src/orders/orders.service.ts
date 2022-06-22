@@ -25,7 +25,6 @@ export class OrdersService {
         private caslAbilityFactory: CaslAbilityFactory,
     ) {}
 
-
     // this function will get the cart Items in the user cart, in order to create an order
     /**
      * The function creates an order for the current user, and then creates an order item for each item
