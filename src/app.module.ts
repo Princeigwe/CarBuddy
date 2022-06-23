@@ -41,7 +41,7 @@ import { OrdersModule } from './orders/orders.module';
       ttl: 1000, // cache items time to live set to 30 seconds
       isGlobal: true // setting the cache module to be used globally in other modules
     }),
-    MongooseModule.forRoot('mongodb://mongo:mongo@car_mongodb'),
+    MongooseModule.forRoot(process.env.MONGO_DATABASE_URI),
 
     TypeOrmModule.forRoot({
     type: 'postgres',
