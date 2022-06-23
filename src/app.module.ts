@@ -38,7 +38,7 @@ import { OrdersModule } from './orders/orders.module';
 @Module({
   imports: [ 
     CacheModule.register({
-      ttl: 1000, // cache items time to live set to 30 seconds
+      ttl: 100, // cache items time to live set to 30 seconds
       isGlobal: true // setting the cache module to be used globally in other modules
     }),
     MongooseModule.forRoot(process.env.MONGO_DATABASE_URI),
