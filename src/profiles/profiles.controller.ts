@@ -11,6 +11,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ApiImplicitQueries } from 'nestjs-swagger-api-implicit-queries-decorator';
+import {Not, Repository} from 'typeorm'
+import {InjectRepository} from '@nestjs/typeorm'
+import {UserProfile} from './profiles.entity'
+
 
 
 
@@ -34,7 +38,8 @@ const storage = diskStorage({
 export class ProfilesController {
 
     constructor(
-        private profilesService:ProfilesService
+        private profilesService:ProfilesService,
+        @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>,
     ){}
 
     @Post()
@@ -57,6 +62,13 @@ export class ProfilesController {
             body.address, 
             user
         )
+    }
+
+    // updating user profile image file
+    @Patch('/image/:id')
+    @UseInterceptors(FileInterceptor('file', {storage: storage}))
+    async updateUserProfileImageById( @UploadedFile() file: Express.Multer.File, @Param('id') id: number) {
+        return this.profilesService.updateUserProfileImageFileById(id, file)
     }
     
 
@@ -91,7 +103,7 @@ export class ProfilesController {
     @ApiOperation({summary: "This action is only done by the admin user and user of the profile "})
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
-    updateUserProfileById(@Param('id') id: string, @Body() body: UpdateUserProfileDto, @Request() request) {
+    updateUserProfileById(@Param('id') id: string, @Body() body: UpdateUserProfileDto, @Request() request, @UploadedFile() file: Express.Multer.File) {
         const user = request.user
         const userProfile = this.profilesService.updateUserProfileById(parseInt(id), body, user)
         return userProfile

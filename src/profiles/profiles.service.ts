@@ -53,11 +53,17 @@ export class ProfilesService {
 
         const ability = this.caslAbilityFactory.createForUser(user)
         if(ability.can(Action.Update, userProfile) || JSON.stringify(user) === JSON.stringify(userProfile.user) ) {
-            Object.assign(userProfile, attrs);
+            Object.assign(userProfile, attrs); 
             return this.userProfileRepo.save(userProfile)
         }else{
             return new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
         }
+    }
+
+    async updateUserProfileImageFileById(id: number, file ?: any) { 
+        const userProfile = await this.getUserProfileById(id);
+        userProfile.file = file
+        return this.userProfileRepo.save(userProfile)
     }
 
     async deleteUserProfileById(id:number, user:User) {
