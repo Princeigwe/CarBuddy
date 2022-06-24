@@ -66,9 +66,11 @@ export class ProfilesController {
 
     // updating user profile image file
     @Patch('/image/:id')
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file', {storage: storage}))
-    async updateUserProfileImageById( @UploadedFile() file: Express.Multer.File, @Param('id') id: number) {
-        return this.profilesService.updateUserProfileImageFileById(id, file)
+    async updateUserProfileImageById( @UploadedFile() file: Express.Multer.File, @Param('id') id: number, @Request() request) {
+        const user = request.user
+        return this.profilesService.updateUserProfileImageFileById(id, user ,file)
     }
     
 

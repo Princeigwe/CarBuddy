@@ -60,10 +60,15 @@ export class ProfilesService {
         }
     }
 
-    async updateUserProfileImageFileById(id: number, file ?: any) { 
+    async updateUserProfileImageFileById(id: number, user: User, file ?: any) { 
         const userProfile = await this.getUserProfileById(id);
-        userProfile.file = file
-        return this.userProfileRepo.save(userProfile)
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (ability.can(Action.Update, userProfile) || JSON.stringify(user) === JSON.stringify(userProfile.user)) {
+            userProfile.file = file
+            return this.userProfileRepo.save(userProfile)
+        }else{
+            return new HttpException('Forbidden Response', HttpStatus.FORBIDDEN)
+        }
     }
 
     async deleteUserProfileById(id:number, user:User) {
