@@ -184,6 +184,13 @@ export class CarsService {
         }
     }
 
+    async updateCarImageById (id: number,  file ?:any) {
+        const carModel = await this.carRepo.findOne(id)
+        // const ability = this.caslAbilityFactory.createForUser(dealer)
+        carModel.file = file
+        return this.carRepo.save(carModel)
+    }
+
     /**
      * It returns a list of cars that are public and match the given parameters
      * @param {string} [brand] - string

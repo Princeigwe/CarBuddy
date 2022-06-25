@@ -130,6 +130,12 @@ export class CarsController {
         return this.carsService.editCarForSale( parseInt(id), car, user )
     }
 
+    @Patch('/image/:id')
+    @UseInterceptors(FileInterceptor('file', {storage: storage}))
+    updateCarImageById( @Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
+        return this.carsService.updateCarImageById(id, file)
+    }
+
     @ApiOperation({summary: "This action is only done by the admin user"})
     @Delete()
     @UseGuards(JwtAuthGuard)

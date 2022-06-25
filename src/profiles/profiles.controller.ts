@@ -9,7 +9,7 @@ import {RolesGuard} from '../roles.guards'
 import {diskStorage} from 'multer'
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Express} from 'express';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { ApiImplicitQueries } from 'nestjs-swagger-api-implicit-queries-decorator';
 import {Not, Repository} from 'typeorm'
 import {InjectRepository} from '@nestjs/typeorm'
@@ -42,6 +42,7 @@ export class ProfilesController {
         @InjectRepository(UserProfile)  private userProfileRepo: Repository<UserProfile>,
     ){}
 
+    @ApiConsumes('multipart/form-data') // request body type for API documentation
     @Post()
     @UseGuards(JwtAuthGuard) // to create profile, user must be logged in with jwt token
     // @Roles(Role.Admin, Role.User) // making the profile resource available to users with both admin and user roles, still the same when uncommented
@@ -65,6 +66,8 @@ export class ProfilesController {
     }
 
     // updating user profile image file
+    @ApiOperation({summary: "This action updates the user profile image by the user or admin"})
+    @ApiConsumes('multipart/form-data') // request body type for API documentation
     @Patch('/image/:id')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file', {storage: storage}))
