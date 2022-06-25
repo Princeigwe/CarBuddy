@@ -131,9 +131,11 @@ export class CarsController {
     }
 
     @Patch('/image/:id')
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file', {storage: storage}))
-    updateCarImageById( @Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
-        return this.carsService.updateCarImageById(id, file)
+    updateCarImageById( @Param('id') id: number, @UploadedFile() file: Express.Multer.File, @Request() request) {
+        const dealer = request.user
+        return this.carsService.updateCarImageById(id, dealer, file)
     }
 
     @ApiOperation({summary: "This action is only done by the admin user"})

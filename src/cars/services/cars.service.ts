@@ -184,11 +184,14 @@ export class CarsService {
         }
     }
 
-    async updateCarImageById (id: number,  file ?:any) {
+    async updateCarImageById (id: number, dealer: User,  file ?:any) {
         const carModel = await this.carRepo.findOne(id)
-        // const ability = this.caslAbilityFactory.createForUser(dealer)
-        carModel.file = file
-        return this.carRepo.save(carModel)
+        const ability = this.caslAbilityFactory.createForUser(dealer)
+        if(ability.can(Action.Update, carModel) || JSON.stringify(carModel.dealer) === JSON.stringify(dealer)) {
+            carModel.file = file
+            return this.carRepo.save(carModel)
+        }
+        else{ throw new HttpException('Forbidden Response', HttpStatus.FORBIDDEN) }
     }
 
     /**
