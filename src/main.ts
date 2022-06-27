@@ -34,7 +34,7 @@ async function bootstrap() {
   //   keys: ['asdfghjkl'],
   // }))
 
-  if (process.env.PRODUCTION == 'true') {
+  if (process.env.NODE_ENV == 'production') {
     app.use(Helmet()); // wrapper function for some web security functions
   }
 

@@ -131,6 +131,8 @@ export class CarsController {
     }
 
     @Patch('/image/:id')
+    @ApiConsumes('multipart/form-data') // request body type for API documentation
+    @ApiOperation({summary: "This action updates the car profile image by the user or admin"})
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file', {storage: storage}))
     updateCarImageById( @Param('id') id: number, @UploadedFile() file: Express.Multer.File, @Request() request) {
