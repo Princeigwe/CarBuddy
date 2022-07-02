@@ -18,16 +18,6 @@ export class OrdersController {
     @UseGuards(JwtAuthGuard)
     async createOrder(@Request() request ) {
         const user = request.user
-
-        let mailOptions = {
-            to: "igwep297@gmail.com",
-            from: 'CarBuddyOrg@gmail.com',
-            subject: 'Order created',
-            text: 'Order created'
-        }
-
-        console.log(mailOptions.to)
-        await transporter.sendMail(mailOptions)
         return this.ordersService.createOrder(user)
     }
 

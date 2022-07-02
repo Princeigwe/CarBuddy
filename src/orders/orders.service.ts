@@ -111,31 +111,26 @@ export class OrdersService {
             await this.orderItemRepo.save(orderItem)
 
             // emitting an event to delete user cart items when order is created
-            // this.eventEmitter.emit('order.created', new OrderCreatedEvent(userEmail))
+            this.eventEmitter.emit('order.created', new OrderCreatedEvent(userEmail))
         }
 
-        ////////
-        
-        // let mailOptions = {
-        //     from: 'CarBuddyOrg@gmail.com',
-        //     to: [ `${userEmail}` ],
-        //     subject: 'Order created',
-        //     text: 'Order created'
-        // }
+        // after order is created and saved, send email notifying the user that the order has been created
+        let mailOptions = {
+            from: process.env.GMAIL_USER,
+            to: `${userEmail}`,
+            subject: 'Order created',
+            text: `This is notify you that the owner this email, ${userEmail}, has successfully created an order from Car Buddy.`
+        }
 
+        await transporter.sendMail(mailOptions, function(err, info) {
+            if (err) {
+                console.error(err);
+            }else {
+                console.log('Message sent: ' + info.response)
+            }
+                transporter.close()
+        })
 
-        // transporter.sendMail({mailOptions, function(err, info) {
-        //     if (err) {
-        //         console.error(err);
-        //         // transporter.close();
-        //     }else {
-        //         console.log('Message sent: ' + info.response)
-        //         // transporter.close()
-        //     }
-        // }})
-
-        /////
-        
         return savedOrder
     }
 
