@@ -11,7 +11,7 @@ import {OrderCreatedEvent} from '../events/order.created.event'
 import {CaslAbilityFactory} from '../casl/casl-ability.factory'
 import {Action} from '../enums/action.enum'
 
-
+import {transporter} from 'src/nodemailer/transporter'
 
 @Injectable()
 export class OrdersService {
@@ -52,7 +52,6 @@ export class OrdersService {
         const savedOrder = await this.orderRepo.save(order)
 
         for(var item of userCart.items) {
-            console.log(item)
             const vehicleType = item['style']
             const releaseYear = item['releaseYear']
             const brand = item['brand']
@@ -112,8 +111,30 @@ export class OrdersService {
             await this.orderItemRepo.save(orderItem)
 
             // emitting an event to delete user cart items when order is created
-            this.eventEmitter.emit('order.created', new OrderCreatedEvent(userEmail))
+            // this.eventEmitter.emit('order.created', new OrderCreatedEvent(userEmail))
         }
+
+        ////////
+        
+        // let mailOptions = {
+        //     from: 'CarBuddyOrg@gmail.com',
+        //     to: [ `${userEmail}` ],
+        //     subject: 'Order created',
+        //     text: 'Order created'
+        // }
+
+
+        // transporter.sendMail({mailOptions, function(err, info) {
+        //     if (err) {
+        //         console.error(err);
+        //         // transporter.close();
+        //     }else {
+        //         console.log('Message sent: ' + info.response)
+        //         // transporter.close()
+        //     }
+        // }})
+
+        /////
         
         return savedOrder
     }

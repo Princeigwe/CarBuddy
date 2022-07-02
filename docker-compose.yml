@@ -14,6 +14,12 @@ services:
     environment:
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: 'development'
+      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
+      OAUTH_REFRESH_TOKEN: ${OAUTH_REFRESH_TOKEN}
+      GMAIL_USER: ${GMAIL_USER}
+      GMAIL_PASSWORD: ${GMAIL_PASSWORD}
+
     volumes:
       - .:/usr/src/app # mounting the current directory inside the container
       - /usr/src/app/node_modules # mounting node_modules inside the container

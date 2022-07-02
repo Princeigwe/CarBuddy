@@ -6,6 +6,9 @@ import { RolesGuard } from '../roles.guards';
 import {Role} from '../enums/role.enum'
 import { ApiParam, ApiTags, ApiOperation } from '@nestjs/swagger';
 
+import {transporter} from 'src/nodemailer/transporter'
+
+
 @Controller('orders')
 @ApiTags("Orders")
 export class OrdersController {
@@ -13,8 +16,18 @@ export class OrdersController {
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    createOrder(@Request() request ) {
+    async createOrder(@Request() request ) {
         const user = request.user
+
+        let mailOptions = {
+            to: "igwep297@gmail.com",
+            from: 'CarBuddyOrg@gmail.com',
+            subject: 'Order created',
+            text: 'Order created'
+        }
+
+        console.log(mailOptions.to)
+        await transporter.sendMail(mailOptions)
         return this.ordersService.createOrder(user)
     }
 
