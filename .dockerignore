@@ -1,6 +1,4 @@
 docker-compose.yml
-node_modules
-mongo-volume
-
-
+node_modules/
+mongo-volume/
 .env

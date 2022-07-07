@@ -27,6 +27,22 @@ ARG NODE_ENV=production
 # setting node environment variable to production
 ENV NODE_ENV=${NODE_ENV}
 
+ARG MONGO_DATABASE_URI=mongodb://mongo:mongo@car_mongodb
+ARG RDS_HOSTNAME=localhost
+ARG RDS_PORT=5432
+ARG RDS_DB_NAME=Database
+ARG RDS_USERNAME=SkyData
+ARG RDS_PASSWORD=SkyData
+
+ENV MONGO_DATABASE_URI="${MONGO_DATABASE_URI}"
+
+ENV RDS_HOSTNAME="${RDS_HOSTNAME}" \
+    RDS_PORT="${RDS_PORT}" \ 
+    RDS_DB_NAME="${RDS_DB_NAME}" \
+    RDS_USERNAME="${RDS_USERNAME}" \
+    RDS_PASSWORD="${RDS_PASSWORD}"
+
+
 # setting the working directory of image
 WORKDIR /usr/src/app
 

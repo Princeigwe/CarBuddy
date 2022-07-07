@@ -33,11 +33,11 @@ services:
     container_name: car_postgres
     image: postgres:12-alpine
     environment:
-      POSTGRES_USER: ${RDS_USERNAME}
-      POSTGRES_PASSWORD: ${RDS_PASSWORD}
-      POSTGRES_DB: ${RDS_DB_NAME}
-      POSTGRES_HOST: ${RDS_HOSTNAME}
-      POSTGRES_PORT: ${RDS_PORT}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_PORT: ${DB_PORT}
 
     ports:
       - 5432:5432

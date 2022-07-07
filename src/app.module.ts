@@ -45,16 +45,16 @@ import { OrdersModule } from './orders/orders.module';
 
     TypeOrmModule.forRoot({
     type: 'postgres',
-    host: process.env.RDS_HOSTNAME, // the host should be the name of the postgres container... that was how I was able to connect.
-    port: parseInt(process.env.RDS_PORT),
+    host: process.env.NODE_ENV == "production"? process.env.RDS_HOSTNAME : process.env.DB_HOST, // the host should be the name of the postgres container... that was how I was able to connect.
+    port: process.env.NODE_ENV == "production"? parseInt(process.env.RDS_PORT) : parseInt(process.env.DB_PORT),
 
 
     // port: process.env.DB_PORT,
 
     // these environment variables are related to AWS RDS variables
-    username: process.env.RDS_USERNAME,
-    password: process.env.RDS_PASSWORD,
-    database: process.env.RDS_DB_NAME,
+    username: process.env.NODE_ENV == "production"? process.env.RDS_USERNAME : process.env.DB_USERNAME,
+    password: process.env.NODE_ENV == "production"? process.env.RDS_PASSWORD : process.env.DB_PASSWORD,
+    database: process.env.NODE_ENV == "production"? process.env.RDS_DB_NAME : process.env.DB_NAME,
     entities: [User, Report, UserProfile, Car, ExtraFeature, Order, OrderItem],
     synchronize: true,
     ////////////////////////////////////////////////
