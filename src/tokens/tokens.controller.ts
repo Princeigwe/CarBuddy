@@ -9,7 +9,7 @@ export class TokensController {
 
     @Post('forgot-password')
     async forgot ( @Body() body: ForgotPasswordEmailDto) {
-        return this.tokensService.forgotPassword(body.email)
+        return this.tokensService.forgotPasswordEmail(body.email)
     }
 
     @Get()

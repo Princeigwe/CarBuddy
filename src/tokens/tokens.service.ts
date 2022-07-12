@@ -58,7 +58,7 @@ export class TokensService {
      * @param {string} email - the email of the user requesting for password reset
      * @returns an object with a message property.
      */
-    async forgotPassword (email: string) {
+    async forgotPasswordEmail (email: string) {
 
         // defining JWT payload that contains the necessary user information
         const payload ={
@@ -121,7 +121,11 @@ export class TokensService {
 
     }
 
+    // this function resets the user email password with the help of the token,
+    // but first the token associated with the user email will have to be fetched from the Token database
+    async resetPassword (password: string, confirmPassword: string) {
 
+    }
 
     // get all tokens
     async getTokens() {
