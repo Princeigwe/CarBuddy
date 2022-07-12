@@ -19,6 +19,7 @@ import {Car} from './cars/models/cars.entity'
 import {ExtraFeature} from './cars/models/extraFeature.entity'
 import { Order } from './orders/models/order.entity';
 import {OrderItem} from './orders/models/orderItem.entity';
+import {Token} from './tokens/token.entity'
 
 ////////////////////////////////////////
 
@@ -32,6 +33,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import {join} from 'path'
 import { CartModule } from './cart/cart.module';
 import { OrdersModule } from './orders/orders.module';
+import { TokensModule } from './tokens/tokens.module';
 
 
 
@@ -55,7 +57,7 @@ import { OrdersModule } from './orders/orders.module';
     username: process.env.NODE_ENV == "production"? process.env.RDS_USERNAME : process.env.DB_USERNAME,
     password: process.env.NODE_ENV == "production"? process.env.RDS_PASSWORD : process.env.DB_PASSWORD,
     database: process.env.NODE_ENV == "production"? process.env.RDS_DB_NAME : process.env.DB_NAME,
-    entities: [User, Report, UserProfile, Car, ExtraFeature, Order, OrderItem],
+    entities: [User, Report, UserProfile, Car, ExtraFeature, Order, OrderItem, Token],
     synchronize: true,
     ////////////////////////////////////////////////
     // type: 'sqlite', 
@@ -77,6 +79,7 @@ import { OrdersModule } from './orders/orders.module';
   CartModule,
   EventEmitterModule.forRoot(),
   OrdersModule,
+  TokensModule,
   // ServeStaticModule.forRoot({
   //   rootPath: join(__dirname, '..', 'uploads'),
   // })
