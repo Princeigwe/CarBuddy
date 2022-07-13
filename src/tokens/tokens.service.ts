@@ -94,10 +94,6 @@ export class TokensService {
         const signature = createSignature(jwtB64Header, jwtB64Payload, secret)
         const jsonWebToken = jwtB64Header + '.' + jwtB64Payload + '.' + signature // the complete JWT token that will be used to reset password
 
-        // add the jwt token related to the email in the database
-        let passwordToken = this.tokenRepo.create({ email, jsonWebToken})
-        this.tokenRepo.save(passwordToken)
-
         let mailOptions = {
             from: process.env.GMAIL_USER,
             to: `${email}`,
@@ -114,9 +110,20 @@ export class TokensService {
                 transporter.close()
         })
 
+        // to retrieve and delete and token that is associated with the email
+        let oldToken = await this.tokenRepo.find({where: {email: email}})
+        if (oldToken) {
+            await this.tokenRepo.remove(oldToken)
+        }
+
+        // add the jwt token related to the email in the database
+        const passwordToken = this.tokenRepo.create({ email, jsonWebToken})
+        await this.tokenRepo.save(passwordToken)
+
         // API response
         return {
-            "message" : " Please check your email to reset password. "
+            message : " Please check your email to reset password.",
+            jwtToken: jsonWebToken
         }
 
     }
