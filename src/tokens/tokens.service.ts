@@ -49,7 +49,7 @@ const jwtB64Header = replaceSpecialChars(b64Header) // defining the header of a 
 export class TokensService {
 
     constructor ( 
-        @InjectRepository(Token) private tokenRepository: Repository<Token>,
+        @InjectRepository(Token) private tokenRepo: Repository<Token>,
     ) {}
 
 
@@ -95,8 +95,8 @@ export class TokensService {
         const jsonWebToken = jwtB64Header + '.' + jwtB64Payload + '.' + signature // the complete JWT token that will be used to reset password
 
         // add the jwt token related to the email in the database
-        let passwordToken = this.tokenRepository.create({ email, jsonWebToken})
-        this.tokenRepository.save(passwordToken)
+        let passwordToken = this.tokenRepo.create({ email, jsonWebToken})
+        this.tokenRepo.save(passwordToken)
 
         let mailOptions = {
             from: process.env.GMAIL_USER,
@@ -129,6 +129,13 @@ export class TokensService {
 
     // get all tokens
     async getTokens() {
-        return this.tokenRepository.find()
+        return this.tokenRepo.find()
+    }
+
+    async deleteTokens () {
+        await this.tokenRepo.delete({})
+        return {
+            message: 'Token deleted'
+        }
     }
 }
