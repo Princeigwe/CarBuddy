@@ -10,13 +10,14 @@ export class TokensController {
     constructor(private tokensService: TokensService) {}
 
     @Post('forgot-password')
-    async forgot ( @Body() body: ForgotPasswordEmailDto, @Request() request) {
-        // var forgotPasswordEmail = this.tokensService.forgotPasswordEmail(body.email)
+    async forgotPasswordEmail ( @Body() body: ForgotPasswordEmailDto, @Request() request) {
+        var forgotPasswordEmail = this.tokensService.forgotPasswordEmail(body.email)
 
         // setting a session object
-        // request.session.passwordResetToken = (await forgotPasswordEmail).token
+        request.session.passwordResetToken = (await forgotPasswordEmail).token
 
-        return this.tokensService.forgotPasswordEmail(body.email)
+        // returning response of the forgotPasswordEmail method
+        return forgotPasswordEmail
 
     }
 
