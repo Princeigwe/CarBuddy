@@ -3,13 +3,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm'
 import {Repository} from 'typeorm'
 import {Token} from './token.entity'
+import { PasswordResetTokenStatus } from 'src/enums/passwordResetTokenStatus.enum';
+
 
 import {jwtConstants} from '../auth/constants'
 const crypto = require('crypto') // module used to generate cryptographic signature
 
 import {transporter} from '../nodemailer/transporter'
 import jwt from 'jsonwebtoken'
-
 
 @Injectable()
 export class TokensService {
@@ -68,18 +69,31 @@ export class TokensService {
         const tokenEntity = await this.tokenRepo.findOne({where: {tokenString: tokenString}})
         const minuteOfTokenIssuedDate = tokenEntity.dateIssued.getMinutes()
         const tokenExpirationTimeInMinute = 2
-        const minuteTokenIsInvalid = minuteOfTokenIssuedDate + tokenExpirationTimeInMinute
+        const currentTimeMinute = new Date().getMinutes()
+        const minuteTokenIsInvalid = currentTimeMinute + tokenExpirationTimeInMinute
+
+        // while (currentTimeMinute < minuteOfTokenIssuedDate) {
+        //     tokenEntity.status = PasswordResetTokenStatus.VALID
+        //     if (currentTimeMinute > minuteOfTokenIssuedDate) {
+        //         tokenEntity.status = PasswordResetTokenStatus.INVALID
+        //         break
+        //     }
+        // }
 
         // if the minute for token to be invalid has arrived, delete token and respond with "invalid token message"
         // or if the minuteOfTokenIssuedDate is 58, delete the token in 2 minutes
-        if (minuteTokenIsInvalid >= minuteOfTokenIssuedDate || minuteOfTokenIssuedDate + 2 == 60) {
-            await this.tokenRepo.delete(tokenEntity)
-            throw new NotFoundException("This token has expired, kindly request for a new password reset token.")
+
+        if (minuteOfTokenIssuedDate + 2 < currentTimeMinute ) {
+            await this.deleteTokenByEmail(tokenEntity.email)
+            return { message: "This token has expired, kindly request for a new password reset token."}
         }
 
-        if (!tokenEntity) {
-            throw new NotFoundException("Token is invalid, request for new password reset token")
-        }
+        const userEmail = tokenEntity.email
+        console.log(userEmail)
+
+        // if (!tokenEntity) {
+        //     throw new NotFoundException("Token is invalid, request for new password reset token")
+        // }
 
         
         
@@ -90,6 +104,11 @@ export class TokensService {
     async getTokens() {
         return this.tokenRepo.find()
     }
+
+    async deleteTokenByEmail( email: string) {
+        const token = await this.tokenRepo.findOne({where: {email: email}})
+        this.tokenRepo.delete(token)
+    } 
 
     async deleteTokens () {
         await this.tokenRepo.delete({})
