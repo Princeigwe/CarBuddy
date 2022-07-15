@@ -74,9 +74,7 @@ export class TokensService {
         // or if the minuteOfTokenIssuedDate is 58, delete the token in 2 minutes
         if (minuteTokenIsInvalid >= minuteOfTokenIssuedDate || minuteOfTokenIssuedDate + 2 == 60) {
             await this.tokenRepo.delete(tokenEntity)
-            return {
-                message: 'This token has expired, kindly request for a new password reset token.'
-            }
+            throw new NotFoundException("This token has expired, kindly request for a new password reset token.")
         }
 
         if (!tokenEntity) {
