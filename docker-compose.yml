@@ -19,6 +19,7 @@ services:
       OAUTH_REFRESH_TOKEN: ${OAUTH_REFRESH_TOKEN}
       GMAIL_USER: ${GMAIL_USER}
       GMAIL_PASSWORD: ${GMAIL_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
 
     volumes:
       - .:/usr/src/app # mounting the current directory inside the container

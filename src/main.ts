@@ -42,14 +42,13 @@ async function bootstrap() {
   app.use(cookieParser());
   
   // using http sessions
-  // app.use(
-  //   session({
-  //     store: new RedisStore({client: redisClient}),
-  //     secret: 'my-secret', // TODO: make this a secret, for real [it should not be seen]
-  //     resave: false,
-  //     saveUninitialized: false,
-  //   }),
-  // );
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
 
 
   // for csrf protection
@@ -73,6 +72,9 @@ async function bootstrap() {
     }),
   )
 
+  app.useStaticAssets(join(__dirname, '..', 'src/public'));
+  app.setBaseViewsDir(join(__dirname, '..', 'src/views'));
+  app.setViewEngine('hbs');
   
   
   await app.listen(3000);

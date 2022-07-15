@@ -27,7 +27,7 @@ export class TokensController {
         // getting the token from the session, and use it in the body data
         var passwordResetToken = request.session.passwordResetToken["passwordResetToken"]
         body.tokenString = passwordResetToken
-        console.log(body.tokenString)
+        // console.log(body.tokenString)
 
         return this.tokensService.confirmPasswordReset(body.password, body.confirmPassword, body.tokenString)
     }
