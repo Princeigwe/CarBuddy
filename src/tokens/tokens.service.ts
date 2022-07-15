@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import {InjectRepository} from '@nestjs/typeorm'
 import {Repository} from 'typeorm'
@@ -19,12 +19,7 @@ export class TokensService {
     ) {}
 
 
-    /**
-     * It creates a JWT token, saves it in the database, and sends it to the user's email address
-     * @param {string} email - the email of the user requesting for password reset
-     * @returns an object with a message property.
-     */
-
+    // function that generates crypto tokens that will later be assigned to an email fo password reset
     async randomPasswordResetString (size = 54) {
         return crypto.randomBytes(size).toString('base64').slice(0, size);
     }
@@ -68,8 +63,27 @@ export class TokensService {
 
     // this function resets the user email password with the help of the token,
     // but first the token associated with the user email will have to be fetched from the Token database
-    async confirmPasswordReset (password: string, confirmPassword: string) {
+    async confirmPasswordReset (password: string, confirmPassword: string, tokenString: string) {
 
+        const tokenEntity = await this.tokenRepo.findOne({where: {tokenString: tokenString}})
+        const minuteOfTokenIssuedDate = tokenEntity.dateIssued.getMinutes()
+        const tokenExpirationTimeInMinute = 2
+        const minuteTokenIsInvalid = minuteOfTokenIssuedDate + tokenExpirationTimeInMinute
+
+        if (minuteTokenIsInvalid >= minuteOfTokenIssuedDate) {
+            await this.tokenRepo.delete(tokenEntity)
+            return {
+                message: 'This token has expired, kindly request for a new password reset one.'
+            }
+        }
+
+        if (!tokenEntity) {
+            throw new NotFoundException("Token is invalid, request for new password reset token")
+        }
+
+        
+        
+        
     }
 
     // get all tokens
