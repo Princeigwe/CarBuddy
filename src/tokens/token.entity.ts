@@ -1,5 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm'
-
+import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn} from 'typeorm'
 @Entity()
 export class Token { 
 
@@ -10,5 +9,9 @@ export class Token {
     email: string
 
     @Column()
-    jsonWebToken: string
+    tokenString: string
+
+    @CreateDateColumn()
+    dateIssued: Date
+
 }
