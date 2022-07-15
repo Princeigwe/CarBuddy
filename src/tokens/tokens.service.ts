@@ -65,14 +65,22 @@ export class TokensService {
         const tokenEntity = await this.tokenRepo.findOne({where: {tokenString: tokenString}})
         const minuteOfTokenIssuedDate = tokenEntity.dateIssued.getMinutes() // get the minute of the time token was issued
         const currentTimeMinute = new Date().getMinutes() // get the current time minute
-        const validThroughMinute = minuteOfTokenIssuedDate + 2
+        const validThroughMinute = minuteOfTokenIssuedDate + 2 // 2 here is 2 minutes
 
+
+        // todo: write what happens when token issued minute is 58 or 59
         // if the valid token minute is less than the current timeMinute when the function is called,
+        // or if token was issued on the 58th minute, delete it when this function is called in the first minute of the next hour
         // the token becomes invalid. delete token and respond with "invalid token message"
-        if (validThroughMinute < currentTimeMinute) {
+        if (validThroughMinute < currentTimeMinute || validThroughMinute - currentTimeMinute == 59) {
             await this.tokenRepo.remove(tokenEntity)
             throw new NotFoundException("This token has expired, kindly request for a new password reset token.")
         }
+        // if token was issued on the 58th minute, delete it when this function is called in the first minute of the next hour
+        // else if (validThroughMinute - currentTimeMinute == 59) {
+        //     await this.tokenRepo.remove(tokenEntity)
+        //     throw new NotFoundException("This token has expired, kindly request for a new password reset token.")
+        // }
 
         const userEmail = tokenEntity.email
         console.log(userEmail)
