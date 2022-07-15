@@ -70,10 +70,12 @@ export class TokensService {
         const tokenExpirationTimeInMinute = 2
         const minuteTokenIsInvalid = minuteOfTokenIssuedDate + tokenExpirationTimeInMinute
 
-        if (minuteTokenIsInvalid >= minuteOfTokenIssuedDate) {
+        // if the minute for token to be invalid has arrived, delete token and respond with "invalid token message"
+        // or if the minuteOfTokenIssuedDate is 58, delete the token in 2 minutes
+        if (minuteTokenIsInvalid >= minuteOfTokenIssuedDate || minuteOfTokenIssuedDate + 2 == 60) {
             await this.tokenRepo.delete(tokenEntity)
             return {
-                message: 'This token has expired, kindly request for a new password reset one.'
+                message: 'This token has expired, kindly request for a new password reset token.'
             }
         }
 
