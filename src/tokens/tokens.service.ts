@@ -29,13 +29,14 @@ export class TokensService {
 
     async forgotPasswordEmail (email: string) {
 
-        const tokenString = await this.randomPasswordResetString()
+        let tokenString = await this.randomPasswordResetString() // forward slash in token string gives a 404 when endpoint is called
+        tokenString = tokenString.replaceAll('/', "m")
 
         let mailOptions = {
             from: process.env.GMAIL_USER,
             to: `${email}`,
             subject: "Password Reset",
-            html: '<p>Click <a href="http://localhost:3000/tokens/confirm-password-reset/' + tokenString + '">here</a> to reset your password. Token is valid for 2 minutes.</p>'
+            html: '<p>Click <a href="http://localhost:3000/tokens/password-reset/' + tokenString + '">here</a> to reset your password. Token is valid for 2 minutes.</p>'
         }
 
         await transporter.sendMail(mailOptions, function(err, info) {
@@ -61,6 +62,13 @@ export class TokensService {
             message : " Please check your email to reset password.",
             token: token
         }
+    }
+
+
+    // this method is responsible for the email password reset form
+    async passwordReset() {
+        const token = await this.forgotPasswordEmail['token']
+        return token
     }
 
 
