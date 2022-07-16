@@ -35,7 +35,7 @@ export class TokensService {
             from: process.env.GMAIL_USER,
             to: `${email}`,
             subject: "Password Reset",
-            html: '<p>Click <a href="http://localhost:3000/tokens/confirm-password-reset/' + tokenString + '">here</a> to reset your password</p>'
+            html: '<p>Click <a href="http://localhost:3000/tokens/confirm-password-reset/' + tokenString + '">here</a> to reset your password. Token is valid for 2 minutes.</p>'
         }
 
         await transporter.sendMail(mailOptions, function(err, info) {
@@ -63,7 +63,6 @@ export class TokensService {
         }
     }
 
-    // todo: redirect to user profile after password reset
 
     // this function resets the user email password with the help of the token,
     // but first the token associated with the user email will have to be fetched from the Token database
@@ -112,13 +111,6 @@ export class TokensService {
         return {
             message: "Password updated successfully"
         }
-        // if (!tokenEntity) {
-        //     throw new NotFoundException("Token is invalid, request for new password reset token")
-        // }
-
-        
-        
-        
     }
 
     // get all tokens

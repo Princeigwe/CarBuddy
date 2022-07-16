@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Delete, Request, Session } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Request, Session, Redirect } from '@nestjs/common';
 import { TokensService } from './tokens.service';
 import { ForgotPasswordEmailDto } from './dtos/forgotPasswordEmail';
 import { request } from 'https';
@@ -22,7 +22,9 @@ export class TokensController {
 
     }
 
+    // after password reset, redirect to public cars endpoint
     @Post('confirm-password-reset')
+    @Redirect('http://localhost:3000/cars/public') // change url to production url in production environment
     async confirmPasswordReset ( @Body() body: ConfirmPasswordResetDto, @Request() request) {
         // getting the token from the session, and use it in the body data
         var passwordResetToken = request.session.passwordResetToken["passwordResetToken"]
