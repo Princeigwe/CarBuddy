@@ -55,6 +55,14 @@ export class UsersService {
       return await this.userRepo.find()
     }
 
+    // this method will be used when resetting the password
+    async editPasswordByEmail(email: string, newPassword: string) {
+      const user = await this.findEmail(email)
+      user.password = newPassword
+      this.userRepo.save(user)
+      return user
+    }
+
     //update one or more attributes of the user instance optionally, with the ID provided
     // async update( id: number, attrs: Partial<User>) {
     //   const user = await this.findOneById(id)

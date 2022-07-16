@@ -7,12 +7,18 @@ import {jwtConstants} from '../auth/constants'
 const crypto = require('crypto') // module used to generate cryptographic signature
 import {transporter} from '../nodemailer/transporter'
 import jwt from 'jsonwebtoken'
+import {UsersService} from '../users/users.service'
+import {randomBytes, scrypt as _scrypt} from 'crypto' // for password hashing and salting
+import { promisify } from 'util' // convers a function to a Promise
+const scrypt =promisify(_scrypt)
+
 
 @Injectable()
 export class TokensService {
 
     constructor ( 
         @InjectRepository(Token) private tokenRepo: Repository<Token>,
+        private usersService: UsersService
     ) {}
 
 
@@ -76,15 +82,39 @@ export class TokensService {
             await this.tokenRepo.remove(tokenEntity)
             throw new NotFoundException("This token has expired, kindly request for a new password reset token.")
         }
-        // if token was issued on the 58th minute, delete it when this function is called in the first minute of the next hour
-        // else if (validThroughMinute - currentTimeMinute == 59) {
-        //     await this.tokenRepo.remove(tokenEntity)
-        //     throw new NotFoundException("This token has expired, kindly request for a new password reset token.")
-        // }
 
         const userEmail = tokenEntity.email
-        console.log(userEmail)
+        // console.log(userEmail)
 
+        // getting the user entity by email
+        const user = await this.usersService.findEmail(userEmail)
+        console.log( JSON.stringify(user['username']) )
+
+        // resetting the password
+        if (!user) {
+            throw new NotFoundException("User with this email does not exist.")
+        }
+
+        if ( password !== confirmPassword) {
+            return { message: "Passwords do not match" }
+        }
+
+        const newPassword = confirmPassword
+        // hashing the new password
+
+        // Generate a salt
+        const salt = randomBytes(8).toString("hex")
+
+        // Hash the password and salt together
+        const newHash = (await scrypt(newPassword, salt, 32) as Buffer) // hash output will be of 32 characters [Buffer is result of hashing for TypeScript]
+
+        // Join the hashed result together with the salt to be used as newPassword
+        const result = salt + "." + newHash.toString("hex");
+
+        await this.usersService.editPasswordByEmail(userEmail, result)
+        return {
+            message: "Password updated successfully"
+        }
         // if (!tokenEntity) {
         //     throw new NotFoundException("Token is invalid, request for new password reset token")
         // }
@@ -109,5 +139,11 @@ export class TokensService {
         return {
             message: 'Token deleted'
         }
+    }
+
+
+    async changePassword (password: string, confirmPassword: string, email: string) {
+        const user = this.usersService.findEmail(email)
+        if(!user) {}
     }
 }
