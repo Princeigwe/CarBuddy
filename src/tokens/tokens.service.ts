@@ -63,6 +63,7 @@ export class TokensService {
         }
     }
 
+    // todo: redirect to user profile after password reset
 
     // this function resets the user email password with the help of the token,
     // but first the token associated with the user email will have to be fetched from the Token database
@@ -73,8 +74,6 @@ export class TokensService {
         const currentTimeMinute = new Date().getMinutes() // get the current time minute
         const validThroughMinute = minuteOfTokenIssuedDate + 2 // 2 here is 2 minutes
 
-
-        // todo: write what happens when token issued minute is 58 or 59
         // if the valid token minute is less than the current timeMinute when the function is called,
         // or if token was issued on the 58th minute, delete it when this function is called in the first minute of the next hour
         // the token becomes invalid. delete token and respond with "invalid token message"
@@ -84,22 +83,19 @@ export class TokensService {
         }
 
         const userEmail = tokenEntity.email
-        // console.log(userEmail)
 
         // getting the user entity by email
         const user = await this.usersService.findEmail(userEmail)
-        console.log( JSON.stringify(user['username']) )
 
         // resetting the password
         if (!user) {
             throw new NotFoundException("User with this email does not exist.")
         }
-
-        if ( password !== confirmPassword) {
+        else if ( password !== confirmPassword) {
             return { message: "Passwords do not match" }
         }
-
         const newPassword = confirmPassword
+
         // hashing the new password
 
         // Generate a salt
@@ -112,6 +108,7 @@ export class TokensService {
         const result = salt + "." + newHash.toString("hex");
 
         await this.usersService.editPasswordByEmail(userEmail, result)
+        await this.tokenRepo.remove(tokenEntity)
         return {
             message: "Password updated successfully"
         }
