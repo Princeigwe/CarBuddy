@@ -1,0 +1,182 @@
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background-color: darkgray;
+    }
+    
+    .main-container {
+        margin: 8% auto;
+        height: 35rem;
+        width: 30rem;
+        background-color: #fafafa;
+        border-radius: 15px;
+    }
+    
+    .form {
+        padding: 10% 5%;
+    }
+    
+    .instruction {
+        line-height: 1.8;
+    }
+    
+    .label {
+        display: flex;
+        flex-direction: column;
+        font-size: 1.1rem;
+        margin-top: 10%;
+        line-height: 2;
+    }
+    
+    .input {
+        height: 3.5rem;
+        padding: 1.5rem;
+        border-radius: 5px;
+    }
+    
+    .btn {
+        width: 10rem;
+        height: 2.8rem;
+        background-color: darkblue;
+        border-radius: 5px;
+        color: white;
+        border: 0px;
+    }
+    
+    .submit {
+        float: right;
+        margin-top: 8%;
+    }
+    /*=======================================================MEDIAQUERIES==========================================================*/
+    
+    @media only screen and (max-width: 480px) and (min-width: 320px) {
+        html,
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .main-container {
+            margin: 20% auto;
+            height: 33rem;
+            width: 20rem
+        }
+        .input {
+            height: 3.5rem;
+            padding: 1.5rem;
+        }
+        .btn {
+            width: 9rem;
+            height: 2.8rem;
+        }
+    }
+    
+    @media only screen and (max-width: 599px) and (min-width: 481px) {
+        html,
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .main-container {
+            margin: 30% auto;
+            height: 50em;
+            width: 30rem
+        }
+        .instruction {
+            line-height: 1.8;
+            font-size: 1.6rem;
+        }
+        .input {
+            height: 6rem;
+            padding: 1.6rem;
+        }
+        input[placeholder] {
+            font-size: 1.7rem;
+        }
+        .btn {
+            width: 12rem;
+            height: 4rem;
+            font-size: 1.7rem;
+        }
+        .label {
+            margin-bottom: 8%;
+            font-size: 2rem;
+        }
+    }
+    
+    @media only screen and (max-width: 768px) and (min-width: 600px) {
+        html,
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .main-container {
+            margin: 40% auto;
+            height: 62em;
+            width: 38rem
+        }
+        .instruction {
+            line-height: 1.8;
+            font-size: 2rem;
+        }
+        .input {
+            height: 6rem;
+            padding: 1.6rem;
+        }
+        input[placeholder] {
+            font-size: 1.7rem;
+        }
+        .btn {
+            width: 12rem;
+            height: 4rem;
+            font-size: 1.7rem;
+        }
+        .label {
+            margin-bottom: 8%;
+            font-size: 2rem;
+        }
+    }
+    
+    @media only screen and (max-width: 1024px) and (min-width: 769px) {
+        html,
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .main-container {
+            margin: 15% auto;
+            height: 70em;
+            width: 54rem
+        }
+        .instruction {
+            line-height: 1.8;
+            font-size: 2rem;
+        }
+        .input {
+            height: 7rem;
+            padding: 1.7rem;
+        }
+        input[placeholder] {
+            font-size: 1.8rem;
+        }
+        .btn {
+            width: 15rem;
+            height: 5rem;
+            font-size: 1.9rem;
+        }
+        .label {
+            margin-bottom: 8%;
+            font-size: 2rem;
+        }
+    }
