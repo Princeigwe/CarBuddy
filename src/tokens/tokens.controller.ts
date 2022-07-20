@@ -26,9 +26,11 @@ export class TokensController {
 
     }
 
+    // @Render('password-reset')
     @Get('password-reset/:tokenString')
     async sessionToken(@Request() request) {
-        return { tokenString: request.session.passwordResetToken}
+        console.log("tokenString: ", request.session.passwordResetToken)
+        return { tokenString: request.session.passwordResetToken }
     }
 
     // after password reset, redirect to public cars endpoint
