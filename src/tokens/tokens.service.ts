@@ -11,6 +11,8 @@ import {UsersService} from '../users/users.service'
 import {randomBytes, scrypt as _scrypt} from 'crypto' // for password hashing and salting
 import { promisify } from 'util' // convers a function to a Promise
 const scrypt =promisify(_scrypt)
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import {PasswordTokenCreatedEvent} from '../events/token.created.event'
 
 
 @Injectable()
@@ -18,7 +20,7 @@ export class TokensService {
 
     constructor ( 
         @InjectRepository(Token) private tokenRepo: Repository<Token>,
-        private usersService: UsersService
+        private usersService: UsersService,
     ) {}
 
 
@@ -29,8 +31,20 @@ export class TokensService {
 
     async forgotPasswordEmail (email: string) {
 
+        // if there's a token that is related to the email already in the database, delete it
+        // let oldToken = await this.tokenRepo.find({where: {email: email}})
+        // if (oldToken) {
+        //     await this.tokenRepo.remove(oldToken)
+        // }
+
         let tokenString = await this.randomPasswordResetString() // forward slash in token string gives a 404 when endpoint is called
         tokenString = tokenString.replaceAll('/', "m")
+
+        // create new token
+        const token = this.tokenRepo.create({email, tokenString})
+        await this.tokenRepo.save(token)
+
+        
 
         let mailOptions = {
             from: process.env.GMAIL_USER,
@@ -48,28 +62,12 @@ export class TokensService {
             transporter.close()
         })
 
-        // if there's a token that is related to the email already in the database, delete it
-        let oldToken = await this.tokenRepo.find({where: {email: email}})
-        if (oldToken) {
-            await this.tokenRepo.remove(oldToken)
-        }
-
-        // create new token
-        const token = this.tokenRepo.create({email, tokenString})
-        await this.tokenRepo.save(token)
-
         return {
             message : " Please check your email to reset password.",
             token: token
         }
     }
 
-
-    // this method is responsible for the email password reset form
-    async passwordReset() {
-        const token = await this.forgotPasswordEmail['token']
-        return token
-    }
 
 
     // this function resets the user email password with the help of the token,
