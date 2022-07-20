@@ -32,10 +32,10 @@ export class TokensService {
     async forgotPasswordEmail (email: string) {
 
         // if there's a token that is related to the email already in the database, delete it
-        // let oldToken = await this.tokenRepo.find({where: {email: email}})
-        // if (oldToken) {
-        //     await this.tokenRepo.remove(oldToken)
-        // }
+        let oldToken = await this.tokenRepo.find({where: {email: email}})
+        if (oldToken) {
+            await this.tokenRepo.remove(oldToken)
+        }
 
         let tokenString = await this.randomPasswordResetString() // forward slash in token string gives a 404 when endpoint is called
         tokenString = tokenString.replaceAll('/', "m")
