@@ -35,12 +35,7 @@ export class TokensController {
     // after password reset, redirect to public cars endpoint
     @Post('confirm-password-reset')
     @Redirect('http://localhost:3000/cars/public') // change url to production url in production environment
-    async confirmPasswordReset ( @Body() body: ConfirmPasswordResetDto, @Request() request) {
-        // getting the token from the session, and use it in the body data
-        var passwordResetToken = request.session.passwordResetToken["passwordResetToken"]
-        body.tokenString = passwordResetToken
-        // console.log(body.tokenString)
-
+    async confirmPasswordReset ( @Body() body: ConfirmPasswordResetDto) {
         return this.tokensService.confirmPasswordReset(body.password, body.confirmPassword, body.tokenString)
     }
 
