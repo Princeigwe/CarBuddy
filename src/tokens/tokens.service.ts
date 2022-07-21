@@ -37,6 +37,8 @@ export class TokensService {
 
         let tokenString = await this.randomPasswordResetString() // forward slash in token string gives a 404 when endpoint is called
         tokenString = tokenString.replaceAll('/', "m")
+                    .replaceAll('=', "m")
+                    .replaceAll('+', "m")
 
         // create new token
         const token = this.tokenRepo.create({email, tokenString})
