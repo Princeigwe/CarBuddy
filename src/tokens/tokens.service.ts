@@ -11,8 +11,6 @@ import {UsersService} from '../users/users.service'
 import {randomBytes, scrypt as _scrypt} from 'crypto' // for password hashing and salting
 import { promisify } from 'util' // convers a function to a Promise
 const scrypt =promisify(_scrypt)
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import {PasswordTokenCreatedEvent} from '../events/token.created.event'
 
 
 @Injectable()
