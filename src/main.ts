@@ -9,12 +9,11 @@ import {SwaggerModule, DocumentBuilder} from '@nestjs/swagger' // swagger docume
 const express = require('express')
 
 import * as session from 'express-session';
-const store = new session.MemoryStore()
-// let RedisStore = require('connect-redis')(session) //import REDIS session storage
+let RedisStore = require('connect-redis')(session) //import REDIS session storage
 // const { createClient } = require("redis")
 // let redisClient = createClient()
 
-// const cookieSession = require('cookie-session');
+const cookieSession = require('cookie-session');
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
 import Helmet from 'helmet';
@@ -28,8 +27,6 @@ async function bootstrap() {
       secret: process.env.SESSION_SECRET,
       resave: true,
       saveUninitialized: true,
-      store
-      // cookie: {secure: false}
     }),
   );
 
@@ -63,6 +60,8 @@ async function bootstrap() {
 
   app.use('/uploads' , express.static(join(__dirname, '..', 'uploads')));
 
+
+  // app.use('/src/public' , express.static(path.join(__dirname, '..', 'public')));
 
   // apps should use pipes
   app.useGlobalPipes(
