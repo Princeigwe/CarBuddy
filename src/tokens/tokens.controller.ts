@@ -1,10 +1,8 @@
-import { Controller, Post, Body, Get, Delete, Request, Session, Redirect, Render } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Request, Session, Redirect, Render, Response } from '@nestjs/common';
 import { TokensService } from './tokens.service';
 import { ForgotPasswordEmailDto } from './dtos/forgotPasswordEmail';
 import { request } from 'https';
 import {ConfirmPasswordResetDto} from './dtos/confirmPasswordReset';
-import {OnEvent} from '@nestjs/event-emitter'
-import {PasswordTokenCreatedEvent} from '../events/token.created.event'
 
 
 @Controller('tokens')
@@ -28,7 +26,7 @@ export class TokensController {
 
     // @Render('password-reset')
     @Get('password-reset/:tokenString')
-    async sessionToken(@Request() request) {
+    async sessionToken(@Request() request, @Response() response) {
         console.log("tokenString: ", request.session.passwordResetToken)
         return { tokenString: request.session.passwordResetToken }
     }
