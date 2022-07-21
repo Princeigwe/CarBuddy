@@ -3,6 +3,7 @@ import { TokensService } from './tokens.service';
 import { ForgotPasswordEmailDto } from './dtos/forgotPasswordEmail';
 import { request } from 'https';
 import {ConfirmPasswordResetDto} from './dtos/confirmPasswordReset';
+import { response } from 'express';
 
 
 @Controller('tokens')
@@ -24,15 +25,15 @@ export class TokensController {
 
     }
 
-    // @Render('password-reset')
+    
     @Get('password-reset/:tokenString')
-    async sessionToken(@Request() request, @Response() response) {
+    async sessionResetToken(@Request() request, @Response() response) {
         console.log("tokenString: ", request.session.passwordResetToken)
-        return { tokenString: request.session.passwordResetToken }
+        return response.render('password-reset', {tokenString: request.session.passwordResetToken})
     }
 
     // after password reset, redirect to public cars endpoint
-    @Post('confirm-password-reset/:token')
+    @Post('confirm-password-reset')
     @Redirect('http://localhost:3000/cars/public') // change url to production url in production environment
     async confirmPasswordReset ( @Body() body: ConfirmPasswordResetDto, @Request() request) {
         // getting the token from the session, and use it in the body data
