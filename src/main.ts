@@ -9,17 +9,29 @@ import {SwaggerModule, DocumentBuilder} from '@nestjs/swagger' // swagger docume
 const express = require('express')
 
 import * as session from 'express-session';
-let RedisStore = require('connect-redis')(session) //import REDIS session storage
+const store = new session.MemoryStore()
+// let RedisStore = require('connect-redis')(session) //import REDIS session storage
 // const { createClient } = require("redis")
 // let redisClient = createClient()
 
-const cookieSession = require('cookie-session');
+// const cookieSession = require('cookie-session');
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
 import Helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule); // running Nest on Express
+
+  // using http sessions
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: true,
+      saveUninitialized: true,
+      store
+      // cookie: {secure: false}
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Car Buddy')
@@ -40,16 +52,6 @@ async function bootstrap() {
 
   // application should provide cookies
   app.use(cookieParser());
-  
-  // using http sessions
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
-
 
   // for csrf protection
   // app.use(csurf())
@@ -61,8 +63,6 @@ async function bootstrap() {
 
   app.use('/uploads' , express.static(join(__dirname, '..', 'uploads')));
 
-
-  // app.use('/src/public' , express.static(path.join(__dirname, '..', 'public')));
 
   // apps should use pipes
   app.useGlobalPipes(
