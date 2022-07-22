@@ -46,6 +46,7 @@ export class AuthController{
         return response.sendStatus(200);
     }
 
+    @ApiOperation({summary: "This action changes the password of authenticated user"})
     @UseGuards(JwtAuthGuard)
     @Post('change-password')
     async changePassword(@Body() body: ChangePasswordDto, @Request() request) {
