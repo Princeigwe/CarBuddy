@@ -4,6 +4,8 @@ import {CreateUserDto} from '../users/dtos/create-user.dto'
 import {LocalAuthGuard} from './local-auth.guard'
 import {JwtAuthGuard} from './jwt-auth.guard'
 import { ApiOperation, ApiTags, ApiBody } from '@nestjs/swagger';
+import {ChangePasswordDto} from '../users/dtos/change-password.dto'
+
 
 @Controller('auth')
 @ApiTags("Auth")
@@ -43,4 +45,11 @@ export class AuthController{
         response.setHeader('Set-Cookie', this.authService.getCookieForLogOut());
         return response.sendStatus(200);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('change-password')
+    async changePassword(@Body() body: ChangePasswordDto, @Request() request) {
+        const user = request.user
+        return this.authService.changePassword(body.password, body.confirmPassword, user.email)
+    } 
 }

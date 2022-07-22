@@ -94,7 +94,7 @@ export class TokensService {
 
         // resetting the password
         if (!user) {
-            throw new NotFoundException("User with this email does not exist.")
+            throw new NotFoundException("This account does not exist.")
         }
         else if ( password !== confirmPassword) {
             return { message: "Passwords do not match" }
@@ -134,11 +134,5 @@ export class TokensService {
         return {
             message: 'Token deleted'
         }
-    }
-
-
-    async changePassword (password: string, confirmPassword: string, email: string) {
-        const user = this.usersService.findEmail(email)
-        if(!user) {}
     }
 }

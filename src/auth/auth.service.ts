@@ -106,4 +106,33 @@ export class AuthService {
     public getCookieForLogOut() {
         return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
     }
+
+
+     // this function changes the user's password when authenticated already
+    async changePassword (password: string, confirmPassword: string, email: string) {
+        const user = this.usersService.findEmail(email)
+        if(!user) {
+            throw new NotFoundException("This account does not exist")
+        }
+        else if ( password !== confirmPassword) {
+            return { message: "Passwords do not match" }
+        }
+        const newPassword = confirmPassword
+
+        // hashing the new password
+
+        // Generate a salt
+        const salt = randomBytes(8).toString("hex")
+
+        // Hash the password and salt together
+        const newHash = (await scrypt(newPassword, salt, 32) as Buffer) // hash output will be of 32 characters [Buffer is result of hashing for TypeScript]
+
+        // Join the hashed result together with the salt to be used as newPassword
+        const result = salt + "." + newHash.toString("hex");
+
+        await this.usersService.editPasswordByEmail(email, result)
+        return {
+            message: "Password updated successfully"
+        }
+    }
 }
