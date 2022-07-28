@@ -71,3 +71,21 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+# Project: Car Buddy
+
+## Description: API Service that helps users buy and put up cars for sale. 
+## Technologies:
+- TypeScript
+- Node.js
+- Nest.js
+- Nodemailer
+- Docker
+- PostgreSQL
+- MongoDB
+- AWS
+
+
+## How to check out the project:
+Git clone or Docker image( "princeigwe/car-buddy" )
