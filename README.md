@@ -86,6 +86,8 @@ Nest is [MIT licensed](LICENSE).
 - MongoDB
 - AWS
 
+Method of AWS ElasticBeanstalk deployment can be found at: https://github.com/Princeigwe/car-buddy-deployment
+
 
 ## How to check out the project:
 Git clone or Docker image( "princeigwe/car-buddy" )
